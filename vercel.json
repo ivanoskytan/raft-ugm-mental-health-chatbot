@@ -2,7 +2,7 @@
     "builds": [
         {
             "src": "main.py",
-            "use": "@vercel/python@3.1.0",
+            "use": "@vercel/python",
             "config": {
                 "installCommand": "pip install --no-cache-dir -r requirements.txt"
               }
