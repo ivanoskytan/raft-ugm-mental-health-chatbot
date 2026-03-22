@@ -16,7 +16,6 @@ idna==3.10
 itsdangerous==2.2.0
 Jinja2==3.1.6
 jiter==0.10.0
-python-dotenv==1.1.1
 MarkupSafe==3.0.2
 openai==1.95.1
 pydantic==2.11.7
