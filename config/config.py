@@ -81,20 +81,8 @@ class Settings:
             JWT_TOKEN=jwt_token,
         )
 
-_settings = None
-_mongo_client = None
-_db = None
 
-def get_settings():
-    global _settings
-    if _settings is None:
-        _settings = Settings.load()
-    return _settings
+settings = Settings.load()
 
-def get_db():
-    global _mongo_client, _db
-    if _db is None:
-        settings = get_settings()
-        _mongo_client = MongoClient(settings.MONGO_URI)
-        _db = _mongo_client[settings.MONGO_DB_NAME]
-    return _db
+mongo_client = MongoClient(settings.MONGO_URI)
+db = mongo_client[settings.MONGO_DB_NAME]
