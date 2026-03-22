@@ -8,8 +8,25 @@ from api.api import APIModule
 from web.web import WebModule
 
 import argparse
+import os
 
 settings = Settings.load()
+
+def create_app():
+    app = Flask(__name__)
+
+    web = WebModule()
+    web.register_pages()
+
+    api = APIModule()
+    api.register_routes()
+
+    app.register_blueprint(web.blueprint)
+    app.register_blueprint(api.blueprint)
+
+    return app
+
+app = create_app()
 
 def run_engine_command(args):
     if args.task == "vectorstore-builder":
@@ -29,10 +46,10 @@ def run_engine_command(args):
         ft = FineTuning(settings.OPENAI_API_KEY)
         ft.run()
         print("Fine-tuning process completed.")
-    
+
 def clean_engine_data_command(args):
     if args.task == "vectorstore":
-        import shutil, os
+        import shutil
         if os.path.exists("vectorstore/store"):
             shutil.rmtree("vectorstore/store")
             print("Vectorstore cleaned.")
@@ -40,7 +57,7 @@ def clean_engine_data_command(args):
             print("No vectorstore to clean.")
 
     elif args.task == "raft-data":
-        import shutil, os
+        import shutil
         if os.path.exists("./output/v2"):
             shutil.rmtree("./output/v2")
             print("RAFT fine-tuning data cleaned.")
@@ -49,19 +66,13 @@ def clean_engine_data_command(args):
 
 def run_web_app_command(args):
     if args.task == "app":
-        app = Flask(__name__)
-
-        web = WebModule()
-        web.register_pages()
-
-        api = APIModule()
-        api.register_routes()
-
-        app.register_blueprint(web.blueprint)
-        app.register_blueprint(api.blueprint)
-
+        app = create_app()
         print("Web app successfully ran.")
-        app.run(host="0.0.0.0", port=5000, debug=True)
+        app.run(
+            host="0.0.0.0",
+            port=int(os.environ.get("PORT", 5000)),
+            debug=True
+        )
 
 def main():
     parser = argparse.ArgumentParser(
@@ -71,32 +82,22 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    run_engine_parser = subparsers.add_parser("run-engine", description="Run a chatbot engine task")
+    run_engine_parser = subparsers.add_parser("run-engine")
     run_engine_parser.add_argument(
         "task",
-        choices=["vectorstore-builder", "raft-preparation-pipeline", "fine-tuning"],
-        help="Task to run"
+        choices=["vectorstore-builder", "raft-preparation-pipeline", "fine-tuning"]
     )
-    run_engine_parser.add_argument(
-        "--phase",
-        type=int,
-        default=None,
-        help="Specific phase of the RAFT pipeline to run (1-5). Only applicable if task is 'raft-preparation-pipeline'."
-    )
+    run_engine_parser.add_argument("--phase", type=int, default=None)
     run_engine_parser.set_defaults(func=run_engine_command)
 
-    run_web_parser = subparsers.add_parser("run-web", description="Run a chatbot web app")
-    run_web_parser.add_argument(
-        "task",
-        choices=["app"],
-    )
+    run_web_parser = subparsers.add_parser("run-web")
+    run_web_parser.add_argument("task", choices=["app"])
     run_web_parser.set_defaults(func=run_web_app_command)
 
-    clean_parser = subparsers.add_parser("clean", description="Clean generated data")
+    clean_parser = subparsers.add_parser("clean")
     clean_parser.add_argument(
         "task",
-        choices=["vectorstore", "raft-data"],
-        help="Which generated data to clean"
+        choices=["vectorstore", "raft-data"]
     )
     clean_parser.set_defaults(func=clean_engine_data_command)
 
