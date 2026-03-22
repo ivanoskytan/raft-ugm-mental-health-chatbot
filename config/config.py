@@ -1,9 +1,12 @@
 import os
 from dataclasses import dataclass
-from dotenv import load_dotenv
 from pymongo import MongoClient
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 @dataclass(frozen=True)
 class Settings:
