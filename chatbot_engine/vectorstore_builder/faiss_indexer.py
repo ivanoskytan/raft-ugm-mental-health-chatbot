@@ -5,13 +5,14 @@ import faiss
 import numpy as np
 from tqdm import tqdm
 from chatbot_engine.llm_client import GPTClient
+from config.config import Settings
 
-
+settings = Settings.load()
 class FAISSIndexer:
     def __init__(self):
         self.chunked_files_dir = "./chunked_files"
         self.vectorstore_dir = "../vectorstore"
-        self.gpt_client = GPTClient()
+        self.gpt_client = GPTClient(api_key=settings.OPENAI_API_KEY, model="text-embedding-3-small")
 
         os.makedirs(self.vectorstore_dir, exist_ok=True)
 

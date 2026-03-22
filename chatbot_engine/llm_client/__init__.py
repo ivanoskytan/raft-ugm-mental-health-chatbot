@@ -29,10 +29,10 @@ class GPTClient:
             logging.error(f"GPTClient: Error while generating response: {err}")
             return None
         
-    def get_embedding(self, text, model="text-embedding-3-small"):
+    def get_embedding(self, text):
         try:
             response = self.client.embeddings.create(
-                model=model,
+                model=self.model,
                 input=text
             )
             return response.data[0].embedding

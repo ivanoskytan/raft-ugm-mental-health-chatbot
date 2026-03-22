@@ -4,12 +4,17 @@ import numpy as np
 import logging
 import pickle
 from chatbot_engine.llm_client import GPTClient
+from config.config import Settings
+
+
+settings = Settings.load()
+
 
 class Retriever:
     def __init__(self):
         base_dir = os.path.join(os.path.dirname(__file__))
         self.vectorstore_dir = os.path.join(base_dir, "../vectorstore")
-        self.gpt_client = GPTClient()
+        self.gpt_client = GPTClient(api_key=settings.OPENAI_API_KEY, model="text-embedding-3-small")
         self.logger = logging.getLogger("Retriever")
         self.indices = {}
         self.texts = {}
