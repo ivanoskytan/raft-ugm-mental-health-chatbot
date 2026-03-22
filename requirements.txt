@@ -52,7 +52,6 @@ fonttools==4.55.3
 frozenlist==1.7.0
 fsspec==2025.3.0
 git-filter-repo==2.47.0
-googletrans==4.0.0rc1
 greenlet==3.0.3
 h11==0.16.0
 h2==3.2.0
