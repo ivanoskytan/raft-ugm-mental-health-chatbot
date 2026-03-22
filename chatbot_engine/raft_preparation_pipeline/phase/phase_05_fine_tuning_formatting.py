@@ -1,25 +1,18 @@
 from chatbot_engine.llm_client import GPTClient
 import logging
-
+import json
 
 class PhaseFiveFineTuningFormatting:
     def __init__(self, api_key, model="gpt-4o"):
         self.gpt_client = GPTClient(api_key=api_key, model=model)
         self.logger = logging.getLogger("PhaseFiveFineTuningFormatting")
 
-    def _format_questions(self, grouped):
-        grouped = grouped or []
-        return "\n".join(
-            f"Q{i+1}: {item.get('survey_question','')}"
-            for i, item in enumerate(grouped)
-        )
-
-    def _format_scores(self, grouped):
-        grouped = grouped or []
-        return "\n".join(
-            f"Q{i+1} Question: {item.get('survey_question','')} - Score: {item.get('score','')}"
-            for i, item in enumerate(grouped)
-        )
+    def _format_questions_group(self, grouped):
+        formatted = []
+        for _, item in enumerate(grouped):
+            question = item.get("survey_question", "")
+            formatted.append(question)
+        return formatted
 
     def run(self, augmented_dialogs):
         fine_tuning_formatted_dialogs = []
@@ -44,69 +37,71 @@ class PhaseFiveFineTuningFormatting:
 
                 next_msg = messages[i+1] if i + 1 < len(messages) else {}
 
-                if msg_type == "Opening":
+                questions_group = self._format_questions_group(next_msg.get("grouped_questions_score") or [])
 
-                    next_questions = next_msg.get("grouped_questions_score", [])
+                if msg_type == "Opening":
 
                     formatted_messages.append({
                         "role": "user",
-                        "content": {
+                        "content": json.dumps(
+                        {
                             "type": "Opening",
                             "section": current_section,
-                            "group_id": current_group_id,
+                            "group_id": 0,
                             "user_answer": msg.get("user_content", ""),
-                            "next_questions": next_questions,
+                            "next_questions": questions_group,
                             "scoring_system": next_msg.get("scoring_system", [])
-                        }
+                        }, ensure_ascii=False)
                     })
 
                     formatted_messages.append({
                         "role": "assistant",
-                        "content": {
+                        "content": json.dumps(
+                        {
                             "assistant_question": next_msg.get("assistant_content", "")
-                        }
+                        }, ensure_ascii=False)
                     })
 
                 elif msg_type == "Survey":
 
                     current_group = msg.get("grouped_questions_score", [])
-                    next_group = next_msg.get("grouped_questions_score", [])
 
                     formatted_messages.append({
                         "role": "user",
-                        "content": {
+                        "content": json.dumps(
+                            {
                             "type": "Survey",
                             "section": current_section,
                             "group_id": current_group_id,
                             "user_answer": msg.get("user_content", ""),
-                            "next_questions": next_group,
+                            "next_questions": questions_group,
                             "scoring_system": next_msg.get("scoring_system", []),
                             "set_of_documents": msg.get("set_of_documents", [])
-                        }
+                        }, ensure_ascii=False)
                     })
 
                     formatted_messages.append({
                         "role": "assistant",
-                        "content": {
+                        "content": json.dumps(
+                            {
                             "scores": current_group,
                             "chain_of_thought": msg.get("cot_augmentation", ""),
                             "assistant_question": next_msg.get("assistant_content", "")
-                        }
+                        }, ensure_ascii=False)
                     })
 
                 elif msg_type == "Ending":
 
                     formatted_messages.append({
                         "role": "user",
-                        "content": {
+                        "content": json.dumps(
+                            {
                             "type": "Ending",
                             "user_answer": msg.get("user_content", "")
-                        }
+                        }, ensure_ascii=False)
                     })
 
             fine_tuning_formatted_dialogs.append({
-                "dialog_id": dialog.get("dialog_id"),
-                "name": dialog.get("name"),
                 "messages": formatted_messages
             })
 

@@ -11,22 +11,22 @@ class AuthService:
         existing = UserRepository.find_by_email(email)
 
         if existing:
-            return False, "User already exists"
+            return False, "[AuthService]: User already exists"
 
         hashed = generate_password_hash(password)
 
         try:
             UserRepository.create(username, email, hashed, role)
-            return True, "User registered successfully"
+            return True, None
         except Exception:
-            return False, "Failed to create user"
+            return False, "[AuthService]: Failed to create user"
 
     @staticmethod
     def login(email: str, password: str, secret_key: str):
         user = UserRepository.find_by_email(email)
 
         if not user or not check_password_hash(user.password, password):
-            return None, "Invalid email or password"
+            return None, "[AuthService]: Invalid email or password"
 
         payload = {
             "user_id": str(user._id),

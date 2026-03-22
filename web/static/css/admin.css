@@ -255,6 +255,13 @@ body {
     overflow: hidden;
 }
 
+.assessment-bar {
+    background: #2a2f3b;
+    height: 8px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
 .progress-fill {
     height: 100%;
     background: #4caf50;
@@ -278,6 +285,34 @@ body {
     margin-bottom: 6px;
 }
 
+.chat-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.chat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-title {
+    color: black;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.chat-date {
+    color: black;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+
 .progress-bar {
     background: #2a2f3b;
     height: 10px;
@@ -287,6 +322,13 @@ body {
 
 
 .progress-text {
+    font-size: 12px;
+    text-align: right;
+    margin-top: 4px;
+}
+
+
+.chat-text {
     font-size: 12px;
     text-align: right;
     margin-top: 4px;
@@ -324,7 +366,7 @@ body {
 }
 
 
-#download-excel-btn {
+.download-excel-btn {
     padding: 0.55rem 1.1rem;
     background: linear-gradient(135deg, #1d4ed8, #2563eb);
     color: white;

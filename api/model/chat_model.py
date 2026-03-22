@@ -2,20 +2,24 @@ from bson import ObjectId
 from datetime import datetime, timezone
 
 class Chat:
-    def __init__(self, summary="", excel_file_path="", start_time=None, end_time=None, valid=True, user_id=None, _id=None):
+    def __init__(self, summary, title, excel_file_path, started_at, ended_at, valid=True, user_id=None, _id=None):
         self._id = _id or ObjectId()
+        self.title = title
         self.summary = summary
         self.excel_file_path = excel_file_path
-        self.start_time = start_time or datetime.now(timezone.utc)
-        self.end_time = end_time
-        self.valid = valid
+        self.started_at = started_at or datetime.now(timezone.utc)
+        self.ended_at = ended_at
+        self.valid: bool = valid
         self.user_id = user_id
 
     def to_dict(self):
-        return vars(self)
+        data = vars(self).copy()
+        data["_id"] = str(self._id)
+        return data
 
     @staticmethod
     def from_dict(data):
         if not data:
             return None
+    
         return Chat(**data)

@@ -6,96 +6,101 @@ document.addEventListener("DOMContentLoaded", () => {
         "Disosiasi","Penggunaan Substansi","Pemikiran Berulang"
     ];
 
-    function randomScores() {
-        return aspects.reduce((a, b) => {
-            a[b] = Math.floor(Math.random() * 101);
-            return a;
-        }, {});
-    }
-
-    function randomName() {
-        const n = ["Alice","Budi","Citra","Dina","Eko","Farah","Gilang","Hana","Ivan","Joko"];
-        return n[Math.floor(Math.random() * n.length)];
-    }
-
-    const users = Array.from({ length: 15 }, (_, i) => ({
-        id: i + 1,
-        name: randomName(),
-        email: `user${i+1}@mail.com`,
-        scores: randomScores()
-    }));
-
     let currentUser = null;
 
     const list = document.querySelector(".conversation-list");
-    const windowBox = document.querySelector(".chat-window");
+    const userAssessmentsPanel = document.querySelector(".user-assessments");
     const title = document.querySelector(".chat-area h2");
     const search = document.getElementById("user-search");
-    const downloadBtn = document.getElementById("download-excel-btn");
+    
+    async function apiFetch(url, options = {}) {
+        const res = await fetch(url, {
+            headers: {"Content-Type": "application/json"},
+            ...options,
+        })
+        return res.json();
+    }
 
-    function renderUsers(arr) {
+    async function renderUsers() {
+        const res = await apiFetch('/api/admin/all-users');
+
         list.innerHTML = "";
 
-        arr.forEach(u => {
+        res.data.forEach(u => {
             const item = document.createElement("div");
             item.className = "conversation-item";
-            item.innerHTML = `<strong>${u.name}</strong> — ${u.email}`;
+            item.innerHTML = `<strong>${u.username}</strong> — ${u.email}`;
             item.onclick = () => showUser(u);
             list.appendChild(item);
         });
+
+        showUser(res.data[0]);
     }
 
-    function showUser(user) {
+    async function showUser(user) {
         currentUser = user;
-        title.textContent = `Hasil — ${user.name} (${user.email})`;
-        windowBox.innerHTML = "";
+        title.textContent = `Hasil — ${user.username} (${user.email})`;
 
-        aspects.forEach(a => {
-            const v = user.scores[a];
-
+        const res = await apiFetch(`/api/admin/all-valid-chats/${user._id}`)
+        
+        res.data.forEach(chat => {
             const box = document.createElement("div");
-            box.className = "aspect-item";
             box.innerHTML = `
-                <div class="aspect-title">${a}</div>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
+            <div class="chat-box">
+                <div class="chat-info">
+                    <div class="chat-title">${chat.title}</div>
+                    <div class="chat-date">${chat.started_at}</div>
                 </div>
-                <div class="progress-text">${v}%</div>
+                <button class="download-excel-btn">Download Excel</button>
+            </div>
             `;
 
-            windowBox.appendChild(box);
+            const btn = box.querySelector(".download-excel-btn");
 
-            const fill = box.querySelector(".progress-fill");
-            setTimeout(() => fill.style.width = v + "%", 30);
+            btn.addEventListener("click", async () => {
+                try {
+                    const res = await fetch(`/api/admin/download-excel/${chat._id}`);
+                    
+                    if (!res.ok) throw new Error("Download failed");
+        
+                    const blob = await res.blob();
+        
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `${chat.title}.xlsx`;
+        
+                    document.body.appendChild(a);
+                    a.click();
+        
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                } catch (error) {
+                    console.error("Error downloading excel:", error);
+                }
+            });
+
+            userAssessmentsPanel.append(box);
         });
+
+
+        // aspects.forEach(a => {
+        //     const v = user.scores[a];
+
+        //     const box = document.createElement("div");
+        //     box.className = "aspect-item";
+            // box.innerHTML = `
+            //     <div class="aspect-title">${a}</div>
+            //     <div class="progress-bar">
+            //         <div class="progress-fill"></div>
+            //     </div>
+            //     <div class="progress-text">${v}%</div>
+            // `;
+
+        //     const fill = box.querySelector(".progress-fill");
+        //     setTimeout(() => fill.style.width = v + "%", 30);
+        // });
     }
 
-    search.addEventListener("input", e => {
-        const val = e.target.value.toLowerCase();
-        renderUsers(
-            users.filter(u =>
-                u.name.toLowerCase().includes(val) ||
-                u.email.toLowerCase().includes(val)
-            )
-        );
-    });
-
-    downloadBtn.addEventListener("click", () => {
-        if (!currentUser) return;
-
-        const data = aspects.map(a => ({
-            Aspect: a,
-            Score: currentUser.scores[a]
-        }));
-
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-
-        XLSX.utils.book_append_sheet(wb, ws, "Report");
-        XLSX.writeFile(wb, `${currentUser.name}_report.xlsx`);
-    });
-
-    renderUsers(users);
-    showUser(users[0]);
-
+    renderUsers();
 });

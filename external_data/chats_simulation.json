@@ -1,0 +1,26 @@
+[
+    {
+        "chat_id": "65c1a2b3e4b0f1a2c3d4e5f6",
+        "title": "Percakapan 1",
+        "start_time": "2024-02-01T10:00:00Z",
+        "end_time": "2024-02-01T10:15:00Z",
+        "valid": true,
+        "user_id": "87c5a2b3e4b0f1a2c3d4e1fg"
+    },
+    {
+        "chat_id": "65c1a2b3e4b0f1a2c3d4e5f7",
+        "summary": "Percakapan 2",
+        "start_time": "2024-02-05T14:30:00Z",
+        "end_time": "2024-02-01T10:15:00Z",
+        "valid": true,
+        "user_id": "87c5a2b3e4b0f1a2c3d4e1fg"
+    },
+    {
+        "chat_id": "65c1a2b3e4b0f1a2c3d4e5f8",
+        "summary": "Percakapan 3",
+        "start_time": "2024-02-05T14:30:00Z",
+        "end_time": "2024-02-01T10:15:00Z",
+        "valid": true,
+        "user_id": "87c5a2b3e4b0f1a2c3d4e1fg"
+    }
+]

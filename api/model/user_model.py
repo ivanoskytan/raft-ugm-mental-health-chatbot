@@ -1,17 +1,25 @@
-from api.model.user_model import User
+from bson import ObjectId
+from datetime import datetime, timezone
 
-class UserRepository:
+class User:
+    def __init__(self, username, email, password, role, _id=None, created_at=None):
+        self._id = _id or ObjectId()
+        self.username = username
+        self.email = email
+        self.password = password
+        self.role = role
+        self.created_at = created_at or datetime.now(timezone.utc)
+
+    def to_dict(self):
+        return {
+            "_id": str(self._id),
+            "username": self.username,
+            "email": self.email,
+            "role": self.role
+        }
 
     @staticmethod
-    def find_by_email(email: str):
-        return User.find_one({"email": email})
-
-    @staticmethod
-    def create_user(username: str, email: str, hashed_password: str, role: str):
-        user = User(username=username, email=email, password=hashed_password, role=role)
-        user.save()
-        return user
-    
-    @staticmethod
-    def get_all_users():
-        return User.find_all()
+    def from_dict(data):
+        if not data:
+            return None
+        return User(**data)

@@ -7,7 +7,6 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 SECRET_KEY = os.getenv("JWT_SECRET", "default-secret-change-this")
 
 class AuthController:
-
     @staticmethod
     @auth_bp.post("/register")
     def register():
@@ -19,14 +18,14 @@ class AuthController:
         role = data.get("role", "user")
 
         if not email or not password:
-            return jsonify({"message": "Email and password are required"}), 400
+            return jsonify({"message": "[AuthController]: Email and password are required"}), 400
 
         success, message = AuthService.register(username, email, password, role)
 
         if not success:
             return jsonify({"message": message}), 409
 
-        return jsonify({"message": message}), 201
+        return jsonify({"message": "[AuthController]: User registered successfully"}), 201
 
     @staticmethod
     @auth_bp.post("/login")
@@ -37,7 +36,7 @@ class AuthController:
         password = data.get("password", "")
 
         if not email or not password:
-            return jsonify({"message": "Email and password are required"}), 400
+            return jsonify({"message": "[AuthController]: Email and password are required"}), 400
 
         data, error = AuthService.login(email, password, SECRET_KEY)
 
@@ -45,6 +44,6 @@ class AuthController:
             return jsonify({"message": error}), 401
 
         return jsonify({
-            "message": "Login successful",
+            "message": "[UserController]: Login successful",
             "data": data
         }), 200

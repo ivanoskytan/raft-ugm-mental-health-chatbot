@@ -4,8 +4,8 @@
         "content": {
           "type": "Opening",
           "section": "",
-          "group_id": 2,
-          "user_answer": "Baik, saya siap. Kamu bisa memanggil saya Rizki.",
+          "group_id": 0,
+          "user_answer": "Baik, saya siap. Kamu bisa memanggil saya Ivan.",
           "next_questions": [
             {
               "survey_question": "Saya merasa tidak berguna",
@@ -63,7 +63,7 @@
       {
         "role": "assistant",
         "content": {
-          "assistant_question": "Boleh ceritakan sedikit tentang bagaimana perasaanmu akhir-akhir ini? Tidak ada jawaban yang benar atau salah, saya hanya ingin memahami apa yang sedang kamu alami."
+          "assistant_question": "Salam kenal, Ivan. Terima kasih sudah bersedia berbagi. Karena kamu sudah siap, boleh kita mulai dengan bercerita sedikit tentang perasaanmu akhir-akhir ini? Saya ingin tahu apakah belakangan ini kamu merasa sedih, tertekan, atau tidak bahagia. Terkadang perasaan seperti itu juga dibarengi dengan rasa tidak berdaya, putus asa, atau pikiran bahwa diri kita gagal dan tidak berguna. Apakah ada dari perasaan-perasaan ini yang sedang kamu alami, Ivan?"
         }
       },
       {
@@ -427,7 +427,7 @@
             }
           ],
           "chain_of_thought": "Jawaban menunjukkan ketidakjelasan atau ketidakhadiran emosi marah dalam pengalaman sehari-hari pengguna. Hal ini mengindikasikan bahwa pengguna mungkin mengalami kesulitan dalam mengenali atau mengekspresikan kemarahan, atau mungkin memang jarang merasakannya. Referensi yang relevan menyatakan bahwa kemarahan adalah emosi yang normal dan umum, muncul dalam berbagai situasi sehari-hari seperti frustrasi kecil saat berbelanja. Dengan latar belakang ini, penting untuk mengeksplorasi apakah pengguna benar-benar jarang merasa marah, atau justru menghindari atau menekan perasaan tersebut karena pengalaman masa lalu atau keyakinan tertentu. Pertanyaan perlu disusun ulang agar lebih empatik dan membantu pengguna menggali pengalaman emosionalnya secara lebih terbuka dan tanpa penilaian.",
-          "assistant_question": ""
+          "assistant_question": "Saya mengerti betapa beratnya beban yang kamu rasakan saat emosi terpendam itu terasa akan meledak karena tekanan lingkungan; dalam kondisi tersebut, apakah kamu kadang memiliki pikiran untuk mengakhiri hidup—meskipun belum ada rencana spesifik—dan apakah kamu merasa masih mampu mengontrol pikiran-pikiran tersebut sepenuhnya?"
         }
       },
       {

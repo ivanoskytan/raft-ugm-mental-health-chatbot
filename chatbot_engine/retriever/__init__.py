@@ -46,7 +46,7 @@ class Retriever:
 
     def run(self, query, aspect, top_k=5):
         if aspect not in self.indices:
-            raise ValueError(f"Aspect {aspect} index not found")
+            raise ValueError(f"[Retriever]: Aspect {aspect} index not found")
 
         self._load_embedding_model()
 
@@ -54,7 +54,7 @@ class Retriever:
         texts = self.texts[aspect]
 
         if index.ntotal == 0:
-            raise RuntimeError(f"FAISS index for {aspect} is empty")
+            raise RuntimeError(f"[Retriever]: FAISS index for {aspect} is empty")
 
         top_k = min(top_k, index.ntotal)
 
@@ -79,7 +79,7 @@ class Retriever:
 
         if not results:
             raise RuntimeError(
-                f"No retrievable chunks for aspect '{aspect}' "
+                f"[Retriever]: No retrievable chunks for aspect '{aspect}' "
                 f"(ntotal={index.ntotal}, top_k={top_k})"
             )
 

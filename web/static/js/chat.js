@@ -7,20 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const newChatBtn = document.getElementById("new-chat-btn");
     const aspectList = document.getElementById("aspect-list");
     const conversationList = document.getElementById("conversation-list");
-    const ALL_SECTIONS = [
-        "Depression",
-        "Anger",
-        "Mania",
-        "Anxiety",
-        "Somatic",
-        "Suicidal",
-        "Psychosis",
-        "Sleep Disturbance",
-        "Memory",
-        "Dissociation",
-        "Substance Use",
-        "Repetitive Thought"
-    ];
     
     const SECTION_COLORS = {
         "Depression": "#3b82f6",
@@ -75,43 +61,30 @@ document.addEventListener("DOMContentLoaded", () => {
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    function renderEmptyProgress() {
-        aspectList.innerHTML = "";
-    
-        const TOTAL = 10;
-    
-        ALL_SECTIONS.forEach(section => {
-            const color = SECTION_COLORS[section] || "#4caf50";
-    
-            const div = document.createElement("div");
-            div.className = "aspect-item";
-    
-            div.innerHTML = `
-                <div class="aspect-title">${section}</div>
-                <div class="progress-count">0 / ${TOTAL} pertanyaan terjawab</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:0%; background:${color}"></div>
-                </div>
-            `;
-    
-            aspectList.appendChild(div);
-        });
-    }
-
     async function loadUserChats() {
-        const res = await apiFetch(`/api/chat/user/${user_id}`);
+        const res = await apiFetch(`/api/chat/user-chats/${user_id}`);
         conversationList.innerHTML = "";
 
-        res.data.array.forEach(chat => {
-            const div = document.createElement("div");
-            div.textContent = `Chat ${chat._id}`;
-            div.onclick = () => loadChat(chat._id);
-            conversationList.appendChild(div);
-        });
+        if (res.data && res.data.length > 0) {
+            res.data.forEach((chat, index) => {
+                const div = document.createElement("div");
+                div.className = "conversation-item";
+                
+                div.textContent = chat.title || `Percakapan ${index + 1}`;
+                
+                div.onclick = () => {
+                    document.querySelectorAll('.conversation-item').forEach(el => el.classList.remove('active'));
+                    div.classList.add('active');
+                    loadChat(chat._id);
+                };
+                
+                conversationList.insertBefore(div, conversationList.firstChild);
+            });
+        }
     }
 
     async function loadChat(chatId) {
-        const res = await apiFetch(`/chat/${chatId}`);
+        const res = await apiFetch(`/api/chat/${chatId}`);
         chatWindow.innerHTML = "";
         currentChatId = chatId;
 
@@ -124,27 +97,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadAspectProgress() {
         if (!currentChatId) {
-            renderEmptyProgress();
             return;
         }
     
-        const res = await apiFetch("/api/chat/simulate-aspect-progress", {
+        const res = await apiFetch("/api/chat/aspect-progress", {
             method: "POST",
             body: JSON.stringify({
-                section: window.currentSection || "Opening",
+                section: window.currentSection,
                 group_id: window.currentGroupId || 0
             }),
         });
     
         aspectList.innerHTML = "";
     
-        const progressMap = {};
         res.data.forEach(item => {
-            progressMap[item.section] = item.percentage;
-        });
-    
-        ALL_SECTIONS.forEach(section => {
-            const percent = progressMap[section] || 0;
+            const section = item.section;
+            const percent = item.percentage;
+            const answered = item.answered;
+            const total = item.total;
             const color = SECTION_COLORS[section] || "#4caf50";
     
             const div = document.createElement("div");
@@ -152,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
             div.innerHTML = `
                 <div class="aspect-title">${section}</div>
+                <div class="progress-count">${answered} / ${total} pertanyaan terjawab</div>
                 <div class="progress-bar">
                     <div class="progress-fill"
                          style="width:${percent}%; background:${color}"></div>
@@ -165,55 +136,138 @@ document.addEventListener("DOMContentLoaded", () => {
     
 
     newChatBtn.addEventListener("click", async () => {
+        const existingItems = conversationList.querySelectorAll('.conversation-item').length;
+        const nextNumber = existingItems + 1;
+        const newTitle = `Percakapan ${nextNumber}`;
+
         const res = await apiFetch(`/api/chat/start-new-chat`, {
             method: "POST",
-            body: JSON.stringify({user_id}),
+            body: JSON.stringify({
+                user_id: user_id,
+                title: newTitle
+            }),
         });
     
         currentChatId = res.data.chat_id;
     
-        window.currentGroupId = 1;
+        const chatDiv = document.createElement("div");
+        chatDiv.className = "conversation-item active";
+        chatDiv.textContent = newTitle;
+        chatDiv.onclick = () => loadChat(currentChatId);
+        
+        conversationList.insertBefore(chatDiv, conversationList.firstChild);
+
+        window.currentGroupId = 0;
         window.currentSection = "Opening";
-    
+        window.currentChatId = res.data.chat_id;
         chatWindow.innerHTML = "";
     
-        addMessage("Halo Rizki Pratama, terima kasih sudah meluangkan waktu untuk berbincang hari ini. Aku ingin memulai dengan beberapa pertanyaan ringan tentang bagaimana perasaanmu belakangan ini. Biasanya kamu lebih nyaman dipanggil siapa?", "bot");
-        
-        renderEmptyProgress();  
+        addMessage(res.data.opening_ai_response, "bot");
     });
+
+    function showLoading() {
+        const wrapper = document.createElement("div");
+        wrapper.className = "chat-message bot loading-msg";
+        wrapper.id = "typing-indicator";
+        
+        const loader = document.createElement("div");
+        loader.className = "message typing-loader";
+        loader.innerHTML = "<span></span><span></span><span></span>";
+
+        wrapper.appendChild(loader);
+        chatWindow.appendChild(wrapper);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function removeLoading() {
+        const indicator = document.getElementById("typing-indicator");
+        if (indicator) indicator.remove();
+    }
+
+    function addChatProcessing() {
+        const overlay = document.createElement("div");
+        overlay.id = "chat-processing-overlay";
+
+        overlay.innerHTML = `
+            <div class="processing-box">
+                <div class="typing-loader">
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="processing-text">
+                    Sedang memproses hasil percakapan...
+                </div>
+            </div>
+        `;
+
+        chatWindow.appendChild(overlay);
+    }
+
+    function removeChatProcessing() {
+        const overlay = document.getElementById("chat-processing-overlay");
+        if (overlay) overlay.remove();
+    }
 
     chatForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+        
         if (!currentChatId) {
             alert("Silakan mulai percakapan baru terlebih dahulu.");
             return;
         }
 
-        const userText = messageInput.value.trim();
-        if (!userText) return;
+        const userAnswer = messageInput.value.trim();
+        if (!userAnswer) return;
 
-        addMessage(userText, "user");
+        addMessage(userAnswer, "user");
         messageInput.value = "";
 
-        const sim = await apiFetch("/api/chat/simulate-conversation", {
-            method: "POST",
-            body: JSON.stringify({
-                group_id: window.currentGroupId || 1,
-                section: window.currentSection || "Opening"
-            }),
-        });
-        
-        const simData = sim.data;
-        
-        window.currentGroupId = simData.next_group_id;
-        window.currentSection = simData.next_section;
-        
-        addMessage(simData.assistant_content, "bot");
-        loadAspectProgress();
+        showLoading();
+
+        setTimeout(async () => {
+            try {
+                const res = await apiFetch("/api/chat/process-user-answer", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        group_id: window.currentGroupId || 0,
+                        section: window.currentSection || "",
+                        user_answer: userAnswer,
+                        chat_id: window.currentChatId,
+                    }),
+                });
+                
+                loadAspectProgress();
+                const resData = res.data;
+                
+                window.currentGroupId = resData.next_group_id;
+                window.currentSection = resData.next_section;
+                
+                removeLoading();
+                addMessage(resData.ai_response, "bot");
+
+                if (window.currentSection === "Ending") {
+                    addChatProcessing();
+
+                    await apiFetch("api/chat/end-chat", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            chat_id: window.currentChatId,
+                            user_id: user_id
+                        })
+                    });
+
+                    removeChatProcessing();
+                }
+                
+            } catch (error) {
+                removeLoading();
+                addMessage("Maaf, terjadi kesalahan koneksi.", "bot");
+                console.log("[Client] - Error: ", error);
+            }
+        }, 2000);
     });
     
-
-    renderEmptyProgress(); 
+    loadUserChats();
+    
 });
 
 

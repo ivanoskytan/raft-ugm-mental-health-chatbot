@@ -5,11 +5,19 @@ from api.repository.user_repository import UserRepository
 class AdminService:
     @staticmethod
     def get_all_valid_chats(user_id: str):
-        return ChatRepository.get_all_by_user(user_id)
+        valid_chats = ChatRepository.get_all_by_user(user_id)
+        if not valid_chats:
+            return [], "[AdminService]: No valid chats found for this user"
+         
+        return valid_chats, None
     
     @staticmethod
     def get_all_users():
-        return UserRepository.get_all()
+        all_users = UserRepository.get_all()
+        if not all_users:
+            return [], "[AdminService]: No users found"
+        
+        return all_users, None
     
     @staticmethod
     def  get_user_assesments(chat_id: str):

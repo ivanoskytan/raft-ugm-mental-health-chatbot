@@ -84,5 +84,5 @@ class Settings:
 
 settings = Settings.load()
 
-client = MongoClient(settings.MONGO_URI)
-db = client[settings.MONGO_DB_NAME]
+mongo_client = MongoClient(settings.MONGO_URI)
+db = mongo_client[settings.MONGO_DB_NAME]
