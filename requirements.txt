@@ -76,7 +76,7 @@ Mako==1.3.9
 MarkupSafe==2.1.5
 marshmallow==3.26.1
 matplotlib==3.10.0
-git+https://github.com/ivanosky144/raft-ugm-mental-health-chatbot.git@e2506c5cf02f0ee84b53568e491b63e47c5ebe25more-itertools==10.2.0
+more-itertools==10.2.0
 mpmath==1.3.0
 msgpack==1.0.8
 multidict==6.6.3
