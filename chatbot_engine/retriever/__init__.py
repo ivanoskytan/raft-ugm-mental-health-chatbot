@@ -3,13 +3,13 @@ import os
 import numpy as np
 import logging
 import pickle
-from sentence_transformers import SentenceTransformer
+from chatbot_engine.llm_client import GPTClient
 
 class Retriever:
     def __init__(self):
         base_dir = os.path.join(os.path.dirname(__file__))
         self.vectorstore_dir = os.path.join(base_dir, "../vectorstore")
-        self.embedding_model = None
+        self.gpt_client = GPTClient()
         self.logger = logging.getLogger("Retriever")
         self.indices = {}
         self.texts = {}
@@ -37,18 +37,16 @@ class Retriever:
                 self.texts[aspect] = data
             else:
                 raise ValueError(f"Unsupported section_data format for aspect '{aspect}'")
-
-    def _load_embedding_model(self):
-        if self.embedding_model is None:
-            self.embedding_model = SentenceTransformer(
-                "intfloat/multilingual-e5-large"
-            )
+    
+    def _embed(self, text: str):
+        return np.array(
+            self.gpt_client.get_embedding(text),
+            dtype="float32"
+        )
 
     def run(self, query, aspect, top_k=5):
         if aspect not in self.indices:
             raise ValueError(f"[Retriever]: Aspect {aspect} index not found")
-
-        self._load_embedding_model()
 
         index = self.indices[aspect]
         texts = self.texts[aspect]
@@ -58,10 +56,7 @@ class Retriever:
 
         top_k = min(top_k, index.ntotal)
 
-        query_vector = self.embedding_model.encode(
-            [query],
-            normalize_embeddings=True
-        ).astype("float32")
+        query_vector = self._embed(query).reshape(1, -1)
 
         distances, indices = index.search(query_vector, top_k)
         max_valid_idx = min(index.ntotal, len(texts)) - 1

@@ -2,15 +2,16 @@ import logging
 import os
 import json
 import faiss
-import tqdm
-from sentence_transformers import SentenceTransformer
+import numpy as np
+from tqdm import tqdm
+from chatbot_engine.llm_client import GPTClient
 
 
 class FAISSIndexer:
     def __init__(self):
         self.chunked_files_dir = "./chunked_files"
         self.vectorstore_dir = "../vectorstore"
-        self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.gpt_client = GPTClient()
 
         os.makedirs(self.vectorstore_dir, exist_ok=True)
 
@@ -20,7 +21,7 @@ class FAISSIndexer:
             if f.endswith(".json")
         ]
 
-        for filename in tqdm.tqdm(json_files, desc="Building FAISS indices"):
+        for filename in tqdm(json_files, desc="Building FAISS indices"):
             aspect = filename.replace(".json", "")
             json_path = os.path.join(self.chunked_files_dir, filename)
 
@@ -30,6 +31,7 @@ class FAISSIndexer:
             texts = self._extract_texts(chunks)
 
             logging.info(f"[{aspect}] Embedding {len(texts)} chunks...")
+
             embeddings = self._embed_chunks(texts)
 
             dim = embeddings.shape[1]
@@ -47,12 +49,9 @@ class FAISSIndexer:
         return [chunk["text"] for chunk in chunks if "text" in chunk]
 
     def _embed_chunks(self, texts):
-        embeddings = self.embedding_model.encode(
-            texts,
-            batch_size=32,
-            show_progress_bar=True,
-            convert_to_numpy=True,
-            normalize_embeddings=True,
-        )
+        vectors = [
+            self.gpt_client.get_embedding(text)
+            for text in texts
+        ]
 
-        return embeddings.astype("float32")
+        return np.array(vectors, dtype="float32")
