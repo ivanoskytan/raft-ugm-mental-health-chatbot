@@ -10,10 +10,10 @@ from web.web import WebModule
 import argparse
 import os
 
-settings = Settings.load()
 
 def create_app():
     app = Flask(__name__)
+    settings = Settings.load()
 
     web = WebModule()
     web.register_pages()
@@ -29,6 +29,8 @@ def create_app():
 app = create_app()
 
 def run_engine_command(args):
+    settings = Settings.load()
+    
     if args.task == "vectorstore-builder":
         builder = VectorStoreBuilder()
         builder.run()
