@@ -35,8 +35,6 @@ class FAISSIndexer:
         if not json_files:
             raise RuntimeError("No chunked JSON files found")
 
-        section_data = {}
-
         pbar = tqdm(json_files, desc="Building FAISS indices")
 
         for filename in pbar:
@@ -59,16 +57,11 @@ class FAISSIndexer:
                 self.logger.warning(f"[{aspect}] No valid texts found, skipping...")
                 continue
 
-            self.logger.info(f"[{aspect}] Embedding {len(texts)} chunks...")
-
             embeddings = self._embed_chunks(texts)
 
             if embeddings.size == 0:
                 self.logger.warning(f"[{aspect}] Empty embeddings, skipping...")
                 continue
-
-            assert len(texts) == embeddings.shape[0], \
-                f"[ERROR] Mismatch in {aspect}: texts={len(texts)}, embeddings={embeddings.shape[0]}"
 
             dim = embeddings.shape[1]
             index = faiss.IndexFlatL2(dim)
@@ -76,39 +69,9 @@ class FAISSIndexer:
 
             faiss.write_index(index, out_path)
 
-            section_data[aspect] = {
-                "texts": texts
-            }
-
-            self.logger.info(
-                f"[{aspect}] Saved index with {index.ntotal} vectors"
-            )
-
+            self.logger.info(f"[{aspect}] Saved index with {index.ntotal} vectors")
             pbar.set_postfix_str(f"Saved: {aspect}")
-
-        section_meta_path = os.path.join(self.vectorstore_dir, "section_data.pkl")
-
-        with open(section_meta_path, "wb") as f:
-            pickle.dump(section_data, f)
-
-        self.logger.info(
-            f"Saved section metadata → {section_meta_path}"
-        )
-
-        print("\nFINAL VALIDATION:")
-        for aspect, data in section_data.items():
-            index_path = os.path.join(self.vectorstore_dir, f"{aspect}.faiss")
-            index = faiss.read_index(index_path)
-
-            print(
-                f"{aspect}: index={index.ntotal}, texts={len(data['texts'])}"
-            )
-
-            assert index.ntotal == len(data["texts"]), \
-                f"[FATAL] Mismatch in {aspect}"
-
-        print("\nAll indices built successfully and are consistent!")
-
+            
     def _extract_texts(self, chunks):
         if not chunks:
             return []

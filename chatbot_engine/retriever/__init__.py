@@ -12,44 +12,48 @@ settings = Settings.load()
 
 class Retriever:
     def __init__(self):
-        base_dir = os.path.join(os.path.dirname(__file__))
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+
         self.vectorstore_dir = os.path.join(base_dir, "../vectorstore")
-        self.gpt_client = GPTClient(api_key=settings.OPENAI_API_KEY, model="text-embedding-3-small")
+        self.chunked_dir = os.path.join(base_dir, "../vectorstore_builder/data/chunked_files")
+
+        self.gpt_client = GPTClient(
+            api_key=settings.OPENAI_API_KEY,
+            model="text-embedding-3-small"
+        )
+
         self.logger = logging.getLogger("Retriever")
+
         self.indices = {}
         self.texts = {}
+
         self._load_all()
 
     def _load_all(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        chunked_dir = os.path.join(base_dir, "../", "vectorstore_builder", "data", "chunked_files")
-
         for file in os.listdir(self.vectorstore_dir):
             if not file.endswith(".faiss"):
                 continue
 
             aspect = file.replace(".faiss", "")
             index_path = os.path.join(self.vectorstore_dir, file)
-            json_path = os.path.join(chunked_dir, f"{aspect}.json")
+            json_path = os.path.join(self.chunked_dir, f"{aspect}.json")
 
+            # 🔹 Load FAISS
             try:
                 index = faiss.read_index(index_path)
                 self.indices[aspect] = index
             except Exception as e:
-                self.logger.error(f"[{aspect}] Failed to load FAISS: {e}")
+                self.logger.error(f"[{aspect}] Failed loading FAISS: {e}")
                 continue
 
+            # 🔹 Load TEXTS from JSON
             if not os.path.exists(json_path):
-                self.logger.warning(f"[{aspect}] Missing chunk file, skipping...")
+                self.logger.warning(f"[{aspect}] Missing JSON chunks")
                 continue
 
             try:
                 with open(json_path, "r", encoding="utf-8") as f:
                     chunks = json.load(f)
-
-                if not chunks:
-                    self.logger.warning(f"[{aspect}] Empty chunk file")
-                    continue
 
                 if isinstance(chunks[0], str):
                     texts = chunks
@@ -62,15 +66,14 @@ class Retriever:
 
                 if len(texts) != index.ntotal:
                     self.logger.warning(
-                        f"[{aspect}] Mismatch → index={index.ntotal}, texts={len(texts)}"
+                        f"[{aspect}] mismatch index={index.ntotal}, texts={len(texts)}"
                     )
                     continue
 
                 self.texts[aspect] = texts
 
             except Exception as e:
-                self.logger.error(f"[{aspect}] Failed loading chunks: {e}")
-                continue
+                self.logger.error(f"[{aspect}] Failed loading JSON: {e}")
 
         print("Loaded aspects:", list(self.indices.keys()))
     

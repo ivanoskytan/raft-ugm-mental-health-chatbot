@@ -26,6 +26,8 @@ class Settings:
     FINE_TUNED_MODEL: str
 
     JWT_TOKEN: str
+    ENV: str
+    VECTORSTORE_URL: str
 
     @classmethod
     def load(cls):
@@ -45,6 +47,8 @@ class Settings:
         fine_tuned_model = os.getenv("FINE_TUNED_MODEL")
 
         jwt_token = os.getenv("JWT_TOKEN")
+        env = os.getenv("ENV")
+        vectorstore_url = os.getenv("VECTORSTORE_URL")
 
         missing = [
             name for name, value in {
@@ -61,6 +65,8 @@ class Settings:
                 "OPENAI_API_KEY": openai_api_key,
                 "FINE_TUNED_MODEL": fine_tuned_model,
                 "JWT_TOKEN": jwt_token,
+                "ENV": env,
+                "VECTORSTORE_URL": vectorstore_url
             }.items()
             if value is None or value == ""
         ]
@@ -82,6 +88,8 @@ class Settings:
             OPENAI_API_KEY=openai_api_key,
             FINE_TUNED_MODEL=fine_tuned_model,
             JWT_TOKEN=jwt_token,
+            ENV=env,
+            VECTORSTORE_URL=vectorstore_url,
         )
 
 
