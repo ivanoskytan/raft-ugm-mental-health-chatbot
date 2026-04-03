@@ -134,11 +134,13 @@ STRICT RULES:
                             next_questions = group.get("questions", [])
 
         set_of_documents = []
+        print("ENTER RETRIEVER")
         if section != "Opening":
             set_of_documents = self.retriever.run(
                 query=user_answer,
                 aspect=section,
             )
+            print("Set of documents: ", set_of_documents)
 
         content_payload = {
             "type": conversation_type,
