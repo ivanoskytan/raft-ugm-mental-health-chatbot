@@ -16,7 +16,7 @@ class VectorStoreBuilder:
         logging.info("-- Chunking Text Files")
         self.data_chunker.chunk_all_files()
 
-        logging.info("-- Building FAISS Index")
+        logging.info("-- Building Vector Index")
         self.vector_indexer.build_index()
 
         logging.info("-- Vector Store Building Process is completed")
