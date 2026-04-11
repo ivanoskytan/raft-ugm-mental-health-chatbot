@@ -23,7 +23,7 @@ Scoring system =           {
               "description": "Selalu"
           }
 
-User scores = [3, 4, 2, 5]
+User scores = [3, 4, 2, 5, 3]
 Actual_score = 3 + 4 + 2 + 5 = 14
 Min_possible = 1 × 4 = 4
 Max_possible = 5 × 4 = 20
