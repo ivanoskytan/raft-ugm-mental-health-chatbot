@@ -28,6 +28,7 @@ class Settings:
     JWT_TOKEN: str
     ENV: str
     VECTORSTORE_URL: str
+    VECTORSTORE_KEY: str
 
     @classmethod
     def load(cls):
@@ -49,6 +50,7 @@ class Settings:
         jwt_token = os.getenv("JWT_TOKEN")
         env = os.getenv("ENV")
         vectorstore_url = os.getenv("VECTORSTORE_URL")
+        vectorstore_key = os.getenv("VECTORSTORE_KEY")
 
         missing = [
             name for name, value in {
@@ -66,7 +68,8 @@ class Settings:
                 "FINE_TUNED_MODEL": fine_tuned_model,
                 "JWT_TOKEN": jwt_token,
                 "ENV": env,
-                "VECTORSTORE_URL": vectorstore_url
+                "VECTORSTORE_URL": vectorstore_url,
+                "VECTORSTORE_KEY": vectorstore_key
             }.items()
             if value is None or value == ""
         ]
@@ -90,6 +93,7 @@ class Settings:
             JWT_TOKEN=jwt_token,
             ENV=env,
             VECTORSTORE_URL=vectorstore_url,
+            VECTORSTORE_KEY=vectorstore_key,
         )
 
 

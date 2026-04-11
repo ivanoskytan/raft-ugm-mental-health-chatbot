@@ -1,13 +1,13 @@
 import logging
 from .ocr_converter import OCRConverter
 from .data_chunker import DataChunker
-from .faiss_indexer import FAISSIndexer
+from .vector_indexer import VectorIndexer
 
 class VectorStoreBuilder:
     def __init__(self):
         self.ocr_converter = OCRConverter()
         self.data_chunker = DataChunker()
-        self.faiss_indexer = FAISSIndexer()
+        self.vector_indexer = VectorIndexer()
 
     def run(self):
         logging.info("-- Running OCR Conversion")
@@ -17,6 +17,6 @@ class VectorStoreBuilder:
         self.data_chunker.chunk_all_files()
 
         logging.info("-- Building FAISS Index")
-        self.faiss_indexer.build_index()
+        self.vector_indexer.build_index()
 
         logging.info("-- Vector Store Building Process is completed")

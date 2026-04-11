@@ -31,11 +31,17 @@ class GPTClient:
         
     def get_embedding(self, text):
         try:
+            if isinstance(text, str):
+                text = [text]
+
             response = self.client.embeddings.create(
                 model=self.model,
                 input=text
             )
-            return response.data[0].embedding
+
+            embeddings = [item.embedding for item in response.data]
+            
+            return embeddings
 
         except Exception as err:
             logging.error(f"GPTClient: Error generating embedding: {err}")

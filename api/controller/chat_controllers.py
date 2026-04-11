@@ -122,7 +122,6 @@ class ChatController:
 
     @chat_bp.post("/process-user-answer")
     def process_user_answer():
-        print("=== ENTER process-user-answer ===")
         data = request.get_json()
         required_fields = ["group_id", "section", "user_answer", "chat_id"]
         for field in required_fields:
@@ -132,7 +131,6 @@ class ChatController:
                 }), 400
             
         try:
-            print("Section 1 of process user answer")
             user_query = {
                 "section": data["section"],
                 "group_id": data["group_id"],
@@ -141,10 +139,6 @@ class ChatController:
             }
                     
             engine_response = chatbot_engine.generate_response(user_query)
-
-            print("Engine response: ", engine_response)
-
-            print("Raw section: ", data["section"])
 
             is_a_survey = data["section"] not in ["Opening", "Ending"] 
             
@@ -158,12 +152,8 @@ class ChatController:
                 ai_response=engine_response["model"].get("assistant_question", ""),
             )
 
-            print("Chat item id: ", chat_item._id)
-            print("Is a survey: ", is_a_survey)
-
             if is_a_survey:
                 scores = engine_response["model"].get("scores") or []
-                print("Scores: ", scores)
                 for score_item in scores:
                     new_question_score, message = ChatService.add_question_score(
                         chat_item_id=chat_item._id,
@@ -172,10 +162,6 @@ class ChatController:
                         score=score_item.get("score"),
                         original_question=score_item.get("survey_question"),
                     )
-
-                    print("Question score: ", new_question_score)
-                    print("Messsage: ", message)
-
                     if not new_question_score:
                         return jsonify({
                             "message": message
@@ -219,16 +205,13 @@ class ChatController:
                     "error": message
                 }), 404
             
-            print("Chat items --: ", chat_items)
             assessment_map = []
             for item in chat_items:
                 if item.type == "Opening":
                     continue
 
                 question_scores_list = []
-                print("Chat item id: ", item._id, " with type: ", item.type)
                 question_scores, message = ChatService.get_question_scores(chat_item_id=item._id)
-                print("Question scores: ", question_scores)
                 if message:
                     return jsonify({
                         "error": message
@@ -251,11 +234,8 @@ class ChatController:
                         "questions": question_scores_list
                     })
 
-            print("Assessment map: ", assessment_map)
-
             is_file_created, file_path = FileService.save_into_excel(assessment_map, chat_id)
             if is_file_created:
-                print("File created")
                 updated_chat, message = ChatService.update_chat(chat_id, {
                     "valid": True,
                     "excel_file_path": file_path
@@ -275,11 +255,8 @@ class ChatController:
                     "error": message
                 }), 404
             
-            print("Error - user: ", user_data)
-
             is_email_sent, message = EmailService.send_gmail(file_path, user_data.email)
             if not is_email_sent:
-                print("Error-email")
                 return jsonify({
                     "error": message
                 }), 500

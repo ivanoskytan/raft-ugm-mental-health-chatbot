@@ -70,8 +70,6 @@ class ChatService:
                 chat_item_id
             )
 
-            print("ChatService - question score - chat item id: ", chat_item_id)
-
             if not question_scores:
                 return None, "[ChatService]: Question scores not found"
             
