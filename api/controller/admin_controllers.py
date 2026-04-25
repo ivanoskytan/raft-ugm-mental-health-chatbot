@@ -71,3 +71,47 @@ class AdminController:
         
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+        
+    @staticmethod
+    @admin_bp.post("/real-time-assessment-results")
+    def get_real_time_assessment_results():
+        data = request.get_json()
+
+        aspect = data.get("aspect")
+        from_date = data.get("from_date")
+        to_date = data.get("to_date")
+
+        if aspect not in ["Depression", "Anger", "Mania", "Anxiety", "Somatic", "Suicidal", "Psychosis", "Sleep Disturbance", "Memory", "Dissociation", "Substance Use"]:
+            return jsonify({"error": "Invalid aspect provided."}), 400
+
+        if not from_date or not to_date:
+            return jsonify({"error": "Both from_date and to_date are required."}), 400
+        
+        try:
+            results = AdminService.get_real_time_assessment_results(aspect, from_date, to_date)
+            results_list = [result.to_dict() for result in results]
+            return jsonify({"data": results_list}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500  
+        
+    @staticmethod
+    @admin_bp.post("/top-scored-users")
+    def get_top_scored_users():
+        data = request.get_json()
+
+        aspect = data.get("aspect")
+        from_date = data.get("from_date")
+        to_date = data.get("to_date")
+        top_k = data.get("top_k")
+
+        if aspect not in ["Depression", "Anger", "Mania", "Anxiety", "Somatic", "Suicidal", "Psychosis", "Sleep Disturbance", "Memory", "Dissociation", "Substance Use"]:
+            return jsonify({"error": "Invalid aspect provided."}), 400
+
+        if not from_date or not to_date:
+            return jsonify({"error": "Both from_date and to_date are required."}), 400
+        
+        try:
+            results = AdminService.get_top_scored_users(aspect, from_date, to_date, top_k)
+            return jsonify({"data": results}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500  

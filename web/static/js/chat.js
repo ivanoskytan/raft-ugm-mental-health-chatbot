@@ -26,19 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentChatId = null;
     const user_id = localStorage.getItem("user_id") || null;
-        
-    toggleBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("hidden");
-
-        if (sidebar.classList.contains("hidden")) {
-            toggleBtn.textContent = "⮜";
-            toggleBtn.style.right = "40px";
-        }
-        else {
-            toggleBtn.textContent = "⮞";
-            toggleBtn.style.right = "300px";
-        }
-    });
+    
 
     async function apiFetch(url, options = {}) {
         const res = await fetch(url, {
@@ -92,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (item.user_answer) addMessage(item.user_answer, "user");
             if (item.ai_response) addMessage(item.ai_response, "bot");
         });
-        loadAspectProgress();
+        // loadAspectProgress();
     }
 
     async function loadAspectProgress() {
@@ -235,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }),
                 });
                 
-                loadAspectProgress();
+                // loadAspectProgress();
                 const resData = res.data;
                 
                 window.currentGroupId = resData.next_group_id;

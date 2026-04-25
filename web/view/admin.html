@@ -2,41 +2,111 @@
 {% block body %}
 
 <link rel="stylesheet" href="{{ url_for('web.static', filename='css/admin.css') }}">
-
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script defer src="{{ url_for('web.static', filename='js/admin.js') }}"></script>
 
-<div class="chat-page">
+<div class="admin-container">
 
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Admin Panel</h2>
-            <button onclick="location.href='/logout'">Logout</button>
+            <button class="logout-btn" onclick="location.href='/logout'">Logout</button>
         </div>
 
-        <input id="user-search" placeholder="Search user..." style="margin:10px; padding:8px; width:90%; border-radius:8px;" />
-        <div class="conversation-list"></div>
+        <div class="menu-list">
+            <div class="menu-item active" id="menu-analisis">
+                <strong>Dashboard Analisis</strong>
+            </div>
+            <div class="menu-item" id="menu-daftar">
+                <strong>Daftar Pengguna</strong>
+            </div>
+        </div>
     </div>
 
-    <div class="chat-area">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2>Hasil</h2>
+    <div class="dashboard-main">
+        
+        <div id="view-analisis" class="content-view">
+            <div class="view-header">
+                <h2>Dashboard Analisis</h2>
+            </div>
+            <div class="card">
+                <label for="aspect-selector" style="display:block; margin-bottom:10px;">Pilih Aspek Psikologis:</label>
+                <select id="aspect-selector" class="admin-input">
+                    <option value="Depression">Depression</option>
+                    <option value="Anger">Anger</option>
+                    <option value="Mania">Mania</option>
+                    <option value="Anxiety">Anxiety</option>
+                    <option value="Somatic">Somatic</option>
+                    <option value="Suicidal">Suicidal</option>
+                    <option value="Psychosis">Psychosis</option>
+                    <option value="Sleep Disturbance">Sleep Disturbance</option>
+                    <option value="Memory">Memory</option>
+                    <option value="Dissociation">Dissociation</option>
+                    <option value="Substance Use">Substance Use</option>
+                    <option value="Repetitive Thoughts">Repetitive Thoughts</option>
+                    <option value="Disorder">Disorder</option>
+                </select>
+            </div>
+            <div class="analysis-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <div class="card">
+                    <h3>Distribusi Skor Rata-rata</h3>
+                    <canvas id="aspectChart" style="width: 100%; height: 300px;"></canvas>
+                </div>
+        
+                <div class="card">
+                    <h3>Top 5 User (Skor Tertinggi)</h3>
+                    <table class="admin-table slim">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Skor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top-users-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div id="user-summary" class="user-summary">
-            <h3>Kondisi Terakhir Pengguna (Ringkasan)</h3>
-            <p id="summary-text">
-                Pengguna menunjukkan tingkat depresi sedang, kecemasan ringan, dan gangguan tidur cukup sering.
-                Tidak ditemukan indikasi psikosis atau penyalahgunaan zat. Direkomendasikan pemantauan lanjutan
-                serta dukungan emosional rutin.
-            </p>
+        <div id="view-daftar-pengguna" class="content-view" style="display: none;">
+            <div class="view-header">
+                <h2>Daftar Pengguna</h2>
+            </div>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Pengguna</th>
+                            <th>Email</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        </tbody>
+                </table>
+            </div>
         </div>
 
-        <div id="user-assessments" class="user-assessments">
-            <h3>Histori Asesmen Pengguna</h3>
-        </div>
+        <div id="view-user-detail" class="content-view" style="display: none;">
+            <div class="view-header">
+                <button class="back-btn" id="btn-back-to-list">← Kembali ke Daftar</button>
+                <h2 id="detail-title">Hasil — Nama Pengguna</h2>
+            </div>
+
+            <div class="card user-summary">
+                <h3>Kondisi Terakhir Pengguna (Ringkasan)</h3>
+                <p id="summary-text">Memuat ringkasan kondisi...</p>
+            </div>
+
+            <div class="card">
+                <h3>Histori Asesmen Pengguna</h3>
+                <div id="user-assessments-list">
+                    </div>
+            </div>
         </div>
 
+    </div>
 </div>
 
 {% endblock %}

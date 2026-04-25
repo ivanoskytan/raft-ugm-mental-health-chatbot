@@ -1,6 +1,7 @@
 from datetime import datetime
 from api.repository.chat_repository import ChatRepository
 from api.repository.user_repository import UserRepository
+from api.repository.question_score_repository import QuestionScoreRepository
 
 class AdminService:
     @staticmethod
@@ -20,5 +21,13 @@ class AdminService:
         return all_users, None
     
     @staticmethod
-    def  get_user_assesments(chat_id: str):
+    def get_user_assesments(chat_id: str):
         return ChatRepository.get_by_id(chat_id)
+    
+    @staticmethod
+    def get_real_time_assessment_results(aspect, start_time: datetime, end_time: datetime):
+        return QuestionScoreRepository.get_average_scores_by_date(aspect, start_time, end_time)
+    
+    @staticmethod
+    def get_top_scored_users(aspect, start_time: datetime, end_time: datetime, top_k: int):
+        return QuestionScoreRepository.get_top_scored_users(aspect, start_time, end_time, top_k)
