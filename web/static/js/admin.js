@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const userTableBody = document.getElementById("user-table-body");
     const btnBackToList = document.getElementById("btn-back-to-list");
     const aspectSelector = document.getElementById("aspect-selector");
+    const fromDateInput = document.getElementById('fromDate');
+    const toDateInput = document.getElementById('toDate');
 
     // --- NAVIGATION LOGIC ---
 
@@ -36,22 +38,46 @@ document.addEventListener("DOMContentLoaded", () => {
     btnBackToList.addEventListener("click", () => switchView('daftar'));
 
     let aspectChart = null;
-    const initAnalysis = () => {
-        const aspect = aspectSelector.value;
+
+    const setDefaultValues = () => {
         const now = new Date();
         const lastMonth = new Date();
-        lastMonth.setMonth(now.getMonth() - 1);
+
+        lastMonth.setMonth(now.getMonth()-1);
+        const formatDate = (date) => date.toISOString().split('T')[0];
+
+        fromDateInput.value = formatDate(lastMonth);
+        toDateInput.value = formatDate(now);
+
+        aspectSelector.value = "Depression";
+    };
+
+    const initAnalysis = () => {
+        const aspect = aspectSelector.value;
+        const fromDateVal = fromDateInput.value;
+        const toDateVal = toDateInput.value;
+
+        const start = new Date(fromDateVal);
+        start.setUTCHours(0, 0, 0, 0);
+
+        const end = new Date(toDateVal);
+        end.setUTCHours(23, 59, 59, 999);
 
         const payload = {
             aspect: aspect,
-            from_date: lastMonth.toISOString(),
-            to_date: now.toISOString(),
+            from_date: start.toISOString(),
+            to_date: end.toISOString(),
             top_k: 5
         };
 
         fetchChartData(payload);
         fetchTopUsers(payload);
     };
+
+    aspectSelector.addEventListener("change", initAnalysis);
+    document.getElementById("filterBtn").addEventListener('click', initAnalysis);
+    setDefaultValues();
+    initAnalysis();
 
     // --- DATA FETCHING ---
 
@@ -72,11 +98,20 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-
-        const labels = res.data.map(item => `Skor ${item._id}`);
-        const counts = res.data.map(item => item.user_count);
-
-        renderChart(labels, counts);
+    
+        if (res.data && res.data.results) {
+            const chartPoints = res.data.results.map(item => ({
+                x: item._id, 
+                y: item.user_count
+            })).sort((a, b) => a.x - b.x);
+    
+            const distMap = {};
+            res.data.score_distributions.forEach(d => {
+                distMap[d.score] = d.description;
+            });
+    
+            renderChart(chartPoints, distMap);
+        }
     }
 
     // 2. Render Top Users by Aspect Highest Avg Score
@@ -90,13 +125,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const tbody = document.getElementById("top-users-body");
         tbody.innerHTML = "";
 
-        res.data.forEach(user => {
-            const row = `<tr>
-                <td>${user.username}</td>
-                <td style="color:#ef4444; font-weight:bold;">${user.average_score.toFixed(1)}</td>
-            </tr>`;
-            tbody.innerHTML += row;
-        });
+        if (res.data && res.data.length > 0) {
+            console.log("Res data: ", res)
+            res.data.forEach(user => {
+                const row = document.createElement("tr");
+                                
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-weight: bold;">${user.username}</span>
+                            <span style="font-size: 0.8rem; color: #9ca3af;">${user.email}</span>
+                        </div>
+                    </td>
+                    <td style="text-align: right; font-weight: 800; color: #2f60f5;">
+                        ${user.average_score}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        } else {
+            tbody.innerHTML = "<tr><td colspan='2' style='text-align:center;'>No data found</td></tr>";
+        }
     }
 
     // 3. Render Table of Users
@@ -119,28 +168,64 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function renderChart(labels, data) {
+    function renderChart(chartPoints, distMap) {
         const ctx = document.getElementById('aspectChart').getContext('2d');
-        
         if (aspectChart) { aspectChart.destroy(); }
-
+    
         aspectChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'line', 
             data: {
-                labels: labels,
                 datasets: [{
                     label: 'Jumlah Pengguna',
-                    data: data,
-                    backgroundColor: '#2f60f5',
-                    borderRadius: 5
+                    data: chartPoints, // [{x: 2.0, y: 1}, {x: 2.67, y: 1}]
+                    borderColor: '#2f60f5',
+                    backgroundColor: 'rgba(47, 96, 245, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#2f60f5'
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
+                maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#1e222b' } },
-                    x: { grid: { display: false } }
+                    x: {
+                        type: 'linear',
+                        min: 1,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#9ca3af',
+                            padding: 10, // Gives space between the line and the labels
+                            callback: function(value) {
+                                const description = distMap[value];
+                                if (description) {
+                                    return [value, description];
+                                }
+                                return value;
+                            }
+                        },
+                        grid: { 
+                            display: true, 
+                            color: 'rgba(255, 255, 255, 0.05)', // Subtle vertical lines at whole numbers
+                            drawOnChartArea: true 
+                        }
+                    },
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { precision: 0, color: '#9ca3af' },
+                        grid: { color: '#1e222b' }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => `Skor: ${items[0].parsed.x.toFixed(2)}`,
+                            label: (item) => `Jumlah: ${item.parsed.y} Pengguna`
+                        }
+                    },
+                    legend: { display: false }
                 }
             }
         });

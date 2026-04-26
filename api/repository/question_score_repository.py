@@ -1,6 +1,7 @@
 from api.model.question_score_model import QuestionScore
 from config.config import db
 from bson import ObjectId
+from datetime import datetime
 
 question_score_collection = db['question_scores']
 
@@ -47,7 +48,13 @@ class QuestionScoreRepository:
     
     @staticmethod
     def get_average_scores_by_date(aspect, start_time, end_time):
+        if isinstance(start_time, str):
+            start_time = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
+        if isinstance(end_time, str):
+            end_time = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
+
         pipeline = [
+            # Stage 1: Filter QuestionScores by aspect and date
             {
                 "$match": {
                     "section": aspect,
@@ -57,6 +64,7 @@ class QuestionScoreRepository:
                     }
                 }
             },
+            # Stage 2: Join with ChatItems
             {
                 "$lookup": {
                     "from": "chat_items",
@@ -65,9 +73,8 @@ class QuestionScoreRepository:
                     "as": "item"
                 }
             },
-            {
-                "$unwind": "$item"
-            },
+            {"$unwind": "$item"},
+            # Stage 3: Join with Chats to get user_id
             {
                 "$lookup": {
                     "from": "chats",
@@ -76,9 +83,8 @@ class QuestionScoreRepository:
                     "as": "chat"
                 }
             },
-            {
-                "$unwind": "$chat"
-            },
+            {"$unwind": "$chat"},
+            # Stage 4: Group by User first to get their personal average
             {
                 "$group": {
                     "_id": "$chat.user_id",
@@ -87,10 +93,11 @@ class QuestionScoreRepository:
                     }
                 }
             },
+            # Stage 5: Round the average and group by score to get user counts
             {
                 "$project": {
                     "rounded_score": {
-                        "$round": ["$user_avg", 0]
+                        "$round": ["$user_avg", 2]
                     }
                 }
             },
@@ -102,6 +109,7 @@ class QuestionScoreRepository:
                     }
                 }
             },
+            # Stage 6: Sort by the score (1, 2, 3, 4, 5...)
             {
                 "$sort": {
                     "_id": 1
@@ -109,10 +117,17 @@ class QuestionScoreRepository:
             }
         ]
 
-        return list(question_score_collection.aggregate(pipeline))
+        return list(db.question_scores.aggregate(pipeline))
     
     @staticmethod
     def get_top_scored_users(aspect, start_time, end_time, top_k):
+        if isinstance(start_time, str):
+            start_time = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
+        if isinstance(end_time, str):
+            end_time = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
+        
+        top_k = int(top_k)
+
         pipeline = [
             {"$match": {"section": aspect, "created_at": {"$gte": start_time, "$lte": end_time}}},
             {"$lookup": {"from": "chat_items", "localField": "chat_item_id", "foreignField": "_id", "as": "item"}},
@@ -138,10 +153,12 @@ class QuestionScoreRepository:
             {"$limit": top_k},
             {
                 "$project": {
+                    "_id": { "$toString": "$_id" }, 
                     "username": "$user_details.username",
                     "email": "$user_details.email",
-                    "average_score": 1
+                    "average_score": { "$round": ["$average_score", 2] } 
                 }
             }
         ]
+
         return list(question_score_collection.aggregate(pipeline))

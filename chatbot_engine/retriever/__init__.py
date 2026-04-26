@@ -3,6 +3,7 @@ import logging
 from supabase import create_client, Client
 from chatbot_engine.llm_client import GPTClient
 from config.config import Settings
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 settings = Settings.load()
 
@@ -18,7 +19,7 @@ class Retriever:
             settings.VECTORSTORE_KEY,
         )
 
-        self.supabase.postgrest.timeout = 60
+        self.supabase.postgrest.timeout = 45
 
         self.logger = logging.getLogger("Retriever")
 
@@ -29,7 +30,12 @@ class Retriever:
         except Exception as e:
             self.logger.error(f"Embedding failed: {e}")
             raise
-
+    
+    @retry(
+            stop=stop_after_attempt(3),
+            wait=wait_exponential(multiplier=1, min=4, max=10),
+            reraise=True
+    )
     def run(self, query, aspect, top_k=5):
         self.logger.info(f"[Retriever] Querying aspect: {aspect}")
 

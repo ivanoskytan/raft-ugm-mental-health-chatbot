@@ -10,7 +10,7 @@ class ChatItemRepository:
     def create(type, chat_id, ai_response, user_answer, section):
         chat_item = ChatItem(
             type=type,
-            chat_id=str(chat_id),
+            chat_id=ObjectId(chat_id),
             ai_response=ai_response,
             section=section,
             user_answer=user_answer,
@@ -35,7 +35,7 @@ class ChatItemRepository:
 
     @staticmethod
     def get_all_by_chat(chat_id: ObjectId):
-        cursor = chat_item_collection.find({"chat_id": str(chat_id)}).sort("created_at", 1)
+        cursor = chat_item_collection.find({"chat_id": ObjectId(chat_id)}).sort("created_at", 1)
         return [ChatItem.from_dict(item) for item in cursor]
 
     @staticmethod

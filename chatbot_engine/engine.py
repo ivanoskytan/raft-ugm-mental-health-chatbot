@@ -45,7 +45,7 @@ If type is "Opening":
 - responds naturally to the user_answer,
 - addresses the user by name,
 - includes brief empathetic advice informed by the selected document,
-- asks every single questions in next_questions within a single conversational message. 
+- wrap every single questions in next_questions into one single comprehensive question within the message.
 Return ONLY:
 {
 "assistant_question": "<empathetic response to the user_answer that includes brief advice informed by the most relevant document, and naturally includes every question in the next_questions>"
@@ -61,7 +61,7 @@ If type is "Survey":
 - responds naturally to the user_answer,
 - addresses the user by name,
 - includes brief empathetic advice informed by the selected document,
-- asks every single questions in next_questions within a single conversational message.
+- wrap every single questions in next_questions into one single comprehensive question within the message.
 
 If section is "Ending":
 1. Select the most appropriate document from set_of_documents.

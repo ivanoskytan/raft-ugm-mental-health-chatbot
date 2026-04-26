@@ -153,3 +153,17 @@ body {
 .analysis-grid {
     margin-top: 1rem;
 }
+
+.date-input {
+    background: #1e222b;
+    border: 1px solid #3f4451;
+    color: white;
+    padding: 6px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Makes the calendar icon white */
+    cursor: pointer;
+}

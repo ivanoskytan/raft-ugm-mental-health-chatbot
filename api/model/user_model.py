@@ -11,19 +11,15 @@ class User:
         self.created_at = created_at or datetime.now(timezone.utc)
 
     def to_dict(self):
-        return {
-            "_id": str(self._id),
-            "username": self.username,
-            "email": self.email,
-            "role": self.role
-        }
+        return vars(self)
 
     @staticmethod
     def from_dict(data):
         if not data:
             return None
+        if "_id" in data and isinstance(data["_id"], str):
+            data["_id"] = ObjectId(data["_id"])
         return User(**data)
-
 
 
         

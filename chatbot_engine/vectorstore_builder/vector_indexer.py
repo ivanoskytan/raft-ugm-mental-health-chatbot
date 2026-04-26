@@ -96,6 +96,78 @@ class VectorIndexer:
                 f"into {max(r['group_id'] for r in records) + 1} groups"
             )
 
+    # def build_index(self, force=False):
+    #     # Specific logic to only target the Anxiety aspect
+    #     target_filename = "Anxiety.json"
+        
+    #     # Check if the specific file exists in the directory
+    #     target_path = os.path.join(self.chunked_files_dir, target_filename)
+    #     if not os.path.exists(target_path):
+    #         self.logger.error(f"Target file not found: {target_path}")
+    #         raise RuntimeError(f"Could not find {target_filename} in {self.chunked_files_dir}")
+
+    #     # Limit our processing list to just this one file
+    #     json_files = [target_filename]
+
+    #     pbar = tqdm(json_files, desc="Processing Aspects")
+
+    #     for filename in pbar:
+    #         aspect = filename.replace(".json", "")
+    #         json_path = os.path.join(self.chunked_files_dir, filename)
+
+    #         pbar.set_postfix_str(f"Reading: {aspect}")
+
+    #         if not force:
+    #             existing = self.supabase.table("documents") \
+    #                 .select("id") \
+    #                 .eq("aspect", aspect) \
+    #                 .limit(1) \
+    #                 .execute()
+
+    #             if existing.data:
+    #                 self.logger.info(f"[{aspect}] already indexed, skipping...")
+    #                 continue
+
+    #         with open(json_path, "r", encoding="utf-8") as f:
+    #             chunks = json.load(f)
+
+    #         raw_texts = self._extract_texts(chunks)
+    #         texts = [self._clean_text(t) for t in raw_texts if t and t.strip()]
+
+    #         if not texts:
+    #             continue
+
+    #         embeddings = self._embed_in_batches(texts, batch_size=20)
+
+    #         if not embeddings:
+    #             self.logger.warning(f"[{aspect}] No embeddings generated")
+    #             continue
+
+    #         records = []
+    #         for idx, (text, emb) in enumerate(zip(texts, embeddings)):
+    #             group_id = idx // self.group_size
+
+    #             records.append({
+    #                 "aspect": aspect,
+    #                 "group_id": group_id,
+    #                 "content": text,
+    #                 "embedding": emb
+    #             })
+
+    #         upload_batch_size = 100
+
+    #         for i in range(0, len(records), upload_batch_size):
+    #             batch = records[i:i + upload_batch_size]
+    #             try:
+    #                 self.supabase.table("documents").insert(batch).execute()
+    #             except Exception as e:
+    #                 self.logger.error(f"[{aspect}] DB Insert failed: {e}")
+
+    #         self.logger.info(
+    #             f"[{aspect}] Uploaded {len(records)} chunks "
+    #             f"into {max(r['group_id'] for r in records) + 1} groups"
+    #         )
+            
     def _embed_in_batches(self, texts, batch_size=20):
         all_vectors = []
         for i in range(0, len(texts), batch_size):

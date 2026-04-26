@@ -1,6 +1,7 @@
 from api.service.admin_service import AdminService
 from flask import Blueprint, request, jsonify, send_file, abort
 import os
+import json
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -87,10 +88,24 @@ class AdminController:
         if not from_date or not to_date:
             return jsonify({"error": "Both from_date and to_date are required."}), 400
         
+        BASE_DIR = os.path.join(os.path.dirname(__file__), "..", "..")
+        grouped_questions_dir = os.path.join(BASE_DIR, "external_data", "grouped_mental_health_screening.json")
+        
+        with open(grouped_questions_dir, "r", encoding="utf-8") as f:
+            grouped_questions = json.load(f)
+        
+        for item in grouped_questions:
+            if item["section"] == aspect:
+                scoring_system = item.get("scoring_system", [])
+                break
+
         try:
             results = AdminService.get_real_time_assessment_results(aspect, from_date, to_date)
-            results_list = [result.to_dict() for result in results]
-            return jsonify({"data": results_list}), 200
+            data = {
+                "results": results,
+                "score_distributions": scoring_system
+            }
+            return jsonify({"data": data}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500  
         
