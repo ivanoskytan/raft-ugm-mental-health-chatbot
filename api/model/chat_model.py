@@ -13,9 +13,17 @@ class Chat:
         self.user_id = user_id
 
     def to_dict(self):
-        data = vars(self).copy()
-        data["_id"] = str(self._id)
-        return data
+        return {
+            "id": str(self._id),  
+            "title": self.title,
+            "summary": self.summary,
+            "valid": self.valid,
+            "excel_file_path": self.excel_file_path,
+            "started_at": self.started_at.isoformat(),
+            "ended_at": self.ended_at.isoformat() if self.ended_at else None,
+            "user_id": str(self.user_id)
+        }
+
 
     @staticmethod
     def from_dict(data):

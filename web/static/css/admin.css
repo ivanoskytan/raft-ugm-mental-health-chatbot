@@ -119,10 +119,28 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1c2028;
     padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 0.8rem;
+    border-bottom: 1px solid #1e222b;
+}
+
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge.valid {
+    background-color: rgba(34, 197, 94, 0.2); 
+    color: #22c55e;
+    border: 1px solid #22c55e;
+}
+
+.status-badge.invalid {
+    background-color: rgba(239, 68, 68, 0.2); 
+    color: #ef4444;
+    border: 1px solid #ef4444;
 }
 
 .download-excel-btn {

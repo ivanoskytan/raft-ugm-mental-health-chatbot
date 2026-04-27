@@ -21,8 +21,8 @@ class ChatRepository:
         return Chat.from_dict(data)
 
     @staticmethod
-    def get_all_by_user(user_id, only_valid=True):
-        query = {"user_id": user_id}
+    def get_all_by_user(user_id, only_valid=False):
+        query = {"user_id": ObjectId(user_id)}
         if only_valid:
             query["valid"] = True
             

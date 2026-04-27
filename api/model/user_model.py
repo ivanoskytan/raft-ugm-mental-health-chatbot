@@ -11,7 +11,13 @@ class User:
         self.created_at = created_at or datetime.now(timezone.utc)
 
     def to_dict(self):
-        return vars(self)
+        return {
+            "id": str(self._id),  
+            "username": self.username,
+            "email": self.email,
+            "role": self.role,
+            "created_at": self.created_at.isoformat()
+        }
 
     @staticmethod
     def from_dict(data):

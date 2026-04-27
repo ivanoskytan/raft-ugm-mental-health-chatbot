@@ -5,10 +5,10 @@ from api.repository.question_score_repository import QuestionScoreRepository
 
 class AdminService:
     @staticmethod
-    def get_all_valid_chats(user_id: str):
+    def get_all_chats(user_id: str):
         valid_chats = ChatRepository.get_all_by_user(user_id)
         if not valid_chats:
-            return [], "[AdminService]: No valid chats found for this user"
+            return [], "[AdminService]: No chats found for this user"
          
         return valid_chats, None
     

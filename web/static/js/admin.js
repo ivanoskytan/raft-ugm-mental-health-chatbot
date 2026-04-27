@@ -161,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td><button class="download-excel-btn">Lihat Detail</button></td>
             `;
             
-            // Redirect on row click
             row.onclick = () => showUserDetail(user);
             
             userTableBody.appendChild(row);
@@ -244,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Fetch User History
         try {
-            const res = await apiFetch(`/api/admin/all-valid-chats/${user._id}`);
+            const res = await apiFetch(`/api/admin/all-valid-chats/${user.id}`);
             
             if (res.data.length === 0) {
                 assessmentsList.innerHTML = "<p>Tidak ada riwayat asesmen untuk pengguna ini.</p>";
@@ -253,25 +252,40 @@ document.addEventListener("DOMContentLoaded", () => {
             res.data.forEach(chat => {
                 const box = document.createElement("div");
                 box.className = "chat-box";
+
+                const statusLabel = chat.valid ?
+                    `<span class="status-badge valid">Valid</span>` 
+                    : `<span class="status-badge invalid">Invalid</span>`;
+                    
+                const downloadBtn = chat.valid 
+                    ? `<button class="download-excel-btn" data-id="${chat.id}">Download Excel</button>` 
+                    : ``;
+
                 box.innerHTML = `
                     <div class="chat-info">
-                        <div style="font-weight:bold">${chat.title}</div>
-                        <div style="font-size:0.8rem; color:#9ca3af">${chat.started_at}</div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="font-weight:bold">${chat.title}</div>
+                            ${statusLabel}
+                        </div>
+                        <div style="font-size:0.8rem; color:#9ca3af">${new Date(chat.started_at).toLocaleString()}</div>
                     </div>
-                    <button class="download-excel-btn" data-id="${chat._id}">Download Excel</button>
+                    ${downloadBtn}
                 `;
 
                 // Excel Download Logic
-                box.querySelector("button").onclick = (e) => {
-                    e.stopPropagation();
-                    window.location.href = `/api/admin/download-excel/${chat._id}`;
-                };
+                const btn = box.querySelector(".download-excel-btn");
+                if (btn) {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        window.location.href = `/api/admin/download-excel/${chat.id}`;
+                    };
+                }
 
                 assessmentsList.appendChild(box);
             });
 
             // Update summary text if available in your user object
-            summaryText.textContent = user.summary || "Pengguna telah menyelesaikan asesmen. Silakan tinjau histori di bawah.";
+            summaryText.textContent = user.summary || "Pengguna belum pernah menyelesaikan asesmen kesehatan mental. Silakan tinjau histori di bawah.";
             
         } catch (err) {
             console.error("Error loading details:", err);

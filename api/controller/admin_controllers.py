@@ -8,9 +8,9 @@ admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 class AdminController:
     @staticmethod
     @admin_bp.get("/all-valid-chats/<user_id>")
-    def get_all_valid_chats(user_id):
+    def get_all_chats(user_id):
         try:
-            chats, message = AdminService.get_all_valid_chats(user_id)
+            chats, message = AdminService.get_all_chats(user_id)
             if not chats:
                 return jsonify({
                     "message": message
