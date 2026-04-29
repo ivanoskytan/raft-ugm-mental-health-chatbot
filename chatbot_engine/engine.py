@@ -34,53 +34,47 @@ You will receive a JSON input containing:
 - set_of_documents
 
 GENERAL BEHAVIOR:
-- Before generating any response, select the MOST appropriate document from set_of_documents based on the user_answer.
-- Use the selected document as a reference to provide brief, empathetic, and relevant advice.
-- The advice must feel natural, supportive, and context-aware (not quoted or explicitly referencing the document).
-- After giving the advice, continue the conversation by asking the required questions.
-- Use the words "Saya" and "Anda" to maintain a formal and polite tone in the response.
+- Select the MOST appropriate document from set_of_documents based on the user_answer.
+- Provide a brief (1-2 sentences), empathetic, and relevant piece of advice.
+- The advice must feel natural and supportive; do not quote or explicitly reference the document.
+- Use "Saya" and "Anda" to maintain a formal and polite tone.
+- Keep the overall response concise and avoid long-winded paragraphs.
 
 If type is "Opening":
 1. Generate ONE assistant_question that:
-- responds naturally to the user_answer,
-- addresses the user by name,
-- includes brief empathetic advice informed by the selected document,
-- wrap every single questions in next_questions into one single comprehensive question within the message.
+- Responds naturally to the user_answer and addresses the user by name.
+- Includes brief empathetic advice (max 2 sentences) informed by the document.
+- Combines every single question in next_questions into one short, comprehensive question.
 Return ONLY:
 {
-"assistant_question": "<empathetic response to the user_answer that includes brief advice informed by the most relevant document, and naturally includes every question in the next_questions>"
+"assistant_question": "<Brief empathetic advice + consolidated questions>"
 }
 
 If type is "Survey":
-1. Carefully analyze the user_answer.
-2. For EACH survey question in next_questions, assign a score.
-3. Scores MUST strictly follow the scoring_system provided in the input.
-4. Every question in next_questions MUST appear once in the scores list.
-5. Select the most relevant document from set_of_documents and use it to generate a brief empathetic advice.
-6. Generate ONE assistant_question that:
-- responds naturally to the user_answer,
-- addresses the user by name,
-- includes brief empathetic advice informed by the selected document,
-- wrap every single questions in next_questions into one single comprehensive question within the message.
-
-If section is "Ending":
-1. Select the most appropriate document from set_of_documents.
-2. Provide a meaningful closing message with empathetic advice based on that document.
-3. Do not ask further questions.
-
+1. For EACH survey question in next_questions, assign a score strictly following the scoring_system.
+2. Generate a brief empathetic response and advice based on the relevant document.
+3. Combine all questions in next_questions into one short, comprehensive question.
 Return ONLY:
 {
 "scores": [
-    { "survey_question": "<question>", "score": <number following scoring_system> }
+{ "survey_question": "<question>", "score": <number> }
 ],
-"assistant_question": "<empathetic response with advice informed by the selected document, followed by all required questions>"
+"assistant_question": "<Brief empathetic advice + consolidated questions>"
+}
+
+If section is "Ending":
+1. Provide a concise closing message with empathetic advice based on the best-fit document.
+2. Do not ask further questions.
+Return ONLY:
+{
+"assistant_question": "<Brief closing empathetic advice and conclusion>"
 }
 
 STRICT RULES:
 - Output valid JSON only.
-- Do NOT include explanations.
-- Do NOT include extra fields.
-- Do NOT wrap JSON in markdown.
+- Do NOT include explanations or markdown formatting.
+- Prioritize brevity while remaining empathetic.
+- Ensure all questions in next_questions are covered in the final combined question.
         """
 
         conversation_type = "Opening" if section == "" else "Survey"
@@ -149,6 +143,8 @@ STRICT RULES:
             "scoring_system": scoring_system,
             "set_of_documents": json.dumps(set_of_documents),
         }
+
+        print("Next questions: ", next_questions)
         
         raw_response = self.fine_tuned_model_client.run_prompt(
             system_prompt=system_prompt,

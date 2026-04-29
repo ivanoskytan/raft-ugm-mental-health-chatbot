@@ -20,8 +20,8 @@ class ChatService:
 
             return chat, None
         
-        except Exception:
-            return None, "[ChatService]: Failed to start chat"
+        except Exception as e:
+            return None, f"[ChatService]: Failed to start chat - {e}"
     
     @staticmethod
     def add_chat_item(
@@ -41,8 +41,8 @@ class ChatService:
             )
             return chat_item, None
 
-        except Exception:
-            return None, "[ChatService]: Failed to add chat item"
+        except Exception as e:
+            return None, f"[ChatService]: Failed to add chat item- {e}"
     
     @staticmethod
     def get_chat_items(
@@ -74,8 +74,8 @@ class ChatService:
                 return None, "[ChatService]: Question scores not found"
             
             return question_scores, None
-        except Exception:
-            return None, "[ChatService]: Failed to retrieve question scores"
+        except Exception as e:
+            return None, f"[ChatService]: Failed to retrieve question scores - {e}"
     
     @staticmethod
     def add_question_score(
@@ -95,8 +95,8 @@ class ChatService:
             )
             return question_score, None
         
-        except Exception:
-            return None, "[ChatService]: Failed to add question score"
+        except Exception as e:
+            return None, f"[ChatService]: Failed to add question score - {e}"
     
     
     @staticmethod

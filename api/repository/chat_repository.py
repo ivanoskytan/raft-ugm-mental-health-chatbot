@@ -9,10 +9,20 @@ class ChatRepository:
     
     @staticmethod
     def create(summary, title, user_id=None, excel_file_path="", started_at=None, ended_at=None, valid=False):
-        chat = Chat(summary=summary, title=title, user_id=ObjectId(user_id), excel_file_path=excel_file_path, started_at=started_at, ended_at=ended_at, valid=valid)
-        chat_dict = chat.to_dict()
-        chat_dict["_id"] = ObjectId(chat_dict["_id"])
+        chat = Chat(
+            summary=summary, 
+            title=title, 
+            user_id=user_id, 
+            excel_file_path=excel_file_path, 
+            started_at=started_at, 
+            ended_at=ended_at, 
+            valid=valid
+        )
+        
+        chat_dict = chat.to_dict(for_db=True)
+        
         chat_collection.insert_one(chat_dict)
+        
         return chat
 
     @staticmethod
