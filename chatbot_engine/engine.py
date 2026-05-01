@@ -4,6 +4,7 @@ from chatbot_engine.retriever import Retriever
 
 import os
 import json
+import logging
 
 settings = Settings.load()
 
@@ -13,6 +14,7 @@ class ChatbotEngine:
             api_key=settings.OPENAI_API_KEY,
             model=settings.FINE_TUNED_MODEL
         )
+        self.logger = logging.getLogger("ChatbotEngine")
         self.retriever = Retriever()
         return
     
@@ -133,6 +135,8 @@ STRICT RULES:
                 query=user_answer,
                 aspect=section,
             )
+        
+        self.logger.info(f"Questions for section '{next_section}' and group '{next_group_id}': {next_questions}")
 
         content_payload = {
             "type": conversation_type,
@@ -143,8 +147,6 @@ STRICT RULES:
             "scoring_system": scoring_system,
             "set_of_documents": json.dumps(set_of_documents),
         }
-
-        print("Next questions: ", next_questions)
         
         raw_response = self.fine_tuned_model_client.run_prompt(
             system_prompt=system_prompt,
