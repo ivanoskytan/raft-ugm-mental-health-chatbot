@@ -1,4 +1,5 @@
 import json
+import math
 import os
 from flask import Blueprint, request, jsonify
 from api.service.chat_service import ChatService
@@ -15,50 +16,6 @@ class ChatController:
     def __init__(self):
         return
 
-    @staticmethod
-    @chat_bp.get("/aspect-progress")
-    def get_aspect_progress():
-        chat_id = request.args.get("chat_id")
-        BASE_DIR = os.path.join(os.path.dirname(__file__), "..", "..")
-        grouped_questions_dir = os.path.join(BASE_DIR, "external_data", "grouped_mental_health_screening.json")
-
-        latest_chat_item, message = ChatService.get_latest_chat_item(chat_id=chat_id)
-        if not latest_chat_item:
-            return jsonify({
-                "message": message
-            }), 404
-        
-        with open(grouped_questions_dir, "r") as f:
-            grouped_questions = json.load(f)
-        
-        results = []
-
-        for item in grouped_questions:
-            section = item["section"]
-
-            total = 0
-            answered = 0
-
-            for group in item["grouped_questions"]:
-                total += len(group["questions"])
-                answered += sum(1 for q in group["questions"] if q.get("answered", False))
-
-            percentage = (answered / total * 100) if total > 0 else 0
-
-            results.append({
-                "section": section,
-                "answered": answered,
-                "total": total,
-                "percentage": round(percentage, 1)
-            })
-
-        return jsonify(
-            {
-                "messsage": "[ChatController]: Aspect progress is fetched successfully",
-                "data": results
-            }
-        ), 200
-    
     @staticmethod
     @chat_bp.post("/start-new-chat")
     def start_new_chat():
@@ -308,46 +265,55 @@ class ChatController:
         section = data.get("section", "")
 
         section_structure = {
-            "Depression": [7, 1],             # Total: 8
-            "Anger": [4, 1],                  # Total: 5
-            "Mania": [5],                     # Total: 5
-            "Anxiety": [6, 3],                # Total: 9
-            "Somatic": [6, 2, 2],             # Total: 10
-            "Suicidal": [1, 4],               # Total: 5
-            "Psychosis": [4, 2],              # Total: 6
-            "Sleep Disturbance": [8],         # Total: 8
-            "Memory": [5],                    # Total: 5
-            "Dissociation": [3, 2],           # Total: 5
-            "Substance Use": [4, 1],          # Total: 5
-            "Repetitive Thought": [3, 2]      # Total: 5
+            "Depression": 2,             # Total: 8
+            "Anger": 2,                  # Total: 5
+            "Mania": 1,                  # Total: 5
+            "Anxiety": 2,                # Total: 9
+            "Somatic": 3,                # Total: 10
+            "Suicidal": 2,               # Total: 5
+            "Psychosis": 2,              # Total: 6
+            "Sleep Disturbance": 1,         # Total: 8
+            "Memory": 1,                    # Total: 5
+            "Dissociation": 2,           # Total: 5
+            "Substance Use": 2,          # Total: 5
+            "Repetitive Thought": 2      # Total: 5
         }
 
         sections = list(section_structure.keys())
         current_idx = sections.index(section) if section in sections else -1
-        results = []
+        total_answered = 0
+        aspect_progress = []
 
         for i, sec in enumerate(sections):
             sizes = section_structure[sec]
-            total = sum(sizes)
 
             if i < current_idx:
-                answered = total
+                answered = sizes
             elif i == current_idx:
-                answered = sum(sizes[:group_id])
+                answered = sizes-group_id
             else:
                 answered = 0
 
-            results.append({
+            total_answered += answered
+
+            aspect_progress.append({
                 "section": sec,
-                "answered": int(answered),
-                "total": total,
-                "percentage": round((answered / total * 100), 1) if total > 0 else 0
+                "answered": answered,
+                "total": sizes,
+                "percentage": round((answered / sizes * 100), 1) if sizes > 0 else 0
             })
 
+        total_percentage = round((total_answered/23) * 100)
+
+        data = {
+            "aspect_progress": aspect_progress,
+            "total_percentage": total_percentage
+        }
+        
         return jsonify(
             {
                 "message": "[ChatController]: Aspect progress is updated successfully",
-                "data": results
+                "data": data
             }
         ), 200
     

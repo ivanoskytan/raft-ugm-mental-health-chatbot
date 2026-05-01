@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const newChatBtn = document.getElementById("new-chat-btn");
     const aspectList = document.getElementById("aspect-list");
     const conversationList = document.getElementById("conversation-list");
+    const totalPercentage = document.getElementById("total-percentage");
+    const totalProgressBar = document.getElementById("total_progress-bar");
+    const totalProgressText = document.getElementById("total_progress-text");
     
     const SECTION_COLORS = {
         "Depression": "#3b82f6",
@@ -80,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (item.user_answer) addMessage(item.user_answer, "user");
             if (item.ai_response) addMessage(item.ai_response, "bot");
         });
-        // loadAspectProgress();
+        loadAspectProgress();
     }
 
     async function loadAspectProgress() {
@@ -95,10 +98,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 group_id: window.currentGroupId || 0
             }),
         });
+
+        const totalPercentage = res.data["total_percentage"] || 0;
+
+        totalProgressBar.innerHTML = `
+        <div id="total_progress-fill"
+        style="width:${totalPercentage}%"></div>
+        `;
+
+        totalProgressText.innerText = `${totalPercentage}%`;
     
         aspectList.innerHTML = "";
     
-        res.data.forEach(item => {
+        res.data["aspect_progress"].forEach(item => {
             const section = item.section;
             const percent = item.percentage;
             const answered = item.answered;
@@ -115,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="progress-fill"
                          style="width:${percent}%; background:${color}"></div>
                 </div>
-                <div class="progress-text">${percent}%</div>
+                <div id="progress-text">${percent}%</div>
             `;
     
             aspectList.appendChild(div);
@@ -223,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }),
                 });
                 
-                // loadAspectProgress();
+                loadAspectProgress();
                 const resData = res.data;
                 
                 window.currentGroupId = resData.next_group_id;
@@ -255,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     loadUserChats();
-    
+    loadAspectProgress();
 });
 
 
