@@ -30,6 +30,12 @@ class Settings:
     VECTORSTORE_URL: str
     VECTORSTORE_KEY: str
 
+    PG_VECTORSTORE_HOST: str
+    PG_VECTORSTORE_DB: str
+    PG_VECTORSTORE_USER: str
+    PG_VECTORSTORE_PASSWORD: str
+    PG_VECTORSTORE_SSLMODE: str
+
     @classmethod
     def load(cls):
         mongo_uri = os.getenv("MONGO_URI")
@@ -51,6 +57,11 @@ class Settings:
         env = os.getenv("ENV")
         vectorstore_url = os.getenv("VECTORSTORE_URL")
         vectorstore_key = os.getenv("VECTORSTORE_KEY")
+        pg_vectorstore_host = os.getenv("PG_VECTORSTORE_HOST")
+        pg_vectorstore_db = os.getenv("PG_VECTORSTORE_DB")
+        pg_vectorstore_user = os.getenv("PG_VECTORSTORE_USER")
+        pg_vectorstore_password = os.getenv("PG_VECTORSTORE_PASSWORD")
+        pg_vectorstore_sslmode = os.getenv("PG_VECTORSTORE_SSLMODE")
 
         missing = [
             name for name, value in {
@@ -69,7 +80,12 @@ class Settings:
                 "JWT_TOKEN": jwt_token,
                 "ENV": env,
                 "VECTORSTORE_URL": vectorstore_url,
-                "VECTORSTORE_KEY": vectorstore_key
+                "VECTORSTORE_KEY": vectorstore_key,
+                "PG_VECTORSTORE_HOST": pg_vectorstore_host,
+                "PG_VECTORSTORE_DB": pg_vectorstore_db,
+                "PG_VECTORSTORE_USER": pg_vectorstore_user,
+                "PG_VECTORSTORE_PASSWORD": pg_vectorstore_password,
+                "PG_VECTORSTORE_SSLMODE": pg_vectorstore_sslmode,
             }.items()
             if value is None or value == ""
         ]
@@ -94,6 +110,11 @@ class Settings:
             ENV=env,
             VECTORSTORE_URL=vectorstore_url,
             VECTORSTORE_KEY=vectorstore_key,
+            PG_VECTORSTORE_HOST=pg_vectorstore_host,
+            PG_VECTORSTORE_DB=pg_vectorstore_db,
+            PG_VECTORSTORE_USER=pg_vectorstore_user,
+            PG_VECTORSTORE_PASSWORD=pg_vectorstore_password,
+            PG_VECTORSTORE_SSLMODE=pg_vectorstore_sslmode,
         )
 
 

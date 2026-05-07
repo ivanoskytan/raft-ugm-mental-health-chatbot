@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+import psycopg
 from supabase import create_client, Client
 from chatbot_engine.llm_client import GPTClient
 from config.config import Settings
@@ -14,12 +15,13 @@ class Retriever:
             model="text-embedding-3-small"
         )
 
-        self.supabase: Client = create_client(
-            settings.VECTORSTORE_URL,
-            settings.VECTORSTORE_KEY,
+        self.conn_info = (
+            "host=chatbotknowledgevectordb.postgres.database.azure.com "
+            "user=joyivan777 "
+            "password=Kut754jio08# "
+            "dbname=postgres "
+            "sslmode=require"
         )
-
-        self.supabase.postgrest.timeout = 45
 
         self.logger = logging.getLogger("Retriever")
 
@@ -40,31 +42,37 @@ class Retriever:
         self.logger.info(f"[Retriever] Querying aspect: {aspect}")
 
         query_embedding = self._embed(query)
+        results = []
 
         try:
-            response = self.supabase.rpc(
-                "match_documents",
-                {
-                    "query_embedding": query_embedding,
-                    "match_aspect": aspect,
-                    "match_count": top_k
-                }
-            ).execute()
+            with psycopg.connect(self.conn_info) as conn:
+                with conn.cursor() as cur:
+                    sql = """
+                    SELECT 
+                        content, 1 - (embedding <=> %s) AS similarity
+                    FROM documents
+                    WHERE aspect = %s
+                    ORDER BY similarity DESC
+                    LIMIT %s
+                    """
+
+                    cur.execute(sql, (query_embedding, aspect, top_k))
+                    rows = cur.fetchall()
+
+                    if not rows:
+                        self.logger.warning(f"No results found for aspect: {aspect}")   
+                        return []
+                    
+                    for i, (content, similarity) in enumerate(rows):
+                        results.append({
+                            "rank": i+1,
+                            "chunk": content,
+                            "score": float(similarity)
+                        })
 
         except Exception as e:
-            self.logger.error(f"Supabase RPC failed: {e}")
+            self.logger.error(f"Azure ProstgreSQL query failed: {e}")
             raise RuntimeError(f"Retriever failed: {e}")
-
-        if not response.data:
-            raise RuntimeError(f"No results for aspect '{aspect}'")
-
-        results = []
-        for i, row in enumerate(response.data):
-            results.append({
-                "rank": i + 1,
-                "score": float(row["similarity"]),
-                "chunk": row["content"]
-            })
 
         self.logger.info(f"[Retriever] Retrieved {len(results)} chunks")
 

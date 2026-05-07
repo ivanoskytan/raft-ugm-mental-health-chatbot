@@ -3,6 +3,7 @@ import os
 import json
 from tqdm import tqdm
 from supabase import create_client, Client
+import psycopg
 from chatbot_engine.llm_client import GPTClient
 from config.config import Settings
 
@@ -26,6 +27,14 @@ class VectorIndexer:
             settings.VECTORSTORE_KEY
         )
 
+        self.conn_info = (
+            f"host={settings.PG_VECTORSTORE_HOST} "
+            f"dbname={settings.PG_VECTORSTORE_DB} "
+            f"user={settings.PG_VECTORSTORE_USER} "
+            f"password={settings.PG_VECTORSTORE_PASSWORD} "
+            f"sslmode={settings.PG_VECTORSTORE_SSLMODE}"
+        )
+
         self.group_size = 300   # you can tune this (200–500 recommended)
 
     def build_index(self, force=False):
@@ -37,64 +46,49 @@ class VectorIndexer:
         if not json_files:
             raise RuntimeError("No chunked JSON files found")
 
-        pbar = tqdm(json_files, desc="Processing Aspects")
+        with psycopg.connect(self.conn_info) as conn:
+            pbar = tqdm(json_files, desc="Processing Aspects")
 
-        for filename in pbar:
-            aspect = filename.replace(".json", "")
-            json_path = os.path.join(self.chunked_files_dir, filename)
+            for filename in pbar:
+                aspect = filename.replace(".json", "")
+                json_path = os.path.join(self.chunked_files_dir, filename)
+                pbar.set_postfix_str(f"Reading: {aspect}")
 
-            pbar.set_postfix_str(f"Reading: {aspect}")
+                with conn.cursor() as cur:
+                    cur.execute("SELECT id FROM documents WHERE aspect = %s LIMIT 1", (aspect,))
+                    exists = cur.fetchone()
 
-            if not force:
-                existing = self.supabase.table("documents") \
-                    .select("id") \
-                    .eq("aspect", aspect) \
-                    .limit(1) \
-                    .execute()
+                    if exists and not force:
+                        self.logger.info(f"[{aspect}] already indexed. Use force=True to overwrite. Skipping...")
+                        continue
+                    
+                    if exists and force:
+                        self.logger.info(f"[{aspect}] Overwriting existing data...")
+                        cur.execute("DELETE FROM documents WHERE aspect = %s", (aspect,))
 
-                if existing.data:
-                    self.logger.info(f"[{aspect}] already indexed, skipping...")
-                    continue
+                    with open(json_path, "r", encoding="utf-8") as f:
+                        chunks = json.load(f)
 
-            with open(json_path, "r", encoding="utf-8") as f:
-                chunks = json.load(f)
+                    raw_texts = self._extract_texts(chunks)
+                    texts = [self._clean_text(t) for t in raw_texts if t and t.strip()]
 
-            raw_texts = self._extract_texts(chunks)
-            texts = [self._clean_text(t) for t in raw_texts if t and t.strip()]
+                    if not texts: 
+                        continue
 
-            if not texts:
-                continue
+                    embeddings = self._embed_in_batches(texts, batch_size=20)
+                    if not embeddings: 
+                        continue
 
-            embeddings = self._embed_in_batches(texts, batch_size=20)
-
-            if not embeddings:
-                self.logger.warning(f"[{aspect}] No embeddings generated")
-                continue
-
-            records = []
-            for idx, (text, emb) in enumerate(zip(texts, embeddings)):
-                group_id = idx // self.group_size
-
-                records.append({
-                    "aspect": aspect,
-                    "group_id": group_id,
-                    "content": text,
-                    "embedding": emb
-                })
-
-            upload_batch_size = 100
-
-            for i in range(0, len(records), upload_batch_size):
-                batch = records[i:i + upload_batch_size]
-                try:
-                    self.supabase.table("documents").insert(batch).execute()
-                except Exception as e:
-                    self.logger.error(f"[{aspect}] DB Insert failed: {e}")
-
-            self.logger.info(
-                f"[{aspect}] Uploaded {len(records)} chunks "
-                f"into {max(r['group_id'] for r in records) + 1} groups"
-            )
+                    self.logger.info(f"[{aspect}] Inserting {len(texts)} new chunks...")
+                    for idx, (text, emb) in enumerate(zip(texts, embeddings)):
+                        group_id = idx // self.group_size
+                        cur.execute(
+                            "INSERT INTO documents (aspect, group_id, content, embedding) VALUES (%s, %s, %s, %s)",
+                            (aspect, group_id, text, emb)
+                        )
+                    
+                    conn.commit() 
+                    self.logger.info(f"[{aspect}] Uploaded successfully.")
 
     # def build_index(self, force=False):
     #     # Specific logic to only target the Anxiety aspect
