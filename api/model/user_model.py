@@ -12,9 +12,10 @@ class User:
 
     def to_dict(self):
         return {
-            "id": str(self._id),  
+            "_id": ObjectId(self._id),  
             "username": self.username,
             "email": self.email,
+            "password": self.password,
             "role": self.role,
             "created_at": self.created_at.isoformat()
         }
@@ -25,6 +26,8 @@ class User:
             return None
         if "_id" in data and isinstance(data["_id"], str):
             data["_id"] = ObjectId(data["_id"])
+        if "password" not in data:
+             data["password"] = ""
         return User(**data)
 
 
