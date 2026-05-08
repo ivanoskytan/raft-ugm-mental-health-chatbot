@@ -36,6 +36,8 @@ class Settings:
     PG_VECTORSTORE_PASSWORD: str
     PG_VECTORSTORE_SSLMODE: str
 
+    STORAGE_CONN_STR: str
+
     @classmethod
     def load(cls):
         mongo_uri = os.getenv("MONGO_URI")
@@ -63,6 +65,8 @@ class Settings:
         pg_vectorstore_password = os.getenv("PG_VECTORSTORE_PASSWORD")
         pg_vectorstore_sslmode = os.getenv("PG_VECTORSTORE_SSLMODE")
 
+        storage_conn_str = os.getenv("STORAGE_CONN_STR")
+        
         missing = [
             name for name, value in {
                 "MONGO_URI": mongo_uri,
@@ -86,6 +90,7 @@ class Settings:
                 "PG_VECTORSTORE_USER": pg_vectorstore_user,
                 "PG_VECTORSTORE_PASSWORD": pg_vectorstore_password,
                 "PG_VECTORSTORE_SSLMODE": pg_vectorstore_sslmode,
+                "STORAGE_CONN_STR": storage_conn_str
             }.items()
             if value is None or value == ""
         ]
@@ -115,6 +120,7 @@ class Settings:
             PG_VECTORSTORE_USER=pg_vectorstore_user,
             PG_VECTORSTORE_PASSWORD=pg_vectorstore_password,
             PG_VECTORSTORE_SSLMODE=pg_vectorstore_sslmode,
+            STORAGE_CONN_STR=storage_conn_str
         )
 
 

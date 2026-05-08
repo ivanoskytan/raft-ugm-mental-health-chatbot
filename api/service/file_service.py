@@ -1,8 +1,13 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-import os
+from azure.storage.blob import BlobServiceClient
+from config.config import Settings
+import io
 
+settings = Settings.load()
 class FileService:
+
+    CONTAINER_NAME = "assessments"
 
     @staticmethod
     def save_into_excel(assessment_map, chat_id):
@@ -60,12 +65,18 @@ class FileService:
                 sheet.column_dimensions["B"].width = 60
                 sheet.column_dimensions["C"].width = 10
 
-            os.makedirs("uploads", exist_ok=True)
-            file_path = os.path.join("uploads", f"Asesmen_Kesehatan_Mental_{chat_id}.xlsx")
+            file_name = f"Asesmen Kesehatan Mental_{chat_id}.xlsx"
 
-            wb.save(file_path)
+            excel_file = io.BytesIO()
+            wb.save(excel_file)
+            excel_file.seek()
 
-            return True, file_path
+            blob_service_client = BlobServiceClient.from_connection_string(settings.STORAGE_CONN_STR)
+            blob_client = blob_service_client.get_blob_client(container=FileService.CONTAINER_NAME, blob=file_name)
+
+            blob_client.upload_blob(excel_file, overwrite=True)
+
+            return True, blob_client.url
         
         except Exception as e:
             return False, f"[FileService]: Failed to create Excel {str(e)}"
