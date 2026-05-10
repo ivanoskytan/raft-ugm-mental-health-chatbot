@@ -1,30 +1,26 @@
-ADMIN DASHBOARD DETAIL:
-PERCENTAGES FORMULA = (actual_score − min_possible) / (max_possible − min_possible) × 100
-For example:
-Section = Depression
-Scoring system =           {
-              "score": 1,
-              "description": "Tidak pernah"
-          },
-          {
-              "score": 2,
-              "description": "Jarang"
-          },
-          {
-              "score": 3,
-              "description": "Kadang-kadang"
-          },
-          {
-              "score": 4,
-              "description": "Sering"
-          },
-          {
-              "score": 5,
-              "description": "Selalu"
-          }
+### RAFT Mental Health Chatbot
+This project implements a Retrieval-Augmented Fine-Tuning (RAFT) approach for a specialized mental health chatbot. The system combines the knowledge retrieval of a RAG (Retrieval-Augmented Generation) system with the specialized behavior of a fine-tuned LLM.
 
-User scores = [3, 4, 2, 5, 3]
-Actual_score = 3 + 4 + 2 + 5 = 14
-Min_possible = 1 × 4 = 4
-Max_possible = 5 × 4 = 20
-Percentage = (14 − 4) / (20 − 4) × 100 = 10 / 16 × 100 = 62.5%
+## Architecture Components
+- Web App: Flask based web application with RESTful API endpoints, utilizing Javascript to handle dynamic interfaces.
+- Vectorstore Builder: Creates and manages semantic search indexes.
+- RAFT Preparation Pipeline: Generates a specialized fine-tuning dataset through five phases.
+
+## Guide
+# 1. Running the web app
+To launch the user interface and API services for deployment or local testing:
+`python main.py run-web app`
+
+# 2. Building the vectorstore (domain knowledge)
+To process your documents and build the semantic search index:
+`python main.py run-engine vectorstore-builder`
+
+# 3. Running the RAFT Pipeline
+You can run the entire 5-phase data preparation sequence or target a specific phase using the --phase flag:
+- Full Pipeline: `python main.py run-engine raft-preparation-pipeline`
+
+- Specific Phase: `python main.py run-engine raft-preparation-pipeline --phase 4` (e.g., for CoT Augmentation)
+
+# 4. Maintenance & Cleanup
+To reset local data or clear cached outputs:
+- Clear prepared data: `python main.py clean raft-data`
