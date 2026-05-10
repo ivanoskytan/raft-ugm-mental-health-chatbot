@@ -77,8 +77,7 @@ Rules:
                         data = json.loads(raw_output)
                     except json.JSONDecodeError as e:
                         logging.error(
-                            f"PhaseTwo JSON parse failed for dialog_id={persona.get('dialog_id')} section={section_name} group='{group.get("group_id")}': {e}"
-                        )
+                            f"""PhaseTwo JSON parse failed for dialog_id={persona.get('dialog_id')} section={section_name} group='{group.get("group_id")}': {e}"""                        )
                         continue
 
                     messages.append({"role": "assistant", "content": data.get("assistant_question", "")})
