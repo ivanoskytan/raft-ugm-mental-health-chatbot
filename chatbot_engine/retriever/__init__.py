@@ -49,7 +49,7 @@ class Retriever:
                 with conn.cursor() as cur:
                     sql = """
                     SELECT 
-                        content, 1 - (embedding <=> %s) AS similarity
+                        content, 1 - (embedding <=> %s::vector) AS similarity
                     FROM documents
                     WHERE aspect = %s
                     ORDER BY similarity DESC
