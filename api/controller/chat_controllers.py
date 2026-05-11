@@ -263,20 +263,21 @@ class ChatController:
         data = request.get_json()
         group_id = int(data.get("group_id", 0))
         section = data.get("section", "")
+        TOTAL_QUESTIONS = 44
 
         section_structure = {
             "Depression": 2,             # Total: 8
             "Anger": 2,                  # Total: 5
-            "Mania": 1,                  # Total: 5
+            "Mania": 4,                  # Total: 5
             "Anxiety": 2,                # Total: 9
-            "Somatic": 3,                # Total: 10
+            "Somatic": 6,                # Total: 10
             "Suicidal": 2,               # Total: 5
-            "Psychosis": 2,              # Total: 6
+            "Psychosis": 7,              # Total: 6
             "Sleep Disturbance": 1,         # Total: 8
-            "Memory": 1,                    # Total: 5
-            "Dissociation": 2,           # Total: 5
-            "Substance Use": 2,          # Total: 5
-            "Repetitive Thought": 2      # Total: 5
+            "Memory": 5,                    # Total: 5
+            "Dissociation": 6,           # Total: 5
+            "Substance Use": 4,          # Total: 5
+            "Repetitive Thought": 3      # Total: 5
         }
 
         sections = list(section_structure.keys())
@@ -303,10 +304,11 @@ class ChatController:
                 "percentage": round((answered / sizes * 100), 1) if sizes > 0 else 0
             })
 
-        total_percentage = round((total_answered/23) * 100)
+        total_percentage = round((total_answered/TOTAL_QUESTIONS) * 100)
 
         data = {
             "aspect_progress": aspect_progress,
+            "total_answered": total_answered,
             "total_percentage": total_percentage
         }
         

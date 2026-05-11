@@ -71,7 +71,7 @@ class Retriever:
                         })
 
         except Exception as e:
-            self.logger.error(f"Azure ProstgreSQL query failed: {e}")
+            self.logger.error(f"Azure PostgreSQL query failed: {e}")
             raise RuntimeError(f"Retriever failed: {e}")
 
         self.logger.info(f"[Retriever] Retrieved {len(results)} chunks")

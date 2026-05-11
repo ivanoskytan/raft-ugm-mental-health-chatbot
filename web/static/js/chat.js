@@ -100,38 +100,40 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const totalPercentage = res.data["total_percentage"] || 0;
+        const totalQuestionAnswered = res.data["total_answered"] || 0;
 
         totalProgressBar.innerHTML = `
         <div id="total_progress-fill"
         style="width:${totalPercentage}%"></div>
+        <div class="progress-count">${totalQuestionAnswered} / 44 pertanyaan terjawab</div>
         `;
 
         totalProgressText.innerText = `${totalPercentage}%`;
     
         aspectList.innerHTML = "";
     
-        res.data["aspect_progress"].forEach(item => {
-            const section = item.section;
-            const percent = item.percentage;
-            const answered = item.answered;
-            const total = item.total;
-            const color = SECTION_COLORS[section] || "#4caf50";
+        // res.data["aspect_progress"].forEach(item => {
+        //     const section = item.section;
+        //     const percent = item.percentage;
+        //     const answered = item.answered;
+        //     const total = item.total;
+        //     const color = SECTION_COLORS[section] || "#4caf50";
     
-            const div = document.createElement("div");
-            div.className = "aspect-item";
+        //     const div = document.createElement("div");
+        //     div.className = "aspect-item";
     
-            div.innerHTML = `
-                <div class="aspect-title">${section}</div>
-                <div class="progress-count">${answered} / ${total} pertanyaan terjawab</div>
-                <div class="progress-bar">
-                    <div class="progress-fill"
-                         style="width:${percent}%; background:${color}"></div>
-                </div>
-                <div id="progress-text">${percent}%</div>
-            `;
+        //     div.innerHTML = `
+        //         <div class="aspect-title">${section}</div>
+        //         <div class="progress-count">${answered} / ${total} pertanyaan terjawab</div>
+        //         <div class="progress-bar">
+        //             <div class="progress-fill"
+        //                  style="width:${percent}%; background:${color}"></div>
+        //         </div>
+        //         <div id="progress-text">${percent}%</div>
+        //     `;
     
-            aspectList.appendChild(div);
-        });
+        //     aspectList.appendChild(div);
+        // });
     }
     
 
