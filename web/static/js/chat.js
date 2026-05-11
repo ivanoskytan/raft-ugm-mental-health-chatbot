@@ -7,9 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const newChatBtn = document.getElementById("new-chat-btn");
     const aspectList = document.getElementById("aspect-list");
     const conversationList = document.getElementById("conversation-list");
-    const totalPercentage = document.getElementById("total-percentage");
     const totalProgressBar = document.getElementById("total_progress-bar");
-    const totalProgressText = document.getElementById("total_progress-text");
+    const totalProgressInformation = document.getElementById("total_progress-information");
     
     const SECTION_COLORS = {
         "Depression": "#3b82f6",
@@ -103,12 +102,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const totalQuestionAnswered = res.data["total_answered"] || 0;
 
         totalProgressBar.innerHTML = `
-        <div id="total_progress-fill"
-        style="width:${totalPercentage}%"></div>
-        <div class="progress-count">${totalQuestionAnswered} / 44 pertanyaan terjawab</div>
+            <div id="total_progress-fill" style="width:${totalPercentage}%"></div>
         `;
 
-        totalProgressText.innerText = `${totalPercentage}%`;
+        totalProgressInformation.innerHTML = `
+            <div id="total_progress-count">${totalQuestionAnswered} / 44 pertanyaan terjawab</div>
+            <div id="total_progress-percentage">${totalPercentage}%</div>
+        `;
     
         aspectList.innerHTML = "";
     
