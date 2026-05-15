@@ -30,3 +30,7 @@ class WebModule:
         @self.blueprint.route("/chat")
         def chat_page():
             return render_template("chat.html")
+        
+        @self.blueprint.route("/admin/login")
+        def admin_login_page():
+            return render_template("admin_login.html")

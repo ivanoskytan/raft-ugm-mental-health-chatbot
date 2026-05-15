@@ -17,13 +17,13 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
     const emailRegex = /@(gmail\.com|mail\.ugm\.ac\.id)$/;
     if (!emailRegex.test(email)) {
-        showMessage("Email harus menggunakan domain @gmail.com atau @mail.ugm.ac.id", "red");
+        showMessage("Email admin harus menggunakan domain @mail.ugm.ac.id", "red");
         return;
     }
 
     const payload = {
         email: email,
-        role: "user",
+        role: "admin",
         password: password
     };
 
@@ -45,10 +45,10 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             localStorage.setItem('access_token', result.data.token);
             localStorage.setItem('user_id', result.data.user_id);
             
-            showMessage("Login berhasil! Mengalihkan...", "green");
+            showMessage("Login berhasil! Mengalihkan ke halaman admin...", "green");
             
             setTimeout(() => {
-                window.location.href = "/chat"; 
+                window.location.href = "/admin"; 
             }, 1500);
         } else {
             showMessage(result.message || "Email atau password salah", "red");
@@ -56,7 +56,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             submitBtn.innerText = "Masuk";
         }
     } catch (error) {
-        console.log("There is an error: ", error);
         showMessage("Terjadi kesalahan koneksi", "red");
         submitBtn.disabled = false;
         submitBtn.innerText = "Masuk";

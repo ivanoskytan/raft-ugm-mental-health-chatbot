@@ -36,12 +36,13 @@ class AuthController:
         data = request.get_json() or {}
 
         email = data.get("email", "").strip()
+        role = data.get("role", "")
         password = data.get("password", "")
 
-        if not email or not password:
-            return jsonify({"message": "[AuthController]: Email and password are required"}), 400
+        if not email or not password or not role:
+            return jsonify({"message": "[AuthController]: Email, role, and password are required"}), 400
         
-        data, error = AuthService.login(email, password, SECRET_KEY)
+        data, error = AuthService.login(email, role, password, SECRET_KEY)
 
         if error:
             return jsonify({"message": error}), 401

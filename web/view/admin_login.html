@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('web.static', filename='css/auth.css') }}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h2 class="auth-title">Masuk — Halaman Admin Chatbot Kesehatan Mental</h2>
+
+        <div id="message-box" class="auth-error" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 4px;"></div>
+
+        <form id="login-form" class="auth-form" novalidate>
+            <input type="email" id="email" placeholder="Email" required>
+            <div class="password-wrapper" style="position: relative; width: 100%; margin-top: 10px;">
+                <input type="password" id="password" name="password" placeholder="Masukkan Kata Sandi" required 
+                       style="width: 100%; padding-right: 45px; box-sizing: border-box;">
+                <span class="material-icons toggle-password"
+                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #757575; font-size: 20px; user-select: none;">
+                    visibility_off
+                </span>
+            </div>
+            <button type="submit" id="submit-btn">Masuk</button>
+        </form>
+
+        <div class="auth-admin-quick">
+            <a href="/login">Masuk sebagai Pengguna</a>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('web.static', filename='js/login.js') }}"></script>
+{% endblock %}

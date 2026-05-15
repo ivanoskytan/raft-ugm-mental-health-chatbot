@@ -22,11 +22,17 @@ class AuthService:
             return False, "[AuthService]: Failed to create user"
 
     @staticmethod
-    def login(email: str, password: str, secret_key: str):
+    def login(email: str, role: str, password: str, secret_key: str):
         user = UserRepository.find_by_email(email)
 
         if not user or not check_password_hash(user.password, password):
             return None, "[AuthService]: Invalid email or password"
+
+        if user.role == "":
+            user.role = "user"
+        
+        if user.role == "user" and role == "admin":
+            return None, "[AuthService]: Users cannot authenticate as admin"
 
         payload = {
             "user_id": str(user._id),
