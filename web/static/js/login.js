@@ -1,11 +1,25 @@
+const submitBtn = document.getElementById('submit-btn');
+
+const email = document.getElementById('email').value;
+const password = document.getElementById('password').value;
+const tooglePasswordButton = document.querySelector('.toggle-password');
+
+tooglePasswordButton.addEventListener('click', function() {
+    const passwordInput = this.previousElementSibling;
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    this.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+});
+
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const messageBox = document.getElementById('message-box');
-    const submitBtn = document.getElementById('submit-btn');
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+
+    const emailRegex = /@(gmail\.com|mail\.ugm\.ac\.id)$/;
+    if (!emailRegex.test(email)) {
+        showMessage("Email harus menggunakan domain @gmail.com atau @mail.ugm.ac.id", "red");
+        return;
+    }
 
     const payload = {
         email: email,

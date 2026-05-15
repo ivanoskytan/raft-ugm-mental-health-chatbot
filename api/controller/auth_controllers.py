@@ -19,6 +19,9 @@ class AuthController:
 
         if not email or not password:
             return jsonify({"message": "[AuthController]: Email and password are required"}), 400
+        
+        if len(password) < 8 or not any(c.isalpha() for c in password) or not any(c.isdigit() for c in password):
+            return jsonify({"message": "[AuthController]: Password must be at least 8 characters long and contain both letters and numbers"}), 400
 
         success, message = AuthService.register(username, email, password, role)
 
@@ -37,7 +40,7 @@ class AuthController:
 
         if not email or not password:
             return jsonify({"message": "[AuthController]: Email and password are required"}), 400
-
+        
         data, error = AuthService.login(email, password, SECRET_KEY)
 
         if error:
