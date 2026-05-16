@@ -1,9 +1,4 @@
 const submitBtn = document.getElementById('submit-btn');
-    
-const username = document.getElementById('username').value;
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
-const confirm = document.getElementById('confirm').value;
 const togglePasswordButtons = document.querySelectorAll('.toggle-password');
 const registerForm = document.getElementById('register-form');
 
@@ -20,6 +15,11 @@ togglePasswordButtons.forEach(button => {
 
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm').value;
 
     const emailRegex = /@(gmail\.com|mail\.ugm\.ac\.id)$/;
     if (!emailRegex.test(email)) {

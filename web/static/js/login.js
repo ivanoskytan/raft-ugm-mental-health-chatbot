@@ -1,8 +1,6 @@
 const submitBtn = document.getElementById('submit-btn');
-
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
 const tooglePasswordButton = document.querySelector('.toggle-password');
+const loginForm = document.getElementById('login-form');
 
 tooglePasswordButton.addEventListener('click', function() {
     const passwordInput = this.previousElementSibling;
@@ -11,9 +9,11 @@ tooglePasswordButton.addEventListener('click', function() {
     this.textContent = type === 'password' ? 'visibility_off' : 'visibility';
 });
 
-document.getElementById('login-form').addEventListener('submit', async (e) => {
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
     const emailRegex = /@(gmail\.com|mail\.ugm\.ac\.id)$/;
     if (!emailRegex.test(email)) {
