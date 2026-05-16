@@ -319,3 +319,41 @@ class ChatController:
             }
         ), 200
     
+    @staticmethod
+    @chat_bp.put("/<chat_id>")
+    def update_chat(chat_id):
+        data = request.get_json()
+        update_data = {}
+        if "title" in data:
+            update_data["title"] = data["title"]
+        
+        if not update_data:
+            return jsonify({
+                "message": "No valid fields to update"
+            }), 400
+        
+        updated_chat, message = ChatService.update_chat(chat_id, update_data)
+
+        if not updated_chat:
+            return jsonify({
+                "message": message
+            }), 404
+        
+        return jsonify({
+            "message": "[ChatController]: Chat is updated successfully",
+            "data": updated_chat
+        }), 200
+
+    @staticmethod
+    @chat_bp.delete("/<chat_id>")
+    def delete_chat(chat_id):
+        success, message = ChatService.delete(chat_id)
+
+        if not success:
+            return jsonify({
+                "message": message
+            }), 404
+        
+        return jsonify({
+            "message": "[ChatController]: Chat is deleted successfully"
+        }), 200

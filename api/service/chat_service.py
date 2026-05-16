@@ -134,5 +134,14 @@ class ChatService:
             return [], "[ChatService]: Failed to update chat"
         
         return updated_chat, None
+
+    @staticmethod
+    def delete_chat(chat_id):
+        success = ChatRepository.delete(chat_id)
+
+        if not success:
+            return False, "[ChatService]: Failed to delete chat"
+        
+        return True, None
     
     

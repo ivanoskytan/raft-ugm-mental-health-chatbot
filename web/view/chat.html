@@ -9,9 +9,12 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Chatbot Kesehatan Mental</h2>
-            <button id="new-chat-btn">+ Obrolan Baru</button>
+            <button id="new-chat-btn">
+                <span class="material-icons">edit_square</span>
+                Percakapan Baru
+            </button>
         </div>
-        <div class="conversation-list" id="conversation-list"></div>
+        <div class="chat-list" id="chat-list"></div>
         <div class="user-profile">
             <span class="material-icons profile-icon">person</span>
             <div class="user-info">
@@ -38,8 +41,9 @@
 
         <form id="chat-form" autocomplete="off">
             <input type="text" id="message-input" placeholder="Tulis pesan Anda..." required>
-            <button type="submit">Kirim</button>
-        </form>
+            <button type="submit" id="send-btn" title="Kirim">
+                <span class="material-icons">send</span>
+            </button>        </form>
     </div>
     <button id="toggle-aspect-sidebar-btn" class="toggle-aspect-sidebar-btn">⮞</button>
     <div class="aspect-sidebar" id="aspect-sidebar">

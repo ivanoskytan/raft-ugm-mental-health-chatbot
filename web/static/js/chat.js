@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.getElementById("message-input");
     const newChatBtn = document.getElementById("new-chat-btn");
     const aspectList = document.getElementById("aspect-list");
-    const conversationList = document.getElementById("conversation-list");
+    const chatList = document.getElementById("chat-list");
     const totalProgressBar = document.getElementById("total_progress-bar");
     const totalProgressInformation = document.getElementById("total_progress-information");
     const userName = document.getElementById("user-name");
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //     "Dissociation": "#eab308",
     //     "Substance Use": "#f97316",
     //     "Repetitive Thought": "#ec4899"
-    // };
+    // }
 
 
     let currentChatId = null;
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ...options,
         })
         return res.json();
-    };
+    }
 
     function addMessage(text, sender = "bot") {
         const wrapper = document.createElement("div");
@@ -63,22 +63,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadUserChats() {
         const res = await apiFetch(`/api/chat/user-chats/${user_id}`);
-        conversationList.innerHTML = "";
+        chatList.innerHTML = "";
 
         if (res.data && res.data.length > 0) {
             res.data.forEach((chat, index) => {
                 const div = document.createElement("div");
-                div.className = "conversation-item";
+                div.className = "chat-item";
+                if (currentChatId === chat._id) div.classList.add("active");
+
+                const titleSpan = document.createElement("span");
+                titleSpan.className = "chat-title-text"
+                titleSpan.textContent = chat.title || `Percakapan ${index + 1}`;
+                div.appendChild(titleSpan);
                 
-                div.textContent = chat.title || `Percakapan ${index + 1}`;
+                const actionsDiv = document.createElement("div");
+                actionsDiv.className = "chat-actions"
+
+                const renameBtn = document.createElement("button");
+                renameBtn.className = "material-icons rename-btn";
+                renameBtn.textContent = "edit"
+                renameBtn.title = "Ubah nama";
+                renameBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    renameChat(chat._id, titleSpan.textContent);
+                }
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.className = "material-icons delete-btn";
+                deleteBtn.textContent = "delete";
+                deleteBtn.title = "Hapus";
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteChat(chat._id, div);
+                }   
+
+                actionsDiv.appendChild(renameBtn);
+                actionsDiv.appendChild(deleteBtn);
+                div.appendChild(actionsDiv);
                 
                 div.onclick = () => {
-                    document.querySelectorAll('.conversation-item').forEach(el => el.classList.remove('active'));
+                    document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
                     div.classList.add('active');
                     loadChat(chat._id);
-                };
+                }
                 
-                conversationList.insertBefore(div, conversationList.firstChild);
+                chatList.insertBefore(div, chatList.firstChild);
             });
         }
     }
@@ -93,6 +122,18 @@ document.addEventListener("DOMContentLoaded", () => {
             if (item.ai_response) addMessage(item.ai_response, "bot");
         });
         loadAspectProgress();
+    }
+
+    async function renameChat(chatId, currentTitle) {
+        const newTitle = prompt("Masukkan nama baru untuk percakapan ini:", currentTitle);
+        if (!newTitle || newTitle.trim() === "" || newTitle.trim() === currentTitle) return;
+
+        try {
+            const res = await apiFetch(`/api/chat/`)
+        } catch (error) {
+            console.log("[Client] - Error renaming chat: ", error);
+            alert("Gagal mengubah nama percakapan.");
+        }
     }
 
     async function loadAspectProgress() {
@@ -148,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
 
     newChatBtn.addEventListener("click", async () => {
-        const existingItems = conversationList.querySelectorAll('.conversation-item').length;
+        const existingItems = chatList.querySelectorAll('.chat-item').length;
         const nextNumber = existingItems + 1;
         const newTitle = `Percakapan ${nextNumber}`;
 
@@ -163,11 +204,11 @@ document.addEventListener("DOMContentLoaded", () => {
         currentChatId = res.data.chat_id;
     
         const chatDiv = document.createElement("div");
-        chatDiv.className = "conversation-item active";
+        chatDiv.className = "chat-item active";
         chatDiv.textContent = newTitle;
         chatDiv.onclick = () => loadChat(currentChatId);
         
-        conversationList.insertBefore(chatDiv, conversationList.firstChild);
+        chatList.insertBefore(chatDiv, chatList.firstChild);
 
         window.currentGroupId = 0;
         window.currentSection = "Opening";
