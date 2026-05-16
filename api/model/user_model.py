@@ -12,12 +12,12 @@ class User:
 
     def to_dict(self):
         return {
-            "_id": ObjectId(self._id),  
+            "_id": str(self._id),  
             "username": self.username,
             "email": self.email,
             "password": self.password,
             "role": self.role,
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at
         }
 
     @staticmethod

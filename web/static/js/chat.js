@@ -9,21 +9,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const conversationList = document.getElementById("conversation-list");
     const totalProgressBar = document.getElementById("total_progress-bar");
     const totalProgressInformation = document.getElementById("total_progress-information");
+    const userName = document.getElementById("user-name");
+    const userEmail = document.getElementById("user-email");
     
-    const SECTION_COLORS = {
-        "Depression": "#3b82f6",
-        "Anger": "#ef4444",
-        "Mania": "#a855f7",
-        "Anxiety": "#f59e0b",
-        "Somatic": "#14b8a6",
-        "Suicidal": "#dc2626",
-        "Psychosis": "#6366f1",
-        "Sleep Disturbance": "#0ea5e9",
-        "Memory": "#22c55e",
-        "Dissociation": "#eab308",
-        "Substance Use": "#f97316",
-        "Repetitive Thought": "#ec4899"
-    };
+    // const SECTION_COLORS = {
+    //     "Depression": "#3b82f6",
+    //     "Anger": "#ef4444",
+    //     "Mania": "#a855f7",
+    //     "Anxiety": "#f59e0b",
+    //     "Somatic": "#14b8a6",
+    //     "Suicidal": "#dc2626",
+    //     "Psychosis": "#6366f1",
+    //     "Sleep Disturbance": "#0ea5e9",
+    //     "Memory": "#22c55e",
+    //     "Dissociation": "#eab308",
+    //     "Substance Use": "#f97316",
+    //     "Repetitive Thought": "#ec4899"
+    // };
 
 
     let currentChatId = null;
@@ -49,6 +51,14 @@ document.addEventListener("DOMContentLoaded", () => {
         wrapper.appendChild(msg);
         chatWindow.appendChild(wrapper);
         chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    async function loadUserProfile() {
+        const res = await apiFetch(`/api/user/${user_id}`);
+        if (res.data) {
+            userName.textContent = res.data.username || "Username";
+            userEmail.textContent = res.data.email || "username@gmail.com";
+        }
     }
 
     async function loadUserChats() {
@@ -268,6 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
     });
     
+    loadUserProfile();
     loadUserChats();
     loadAspectProgress();
 });

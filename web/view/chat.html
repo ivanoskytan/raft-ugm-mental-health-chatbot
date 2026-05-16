@@ -2,6 +2,7 @@
 
 {% block body %}
 <link rel="stylesheet" href="{{ url_for('web.static', filename='css/chat.css') }}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script defer src="{{ url_for('web.static', filename='js/chat.js') }}"></script>
 
 <div class="chat-page">
@@ -11,6 +12,14 @@
             <button id="new-chat-btn">+ Obrolan Baru</button>
         </div>
         <div class="conversation-list" id="conversation-list"></div>
+        <div class="user-profile">
+            <span class="material-icons profile-icon">person</span>
+            <div class="user-info">
+                <p id="user-name"></p>
+                <p id="user-email"></p>
+            </div>
+            <button id="logout-btn" class="material-icons" title="Logout">logout</button>
+        </div>
     </div>
 
     <div class="chat-area">

@@ -2,6 +2,7 @@ from flask import Blueprint
 from api.controller.chat_controllers import chat_bp
 from api.controller.auth_controllers import auth_bp
 from api.controller.admin_controllers import admin_bp
+from api.controller.user_controllers import user_bp
 
 class APIModule:
     def __init__(self):
@@ -15,3 +16,4 @@ class APIModule:
         self.blueprint.register_blueprint(chat_bp)
         self.blueprint.register_blueprint(auth_bp)
         self.blueprint.register_blueprint(admin_bp)
+        self.blueprint.register_blueprint(user_bp)
