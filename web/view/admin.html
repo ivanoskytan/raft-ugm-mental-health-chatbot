@@ -70,7 +70,7 @@
                             <label style="display: block; font-size: 12px; color: #9ca3af;">Sampai Tanggal:</label>
                             <input type="date" id="toDate" class="date-input">
                         </div>
-                        <button id="filterBtn" style="padding: 8px 16px; background: #2f60f5; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        <button id="filter-btn">
                             Filter
                         </button>
                     </div>
@@ -80,7 +80,14 @@
                 </div>
         
                 <div class="card">
-                    <h3>Top 5 User (Skor Tertinggi)</h3>
+                    <div class="card-header-actions">
+                        <h3>Top User (Skor Tertinggi)</h3>
+                        <div class="k-input-wrapper">
+                            <label for="k-value">Jumlah (K):</label>
+                            <input type="number" id="k-value" value="5" min="1" max="100">
+                            <button id="apply-k-btn" class="back-btn" style="margin-bottom: 0;">Terapkan</button>
+                        </div>
+                    </div>
                     <table class="admin-table slim">
                         <thead>
                             <tr>
@@ -91,6 +98,8 @@
                         <tbody id="top-users-body">
                             </tbody>
                     </table>
+
+                    <div id="pagination-container" class="pagination-wrapper"></div>
                 </div>
             </div>
         </div>

@@ -244,3 +244,123 @@ body {
     color: #ef4444;
     background-color: #fee2e2;
 }
+
+.card-header-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.card-header-actions h3 {
+    margin: 0;
+}
+
+.k-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.k-input-wrapper label {
+    font-size: 0.7rem;
+    color: #9ca3af;
+}
+
+.k-input-wrapper input[type="number"] {
+    background: #1c2028;
+    border: 1.5px solid #1e222b;
+    color: #ffffff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    width: 70px;
+    outline: none;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.k-input-wrapper input[type="number"]:focus {
+    border-color: #2f60f5;
+    background: #12151b;
+    box-shadow: 0 0 0 3px rgba(47, 96, 245, 0.15); 
+}
+
+.k-input-wrapper input[type="number"]::-webkit-outer-spin-button,
+.k-input-wrapper input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    margin-top: 1.2rem;
+}
+
+.pagination-wrapper button {
+    background: #1c2028;
+    border: 1px solid #1e222b;
+    color: #9ca3af;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pagination-wrapper button:hover:not(:disabled) {
+    background: #252a34;
+    color: white;
+}
+
+.pagination-wrapper button.active {
+    background: #2f60f5;
+    color: white;
+    border-color: #2f60f5;
+    font-weight: bold;
+}
+
+.pagination-wrapper button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+#apply-k-btn {
+    background: #2f60f5; 
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#apply-k-btn:hover {
+    background: #1d4ed8; 
+    box-shadow: 0 4px 12px rgba(47, 96, 245, 0.25);
+}
+
+#filter-btn {
+    background: #2f60f5; 
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#filter-btn:hover {
+    background: #1d4ed8; 
+    box-shadow: 0 4px 12px rgba(47, 96, 245, 0.25);
+}

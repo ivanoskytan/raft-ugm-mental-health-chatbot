@@ -11,6 +11,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const fromDateInput = document.getElementById('fromDate');
     const toDateInput = document.getElementById('toDate');
 
+    const filterBtn = document.getElementById("filter-btn");
+
+    let topUsersData = [];
+    let currentPage = 1;
+    const rowsPerPage = 5;
+
+    const applyKBtn = document.getElementById("apply-k-btn");
+    const kValueInput = document.getElementById("k-value");
+
+    applyKBtn.addEventListener("click", () => {
+        const kValue = parseInt(kValueInput.value) || 5;
+        const payload = { k: kValue };
+        fetchTopUsers(payload);
+    });
 
     const switchView = (viewName) => {
         [viewAnalisis, viewDaftar, viewUserDetail].forEach(v => v.style.display = 'none');
@@ -72,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     aspectSelector.addEventListener("change", initAnalysis);
-    document.getElementById("filterBtn").addEventListener('click', initAnalysis);
+    filterBtn.addEventListener('click', initAnalysis);
     setDefaultValues();
     initAnalysis();
 
@@ -123,26 +137,81 @@ document.addEventListener("DOMContentLoaded", () => {
         tbody.innerHTML = "";
 
         if (res.data && res.data.length > 0) {
-            console.log("Res data: ", res)
-            res.data.forEach(user => {
-                const row = document.createElement("tr");
-                                
-                row.innerHTML = `
-                    <td>
-                        <div style="display: flex; flex-direction: column;">
-                            <span style="font-weight: bold;">${user.username}</span>
-                            <span style="font-size: 0.8rem; color: #9ca3af;">${user.email}</span>
-                        </div>
-                    </td>
-                    <td style="text-align: right; font-weight: 800; color: #2f60f5;">
-                        ${user.average_score}
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+            topUsersData = res.data;
+            currentPage = 1; 
+            renderTablePage(currentPage);
         } else {
+            topUsersData = [];
+            const tbody = document.getElementById("top-users-body");
             tbody.innerHTML = "<tr><td colspan='2' style='text-align:center;'>No data found</td></tr>";
+            document.getElementById("pagination-container").innerHTML = "";
         }
+    }
+
+    function renderTablePage(page) {
+        const tbody = document.getElementById("top-users-body");
+        tbody.innerHTML = "";
+        
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedItems = topUsersData.slice(start, end);
+
+        paginatedItems.forEach(user => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: bold;">${user.username}</span>
+                        <span style="font-size: 0.8rem; color: #9ca3af;">${user.email}</span>
+                    </div>
+                </td>
+                <td style="text-align: right; font-weight: 800; color: #2f60f5;">
+                    ${user.average_score}
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        setupPaginationUI();
+    }
+
+    function setupPaginationUI() {
+        const paginationContainer = document.getElementById("pagination-container");
+        paginationContainer.innerHTML = "";
+
+        const pageCount = Math.ceil(topUsersData.length / rowsPerPage);
+        
+        if (pageCount <= 1) return;
+
+        const prevBtn = document.createElement("button");
+        prevBtn.textContent = "«";
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => {
+            currentPage--;
+            renderTablePage(currentPage);
+        };
+        paginationContainer.appendChild(prevBtn);
+
+        for (let i = 1; i <= pageCount; i++) {
+            const pageBtn = document.createElement("button");
+            pageBtn.textContent = i;
+            if (i === currentPage) pageBtn.classList.add("active");
+
+            pageBtn.onclick = () => {
+                currentPage = i;
+                renderTablePage(currentPage);
+            };
+            paginationContainer.appendChild(pageBtn);
+        }
+
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "»";
+        nextBtn.disabled = currentPage === pageCount;
+        nextBtn.onclick = () => {
+            currentPage++;
+            renderTablePage(currentPage);
+        };
+        paginationContainer.appendChild(nextBtn);
     }
 
     // 3. Render Table of Users
