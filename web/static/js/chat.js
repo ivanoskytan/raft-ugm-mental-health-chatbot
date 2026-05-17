@@ -11,6 +11,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalProgressInformation = document.getElementById("total_progress-information");
     const userName = document.getElementById("user-name");
     const userEmail = document.getElementById("user-email");
+
+    const renameModal = document.getElementById("rename-modal");
+    const renameInput = document.getElementById("rename-input");
+    const renameCancelBtn = document.getElementById("rename-cancel-btn");
+    const renameSaveBtn = document.getElementById("rename-save-btn");
+
+    const deleteModal = document.getElementById("delete-modal");
+    const deleteCancelBtn = document.getElementById("delete-cancel-btn");
+    const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
+    let activeModalChatId = null;
+    let activeModalElement = null;
     
     // const SECTION_COLORS = {
     //     "Depression": "#3b82f6",
@@ -85,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 renameBtn.title = "Ubah nama";
                 renameBtn.onclick = (e) => {
                     e.stopPropagation();
-                    renameChat(chat._id, titleSpan.textContent);
+                    renameChat(chat.id, titleSpan.textContent);
                 }
 
                 const deleteBtn = document.createElement("button");
@@ -94,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 deleteBtn.title = "Hapus";
                 deleteBtn.onclick = (e) => {
                     e.stopPropagation();
-                    deleteChat(chat._id, div);
+                    deleteChat(chat.id, div);
                 }   
 
                 actionsDiv.appendChild(renameBtn);
@@ -124,16 +135,17 @@ document.addEventListener("DOMContentLoaded", () => {
         loadAspectProgress();
     }
 
-    async function renameChat(chatId, currentTitle) {
-        const newTitle = prompt("Masukkan nama baru untuk percakapan ini:", currentTitle);
-        if (!newTitle || newTitle.trim() === "" || newTitle.trim() === currentTitle) return;
+    function renameChat(chatId, currentTitle) {
+        activeModalChatId = chatId;
+        renameInput.value = currentTitle;
+        renameModal.classList.add("show");
+        renameInput.focus();
+    }
 
-        try {
-            const res = await apiFetch(`/api/chat/`)
-        } catch (error) {
-            console.log("[Client] - Error renaming chat: ", error);
-            alert("Gagal mengubah nama percakapan.");
-        }
+    function deleteChat(chatId, chatElement) {
+        activeModalChatId = chatId;
+        activeModalElement = chatElement;
+        deleteModal.classList.add("show");
     }
 
     async function loadAspectProgress() {
@@ -187,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // });
     }
     
-
     newChatBtn.addEventListener("click", async () => {
         const existingItems = chatList.querySelectorAll('.chat-item').length;
         const nextNumber = existingItems + 1;
@@ -217,6 +228,70 @@ document.addEventListener("DOMContentLoaded", () => {
     
         addMessage(res.data.opening_ai_response, "bot");
     });
+
+    renameCancelBtn.addEventListener("click", () => {
+        renameModal.classList.remove("show");
+        activeModalChatId = null;
+    }); 
+
+    renameSaveBtn.addEventListener("click", async () => {
+        const newTitle = renameInput.value.trim();
+        if (!newTitle || !activeModalChatId) return;
+
+        try {
+            const res = await apiFetch(`/api/chat/${activeModalChatId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    "title": newTitle
+                })
+            });
+
+            if (res.success || res.status === 'success' || res.data) {
+                renameModal.classList.remove("show");
+                loadUserChats();
+            } else {
+                alert("Gagal mengubah nama percakapan.");
+            }
+        } catch (error) {
+            console.error("[Client] - Error renaming chat: ", error);
+            alert("Terjadi kesalahan koneksi.");
+        }
+    });
+
+    deleteCancelBtn.addEventListener("click", () => {
+        deleteModal.classList.remove("show");
+        activeModalChatId = null;
+        activeModalElement = null;
+    });
+
+    deleteConfirmBtn.addEventListener("click", async () => {
+        if (!activeModalChatId) return;
+
+        try {
+            const res = await apiFetch(`/api/chat/${activeModalChatId}`, {
+                method: 'DELETE'
+            });
+
+            if (res.success || res.status === 'success') {
+                if (currentChatId === activeModalChatId) {
+                    currentChatId = null;
+                    chatWindow.innerHTML = "";
+                    totalProgressBar.innerHTML = `<div id="total_progress-fill" style="width:0%"></div>`;
+                    totalProgressInformation.innerHTML = `<div id="total_progress-count">0 / 44 pertanyaan terjawab</div><div id="total_progress-percentage">0%</div>`;
+                    aspectList.innerHTML = "";
+                }
+
+                if (activeModalElement) activeModalElement.remove();
+                deleteModal.classList.remove("show");
+                loadUserChats();
+            } else {
+                alert("Gagal menghapus percakapan.");
+            }
+        } catch (error) {
+            console.error("[Client] - Error deleting chat: ", error);
+            alert("Terjadi kesalahan koneksi saat menghapus.");
+        }
+    });  
 
     function showLoading() {
         const wrapper = document.createElement("div");
@@ -317,6 +392,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("[Client] - Error: ", error);
             }
         }, 2000);
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === renameModal) renameModal.classList.remove("show");
+        if (e.target === deleteModal) deleteModal.classList.remove("show");
     });
     
     loadUserProfile();

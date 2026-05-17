@@ -55,6 +55,27 @@
         </div>  
         <div id="aspect-list"></div>
     </div>
+    <div id="rename-modal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <h3>Ubah Nama Percakapan</h3>
+            <input type="text" id="rename-input" placeholder="Masukkan nama percakapan...">
+            <div class="modal-actions">
+                <button id="rename-cancel-btn" class="modal-btn btn-secondary">Batal</button>
+                <button id="rename-save-btn" class="modal-btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+    <div id="delete-modal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <span class="material-icons modal-warning-icon">warning</span>
+            <h3>Hapus Percakapan?</h3>
+            <p>Tindakan ini akan menghapus riwayat percakapan Anda secara permanen dan tidak dapat dibatalkan.</p>
+            <div class="modal-actions">
+                <button id="delete-cancel-btn" class="modal-btn btn-secondary">Batal</button>
+                <button id="delete-confirm-btn" class="modal-btn btn-danger">Hapus</button>
+            </div>
+        </div>
+    </div>
 
 </div>
 {% endblock %}

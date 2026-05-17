@@ -341,13 +341,13 @@ class ChatController:
         
         return jsonify({
             "message": "[ChatController]: Chat is updated successfully",
-            "data": updated_chat
+            "data": updated_chat.to_dict()
         }), 200
 
     @staticmethod
     @chat_bp.delete("/<chat_id>")
     def delete_chat(chat_id):
-        success, message = ChatService.delete(chat_id)
+        success, message = ChatService.delete_chat(chat_id)
 
         if not success:
             return jsonify({

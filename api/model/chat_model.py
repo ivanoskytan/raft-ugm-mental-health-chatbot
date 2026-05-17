@@ -26,10 +26,6 @@ class Chat:
             self.user_id = user_id if isinstance(user_id, ObjectId) else ObjectId(user_id)
 
     def to_dict(self, for_db=False):
-        """
-        Jika for_db=True, biarkan _id dan user_id dalam bentuk ObjectId.
-        Jika False (untuk JSON API), ubah menjadi string.
-        """
         if for_db:
             return {
                 "_id": self._id,
