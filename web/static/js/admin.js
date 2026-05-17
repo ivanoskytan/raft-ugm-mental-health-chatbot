@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
-    // UI Elements
     const menuAnalisis = document.getElementById("menu-analisis");
     const menuDaftar = document.getElementById("menu-daftar");
     const viewAnalisis = document.getElementById("view-analisis");
@@ -13,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const fromDateInput = document.getElementById('fromDate');
     const toDateInput = document.getElementById('toDate');
 
-    // --- NAVIGATION LOGIC ---
 
     const switchView = (viewName) => {
         [viewAnalisis, viewDaftar, viewUserDetail].forEach(v => v.style.display = 'none');
@@ -293,6 +290,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // 5. Render admin profile
+    async function loadUserProfile() {
+        const res = await apiFetch(`/api/user/${user_id}`);
+        if (res.data) {
+            userName.textContent = res.data.username || "Username";
+            userEmail.textContent = res.data.email || "username@gmail.com";
+        }
+    }
+
     aspectSelector.addEventListener("change", initAnalysis);
     document.getElementById("menu-analisis").addEventListener("click", initAnalysis);
+    loadUserProfile();
 });

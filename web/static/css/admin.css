@@ -185,3 +185,62 @@ body {
     filter: invert(1); /* Makes the calendar icon white */
     cursor: pointer;
 }
+
+.user-profile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-top: 2px solid #1e222b;
+    padding: 10px 15px;
+}
+
+.profile-icon {
+    font-size: 28px;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    padding: 6px;
+    border-radius: 50%;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    align-items: flex-start;
+    flex-grow: 1;
+}
+
+#user-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+#user-email {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+#logout-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 6px;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    font-size: 20px;
+}
+
+#logout-btn:hover {
+    color: #ef4444;
+    background-color: #fee2e2;
+}
+
+#logout-btn:hover {
+    color: #ef4444;
+    background-color: #fee2e2;
+}
