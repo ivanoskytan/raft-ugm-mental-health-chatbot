@@ -27,8 +27,16 @@ class UserRepository:
         return User.from_dict(data)
 
     @staticmethod
-    def get_all():
-        cursor = users_collection.find()
+    def get_all(query=None):
+        mongo_query = {}
+
+        if query:
+            if "username" in query and query["username"]:
+                mongo_query["username"] = {"$regex": query["username"], "$options": "i"}
+            if "email" in query and query["email"]:
+                mongo_query["email"] = {"$regex": query["email"], "$options": "i"}
+
+        cursor = users_collection.find(mongo_query)
         return [User.from_dict(item) for item in cursor]
 
     @staticmethod

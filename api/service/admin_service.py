@@ -13,10 +13,10 @@ class AdminService:
         return valid_chats, None
     
     @staticmethod
-    def get_all_users():
-        all_users = UserRepository.get_all()
+    def get_all_users(query=None):
+        all_users = UserRepository.get_all(query=query)
         if not all_users:
-            return [], "[AdminService]: No users found"
+            return [], "[AdminService]: No users found matching the criteria"
         
         return all_users, None
     

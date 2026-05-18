@@ -108,6 +108,15 @@
             <div class="view-header">
                 <h2>Daftar Pengguna</h2>
             </div>
+
+            <div class="search-controls" style="margin-bottom: 20px; display: flex; gap: 10px;">
+                <div style="flex: 1; max-width: 400px; position: relative; align-items: center;">
+                    <input type="text" id="search-username-input" class="date-input" placeholder="Cari nama pengguna..." style="width: 100%; padding-left: 35px; box-sizing: border-box;">
+                    <span class="material-icons" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 18px;">search</span>
+                </div>
+                <button id="search-user-btn" class="back-btn" style="margin-bottom: 0; background: #2f60f5;">Cari</button>
+            </div>
+            
             <div class="table-container">
                 <table class="admin-table">
                     <thead>

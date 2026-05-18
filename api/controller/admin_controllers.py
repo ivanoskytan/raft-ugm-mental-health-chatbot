@@ -27,7 +27,9 @@ class AdminController:
     @admin_bp.get("/all-users")
     def get_all_users():
         try:
-            users, message = AdminService.get_all_users()
+            search_query = request.args.to_dict()
+
+            users, message = AdminService.get_all_users(query=search_query)
             if not users:
                 return jsonify({
                     "message": message

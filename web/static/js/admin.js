@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const viewDaftar = document.getElementById("view-daftar-pengguna");
     const viewUserDetail = document.getElementById("view-user-detail");
     
+    const searchUsernameInput = document.getElementById("search-username-input");
+    const searchUserBtn = document.getElementById("search-user-btn");
     const userTableBody = document.getElementById("user-table-body");
     const btnBackToList = document.getElementById("btn-back-to-list");
     const aspectSelector = document.getElementById("aspect-selector");
@@ -215,22 +217,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 3. Render Table of Users
-    async function renderUserTable() {
-        const res = await apiFetch('/api/admin/all-users');
-        userTableBody.innerHTML = "";
+    searchUserBtn.addEventListener("click", () => {
+        renderUserTable();
+    });
 
-        res.data.forEach(user => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td><strong>${user.username}</strong></td>
-                <td>${user.email}</td>
-                <td><button class="download-excel-btn">Lihat Detail</button></td>
-            `;
+    searchUsernameInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            renderUserTable();
+        }
+    });
+
+    async function renderUserTable() {
+        const keyword = searchUsernameInput.value.trim();
+        const res = await apiFetch('/api/admin/all-users');
+        
+        if (keyword) {
+            const params = new URLSearchParams({ username: keyword });
+            url += `?${params.toString()}`;
+        }
+        
+        userTableBody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#9ca3af;'>Memuat data...</td></tr>";
+        
+        try {
+            userTableBody.innerHTML = "";
             
-            row.onclick = () => showUserDetail(user);
-            
-            userTableBody.appendChild(row);
-        });
+            if (res.data && res.data.length > 0) {
+                res.data.forEach(user => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td><strong>${user.username}</strong></td>
+                        <td>${user.email}</td>
+                        <td><button class="download-excel-btn">Lihat Detail</button></td>
+                    `;
+                    
+                    row.onclick = () => showUserDetail(user);
+                    
+                    userTableBody.appendChild(row);
+                });
+            }
+        } catch (error) {
+            console.error("[Client] - Gagal memuat daftar pengguna:", error);
+            userTableBody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Terjadi kesalahan koneksi</td></tr>";
+        }
     }
 
     function renderChart(chartPoints, distMap) {
