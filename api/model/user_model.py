@@ -24,11 +24,29 @@ class User:
     def from_dict(data):
         if not data:
             return None
-        if "_id" in data and isinstance(data["_id"], str):
-            data["_id"] = ObjectId(data["_id"])
+        
+        data = data.copy()
+        
+        if "id" in data:
+            if "_id" not in data:
+                data["_id"] = data.pop("id")
+            else:
+                data.pop("id")
+
+        if "_id" in data:
+            if isinstance(data["_id"], str):
+                try:
+                    data["_id"] = ObjectId(data["_id"])
+                except Exception:
+                    pass
+
+        if "created_at" in data and isinstance(data["created_at"], str):
+            try:
+                data["created_at"] = datetime.fromisoformat(data["created_at"])
+            except Exception:
+                data["created_at"] = None
+            
         if "password" not in data:
              data["password"] = ""
+             
         return User(**data)
-
-
-        

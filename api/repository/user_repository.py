@@ -37,6 +37,7 @@ class UserRepository:
                 mongo_query["email"] = {"$regex": query["email"], "$options": "i"}
 
         cursor = users_collection.find(mongo_query)
+
         return [User.from_dict(item) for item in cursor]
 
     @staticmethod
