@@ -20,8 +20,48 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteModal = document.getElementById("delete-modal");
     const deleteCancelBtn = document.getElementById("delete-cancel-btn");
     const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
+    const toggleSidebarBtn = document.getElementById("toggle-sidebar-btn");
+    const mobileToggleAspectBtn = document.getElementById("mobile-toggle-aspect-btn");
+    const mainSidebar = document.getElementById("main-sidebar");
+    const aspectSidebar = document.getElementById("aspect-sidebar");
+    const sidebarOverlay = document.getElementById("sidebar-overlay");
+
     let activeModalChatId = null;
     let activeModalElement = null;
+
+    function closeAllSidebars() {
+        mainSidebar.classList.remove("open");
+        aspectSidebar.classList.remove("open");
+        sidebarOverlay.classList.remove("show");
+    }
+
+    if (toggleSidebarBtn) {
+        toggleSidebarBtn.addEventListener("click", () => {
+            aspectSidebar.classList.remove("open");
+            mainSidebar.classList.toggle("open");
+            if (mainSidebar.classList.contains("open")) {
+                sidebarOverlay.classList.add("show");
+            } else {
+                sidebarOverlay.classList.remove("show");
+            }
+        });
+    }
+
+    if (mobileToggleAspectBtn) {
+        mobileToggleAspectBtn.addEventListener("click", () => {
+            mainSidebar.classList.remove("open");
+            aspectSidebar.classList.toggle("open");
+            if (aspectSidebar.classList.contains("open")) {
+                sidebarOverlay.classList.add("show");
+            } else {
+                sidebarOverlay.classList.remove("show");
+            }
+        });
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener("click", closeAllSidebars);
+    }
     
     // const SECTION_COLORS = {
     //     "Depression": "#3b82f6",

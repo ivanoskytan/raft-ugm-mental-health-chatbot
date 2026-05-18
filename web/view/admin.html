@@ -8,7 +8,7 @@
 <script defer src="{{ url_for('web.static', filename='js/admin.js') }}"></script>
 
 <div class="admin-container">
-    <div class="sidebar">
+    <div class="sidebar" id="admin-sidebar">
         <div class="sidebar-header">
             <h2>Admin Panel</h2>
         </div>
@@ -20,7 +20,7 @@
             <div class="menu-item" id="menu-daftar">
                 <strong>Daftar Pengguna</strong>
             </div>
-            <div class="menu-item" id="menu-daftar">
+            <div class="menu-item" id="menu-masukan">
                 <strong>Masukan</strong>
             </div>
         </div>
@@ -34,7 +34,14 @@
         </div>
     </div>
 
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
     <div class="dashboard-main">
+        <div class="mobile-header">
+            <button id="toggle-sidebar-btn" class="material-icons">menu</button>
+            <h3>Admin Panel</h3>
+            <div style="width: 36px;"></div>
+        </div>
         
         <div id="view-analisis" class="content-view">
             <div class="view-header">
@@ -58,23 +65,21 @@
                     <option value="Disorder">Disorder</option>
                 </select>
             </div>
-            <div class="analysis-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <div class="analysis-grid">
                 <div class="card">
                     <h3>Distribusi Skor Rata-rata</h3>
-                    <div class="filter-controls" style="margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-end;">
+                    <div class="filter-controls">
                         <div>
-                            <label style="display: block; font-size: 12px; color: #9ca3af;">Dari Tanggal:</label>
+                            <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 4px;">Dari Tanggal:</label>
                             <input type="date" id="fromDate" class="date-input">
                         </div>
                         <div>
-                            <label style="display: block; font-size: 12px; color: #9ca3af;">Sampai Tanggal:</label>
+                            <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 4px;">Sampai Tanggal:</label>
                             <input type="date" id="toDate" class="date-input">
                         </div>
-                        <button id="filter-btn">
-                            Filter
-                        </button>
+                        <button id="filter-btn">Filter</button>
                     </div>
-                    <div class="chart-wrapper" style="position: relative; height: 300px; width: 100%;">
+                    <div class="chart-wrapper">
                         <canvas id="aspectChart"></canvas>
                     </div>
                 </div>
@@ -88,16 +93,17 @@
                             <button id="apply-k-btn" class="back-btn" style="margin-bottom: 0;">Terapkan</button>
                         </div>
                     </div>
-                    <table class="admin-table slim">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Skor</th>
-                            </tr>
-                        </thead>
-                        <tbody id="top-users-body">
-                            </tbody>
-                    </table>
+                    <div class="table-container">
+                        <table class="admin-table slim">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Skor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-users-body"></tbody>
+                        </table>
+                    </div>
 
                     <div id="pagination-container" class="pagination-wrapper"></div>
                 </div>
@@ -109,10 +115,10 @@
                 <h2>Daftar Pengguna</h2>
             </div>
 
-            <div class="search-controls" style="margin-bottom: 20px; display: flex; gap: 10px;">
-                <div style="flex: 1; max-width: 400px; position: relative; align-items: center;">
-                    <input type="text" id="search-username-input" class="date-input" placeholder="Cari nama pengguna..." style="width: 100%; padding-left: 35px; box-sizing: border-box;">
-                    <span class="material-icons" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 18px;">search</span>
+            <div class="search-controls">
+                <div class="search-input-wrapper">
+                    <input type="text" id="search-username-input" class="date-input" placeholder="Cari nama pengguna...">
+                    <span class="material-icons search-icon">search</span>
                 </div>
                 <button id="search-user-btn" class="back-btn" style="margin-bottom: 0; background: #2f60f5;">Cari</button>
             </div>
@@ -126,8 +132,7 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="user-table-body">
-                        </tbody>
+                    <tbody id="user-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -145,8 +150,7 @@
 
             <div class="card">
                 <h3>Histori Asesmen Pengguna</h3>
-                <div id="user-assessments-list">
-                    </div>
+                <div id="user-assessments-list"></div>
             </div>
         </div>
 

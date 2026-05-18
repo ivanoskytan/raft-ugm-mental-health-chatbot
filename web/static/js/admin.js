@@ -15,6 +15,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const filterBtn = document.getElementById("filter-btn");
 
+    const toggleSidebarBtn = document.getElementById("toggle-sidebar-btn");
+    const adminSidebar = document.getElementById("admin-sidebar");
+    const sidebarOverlay = document.getElementById("sidebar-overlay");
+    const menuItems = document.querySelectorAll(".menu-item");
+
+    function closeSidebar() {
+        if (adminSidebar) adminSidebar.classList.remove("open");
+        if (sidebarOverlay) sidebarOverlay.classList.remove("show");
+    }
+
+    if (toggleSidebarBtn) {
+        toggleSidebarBtn.addEventListener("click", () => {
+            if (adminSidebar) adminSidebar.classList.toggle("open");
+            if (sidebarOverlay) {
+                if (adminSidebar.classList.contains("open")) {
+                    sidebarOverlay.classList.add("show");
+                } else {
+                    sidebarOverlay.classList.remove("show");
+                }
+            }
+        });
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener("click", closeSidebar);
+    }
+
+    menuItems.forEach(item => {
+        item.addEventListener("click", closeSidebar);
+    });
+
     let topUsersData = [];
     let currentPage = 1;
     const rowsPerPage = 5;
