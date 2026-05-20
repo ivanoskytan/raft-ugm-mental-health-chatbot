@@ -266,18 +266,18 @@ class ChatController:
         TOTAL_QUESTIONS = 44
 
         section_structure = {
-            "Depression": 2,             # Total: 8
-            "Anger": 2,                  # Total: 5
-            "Mania": 4,                  # Total: 5
-            "Anxiety": 2,                # Total: 9
-            "Somatic": 6,                # Total: 10
-            "Suicidal": 2,               # Total: 5
-            "Psychosis": 7,              # Total: 6
-            "Sleep Disturbance": 1,         # Total: 8
-            "Memory": 5,                    # Total: 5
-            "Dissociation": 6,           # Total: 5
-            "Substance Use": 4,          # Total: 5
-            "Repetitive Thought": 3      # Total: 5
+            "Depression": 2,
+            "Anger": 2,
+            "Mania": 4,
+            "Anxiety": 2,
+            "Somatic": 6,
+            "Suicidal": 2,
+            "Psychosis": 7,
+            "Sleep Disturbance": 1,
+            "Memory": 5,
+            "Dissociation": 6,
+            "Substance Use": 4,
+            "Repetitive Thought": 3
         }
 
         sections = list(section_structure.keys())
@@ -291,7 +291,7 @@ class ChatController:
             if i < current_idx:
                 answered = sizes
             elif i == current_idx:
-                answered = sizes-group_id
+                answered = max(0, min(group_id, sizes))
             else:
                 answered = 0
 
