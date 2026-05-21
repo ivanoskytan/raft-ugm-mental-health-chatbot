@@ -268,16 +268,16 @@ class ChatController:
         section_structure = {
             "Depression": 2,
             "Anger": 2,
-            "Mania": 4,
-            "Anxiety": 2,
-            "Somatic": 6,
-            "Suicidal": 2,
-            "Psychosis": 7,
-            "Sleep Disturbance": 1,
-            "Memory": 5,
-            "Dissociation": 6,
-            "Substance Use": 4,
-            "Repetitive Thought": 3
+            # "Mania": 4,
+            # "Anxiety": 2,
+            # "Somatic": 6,
+            # "Suicidal": 2,
+            # "Psychosis": 7,
+            # "Sleep Disturbance": 1,
+            # "Memory": 5,
+            # "Dissociation": 6,
+            # "Substance Use": 4,
+            # "Repetitive Thought": 3
         }
 
         sections = list(section_structure.keys())

@@ -31,6 +31,7 @@ You will receive a JSON input containing:
 - next_section
 - user_answer
 - next_group_id
+- current_questions
 - next_questions
 - scoring_system
 - set_of_documents
@@ -51,7 +52,7 @@ Return ONLY:
 }
 
 If type is "Survey":
-1. For EACH survey question in next_questions, assign a score strictly following the scoring_system.
+1. For EACH survey question in current_questions, assign a score strictly following the scoring_system.
 2. Combine a very brief empathy phrase and all questions from next_questions into EXACTLY 1 single, cohesive sentence.
 Return ONLY:
 {
@@ -62,11 +63,15 @@ Return ONLY:
 }
 
 If section is "Ending":
-1. Provide a concise closing message with empathetic advice based on the best-fit document.
+1. For EACH survey question in current_questions, assign a score strictly following the scoring_system.
+2. Provide a concise closing message with empathetic advice based on the best-fit document.
 2. Do not ask further questions.
 - STRICTLY limits the output to EXACTLY 1 single sentence.
 Return ONLY:
 {
+"scores":[
+{ "survey_question": "<question>", "score": <number> }
+],
 "assistant_question": "<1 single sentence closing empathetic advice>"
 }
 
@@ -88,20 +93,23 @@ STRICT RULES:
         next_questions = []
         scoring_system = []
 
-        section_group_map = {
-            "Depression": 2, "Anger": 2, "Mania": 1, "Anxiety": 2, "Somatic": 3,
-            "Suicidal": 2, "Psychosis": 2, "Sleep Disturbance": 1, "Memory": 1,
-            "Dissociation": 2, "Substance Use": 2, "Repetitive Thought": 2
-        }
-
         # section_group_map = {
-        #     "Depression": 2, "Repetitive Thought": 2
+        #     "Depression": 2, "Anger": 2, "Mania": 1, "Anxiety": 2, "Somatic": 3,
+        #     "Suicidal": 2, "Psychosis": 2, "Sleep Disturbance": 1, "Memory": 1,
+        #     "Dissociation": 2, "Substance Use": 2, "Repetitive Thought": 2
         # }
+
+        section_group_map = {
+            "Depression": 2, "Anger": 2
+        }
         sections = list(section_group_map.keys())
 
         if section == "Opening":
             next_section = "Depression"
             next_group_id = 1
+        elif section == "Anger" and group_id == 2:
+            next_section = "Ending"
+            next_group_id = 0
         elif section == "Repetitive Thought":
             next_section = "Ending"
             next_group_id = 0
@@ -119,6 +127,13 @@ STRICT RULES:
                 else:
                     next_section = None
                     next_group_id = None
+
+        current_questions = []
+        for item in grouped_questions:
+            if item["section"] == section:
+                for group in item["grouped_questions"]:
+                    if group["group_id"] == group_id:
+                        current_questions = group.get("questions", [])
 
         if next_section != "Ending":
             for item in grouped_questions:
@@ -142,6 +157,7 @@ STRICT RULES:
             "next_section": next_section,
             "user_answer": user_answer,
             "next_group_id": next_group_id,
+            "current_questions": current_questions,
             "next_questions": next_questions,
             "scoring_system": scoring_system,
             "set_of_documents": json.dumps(set_of_documents),
