@@ -7,10 +7,12 @@ from api.service.user_service import UserService
 from api.service.file_service import FileService
 from api.service.email_service import EmailService
 from chatbot_engine.engine import ChatbotEngine
+import logging
 
 chat_bp = Blueprint("chat", __name__, url_prefix="/chat")
 
 chatbot_engine = ChatbotEngine()
+logger = logging.getLogger("ChatController")
 
 class ChatController:
     def __init__(self):
@@ -74,7 +76,7 @@ class ChatController:
 
         except Exception as e:
             return jsonify({
-                "error": str(e)
+                "error": repr(e)
             }), 500
 
     @chat_bp.post("/process-user-answer")
@@ -141,7 +143,7 @@ class ChatController:
                 "error": str(e)
             }), 500
     
-
+    @staticmethod
     @chat_bp.post("/end-chat")
     def end_chat():
         try:
@@ -182,7 +184,6 @@ class ChatController:
                 section = item.section
 
                 existing_section = next((s for s in assessment_map if s["section"] == section), None)
-
                 if existing_section:
                     existing_section["questions"].extend(question_scores_list)
                 else:
@@ -190,14 +191,15 @@ class ChatController:
                         "section": item.section,
                         "questions": question_scores_list
                     })
-
-            is_file_created, file_path = FileService.save_into_excel(assessment_map, chat_id)
+            is_file_created, file_path, message = FileService.save_into_excel(assessment_map, chat_id)
             if is_file_created:
                 updated_chat, message = ChatService.update_chat(chat_id, {
                     "valid": True,
                     "excel_file_path": file_path
                 })
+                logger.info(f"Chat {chat_id} is updated with file path: {file_path}")
                 if not updated_chat:
+                    logger.error(f"Error updating chat {chat_id}")
                     return jsonify({
                         "error": message
                     })
@@ -208,12 +210,16 @@ class ChatController:
             
             user_data, message = UserService.get_user_detail(user_id)
             if message:
+                logger.error(f"Failed to fetch user data for user {user_id}. Error: {message}")
                 return jsonify({
                     "error": message
                 }), 404
             
             is_email_sent, message = EmailService.send_gmail(file_path, user_data.email)
+            logger.info(f"Email sending status for chat {chat_id} to user {user_id} ({user_data.email}): {is_email_sent}, message: {message}")
+            
             if not is_email_sent:
+                logger.error(f"Failed to send email for chat {chat_id} to user {user_id} ({user_data.email}). Error: {message}")
                 return jsonify({
                     "error": message
                 }), 500
@@ -268,16 +274,16 @@ class ChatController:
         section_structure = {
             "Depression": 2,
             "Anger": 2,
-            # "Mania": 4,
-            # "Anxiety": 2,
-            # "Somatic": 6,
-            # "Suicidal": 2,
-            # "Psychosis": 7,
-            # "Sleep Disturbance": 1,
-            # "Memory": 5,
-            # "Dissociation": 6,
-            # "Substance Use": 4,
-            # "Repetitive Thought": 3
+            "Mania": 4,
+            "Anxiety": 2,
+            "Somatic": 6,
+            "Suicidal": 2,
+            "Psychosis": 7,
+            "Sleep Disturbance": 1,
+            "Memory": 5,
+            "Dissociation": 6,
+            "Substance Use": 4,
+            "Repetitive Thought": 3
         }
 
         sections = list(section_structure.keys())

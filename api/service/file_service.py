@@ -3,7 +3,10 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from azure.storage.blob import BlobServiceClient
 from config.config import Settings
 import io
+import logging
 
+
+logger = logging.getLogger("FileService")
 settings = Settings.load()
 class FileService:
 
@@ -69,15 +72,16 @@ class FileService:
 
             excel_file = io.BytesIO()
             wb.save(excel_file)
-            excel_file.seek()
+            excel_file.seek(0)
 
             blob_service_client = BlobServiceClient.from_connection_string(settings.STORAGE_CONN_STR)
             blob_client = blob_service_client.get_blob_client(container=FileService.CONTAINER_NAME, blob=file_name)
 
             blob_client.upload_blob(excel_file, overwrite=True)
 
-            return True, blob_client.url
+            return True, blob_client.url, None
         
         except Exception as e:
-            return False, f"[FileService]: Failed to create Excel {str(e)}"
+            logger.error(f"Error saving assessment to Excel: {str(e)}")
+            return False, None, f"[FileService]: Failed to create Excel {str(e)}"
 
