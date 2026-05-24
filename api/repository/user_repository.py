@@ -18,7 +18,7 @@ class UserRepository:
 
     @staticmethod
     def get_by_id(user_id):
-        data = users_collection.find_one({"_id": ObjectId(user_id)})
+        data = users_collection.find_one({"_id": user_id})
         return User.from_dict(data)
 
     @staticmethod

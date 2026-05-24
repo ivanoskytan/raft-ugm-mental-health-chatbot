@@ -1,8 +1,9 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from azure.storage.blob import BlobServiceClient
+from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
 from config.config import Settings
 import io
+import datetime
 import logging
 
 
@@ -75,11 +76,29 @@ class FileService:
             excel_file.seek(0)
 
             blob_service_client = BlobServiceClient.from_connection_string(settings.STORAGE_CONN_STR)
-            blob_client = blob_service_client.get_blob_client(container=FileService.CONTAINER_NAME, blob=file_name)
+            container_client = blob_service_client.get_container_client(container=FileService.CONTAINER_NAME)
+            if not container_client.exists():
+                logger.info(f"Container '{FileService.CONTAINER_NAME}' does not exist. Creating container.")
+                container_client.create_container()
 
+            blob_client = blob_service_client.get_blob_client(container=FileService.CONTAINER_NAME, blob=file_name)
+            logger.info("Uploading file to Azure Blob Storage at URL: " + blob_client.url)
             blob_client.upload_blob(excel_file, overwrite=True)
 
-            return True, blob_client.url, None
+            sas_token = generate_blob_sas(
+                account_name=blob_service_client.account_name,
+                container_name=FileService.CONTAINER_NAME,
+                blob_name=file_name,
+                account_key=blob_service_client.credential.account_key,
+                permission=BlobSasPermissions(read=True),
+                expiry=datetime.utcnow() + datetime.timedelta(days=7)
+            )
+
+            sas_url = f"{blob_client.url}?{sas_token}"
+            
+            raw_bytes = excel_file.getvalue()
+
+            return True, sas_url, raw_bytes, None
         
         except Exception as e:
             logger.error(f"Error saving assessment to Excel: {str(e)}")

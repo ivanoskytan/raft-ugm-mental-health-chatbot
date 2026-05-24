@@ -90,35 +90,35 @@ STRICT PUNCTUATION & LENGTH RULES (VIOLATION WILL BREAK THE SYSTEM):
         next_questions = []
         scoring_system = []
 
-        section_group_map = {
-            "Depression": 2,
-            "Anger": 2,
-            "Mania": 4,
-            "Anxiety": 2,
-            "Somatic": 6,
-            "Suicidal": 2,
-            "Psychosis": 7,
-            "Sleep Disturbance": 1,
-            "Memory": 5,
-            "Dissociation": 6,
-            "Substance Use": 4,
-            "Repetitive Thought": 3
-        }
-
         # section_group_map = {
-        #     "Depression": 2, "Anger": 2
+        #     "Depression": 2,
+        #     "Anger": 2,
+        #     "Mania": 4,
+        #     "Anxiety": 2,
+        #     "Somatic": 6,
+        #     "Suicidal": 2,
+        #     "Psychosis": 7,
+        #     "Sleep Disturbance": 1,
+        #     "Memory": 5,
+        #     "Dissociation": 6,
+        #     "Substance Use": 4,
+        #     "Repetitive Thought": 3
         # }
+
+        section_group_map = {
+            "Depression": 2, "Anger": 2
+        }
         sections = list(section_group_map.keys())
 
         if section == "Opening":
             next_section = "Depression"
             next_group_id = 1
-        # elif section == "Anger" and group_id == 2:
-        #     next_section = "Ending"
-        #     next_group_id = 0
-        elif section == "Repetitive Thought":
+        elif section == "Anger" and group_id == 2:
             next_section = "Ending"
             next_group_id = 0
+        # elif section == "Repetitive Thought":
+        #     next_section = "Ending"
+        #     next_group_id = 0
         else:
             current_index = sections.index(section)
             max_group = section_group_map[section]

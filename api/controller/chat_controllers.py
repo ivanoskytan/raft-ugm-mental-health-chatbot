@@ -191,7 +191,7 @@ class ChatController:
                         "section": item.section,
                         "questions": question_scores_list
                     })
-            is_file_created, file_path, message = FileService.save_into_excel(assessment_map, chat_id)
+            is_file_created, file_path, file_bytes, message = FileService.save_into_excel(assessment_map, chat_id)
             if is_file_created:
                 updated_chat, message = ChatService.update_chat(chat_id, {
                     "valid": True,
@@ -215,7 +215,10 @@ class ChatController:
                     "error": message
                 }), 404
             
-            is_email_sent, message = EmailService.send_gmail(file_path, user_data.email)
+            short_id = chat_id[:6] 
+            file_name = f"Hasil Asesmen_{short_id}.xlsx"
+            
+            is_email_sent, message = EmailService.send_gmail(file_bytes, file_path, file_name, user_data.email)
             logger.info(f"Email sending status for chat {chat_id} to user {user_id} ({user_data.email}): {is_email_sent}, message: {message}")
             
             if not is_email_sent:
