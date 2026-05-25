@@ -1,5 +1,6 @@
 from api.service.admin_service import AdminService
 from flask import Blueprint, request, jsonify, send_file, abort
+from api.middleware.auth_middleware import RequireAuth, RequireRoles
 import os
 import json
 
@@ -8,6 +9,8 @@ admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 class AdminController:
     @staticmethod
     @admin_bp.get("/all-valid-chats/<user_id>")
+    @RequireAuth
+    @RequireRoles("admin")
     def get_all_chats(user_id):
         try:
             chats, message = AdminService.get_all_chats(user_id)
@@ -25,6 +28,8 @@ class AdminController:
     
     @staticmethod
     @admin_bp.get("/all-users")
+    @RequireAuth
+    @RequireRoles("admin")
     def get_all_users():
         try:
             search_query = request.args.to_dict()
@@ -45,6 +50,8 @@ class AdminController:
     
     @staticmethod
     @admin_bp.get("/user-assessments")
+    @RequireAuth
+    @RequireRoles("admin")
     def get_user_assessments():
         try:
             user_id = request.args.get("user_id")
@@ -56,6 +63,8 @@ class AdminController:
     
     @staticmethod
     @admin_bp.post("/download-excel")
+    @RequireAuth
+    @RequireRoles("admin")
     def download_excel():
         data = request.get_json()
 
@@ -77,6 +86,8 @@ class AdminController:
         
     @staticmethod
     @admin_bp.post("/real-time-assessment-results")
+    @RequireAuth
+    @RequireRoles("admin")
     def get_real_time_assessment_results():
         data = request.get_json()
 
@@ -113,6 +124,8 @@ class AdminController:
         
     @staticmethod
     @admin_bp.post("/top-scored-users")
+    @RequireAuth
+    @RequireRoles("admin")
     def get_top_scored_users():
         data = request.get_json()
 

@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from api.service.user_service import UserService
+from api.middleware.auth_middleware import RequireAuth, RequireRoles
 
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 
@@ -9,6 +10,8 @@ class ChatController:
 
     @staticmethod
     @user_bp.get("/<user_id>")
+    @RequireAuth
+    @RequireRoles(["user", "admin"])
     def get_user_profile(user_id):
         if not user_id:
             return jsonify({

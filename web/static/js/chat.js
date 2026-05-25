@@ -1,6 +1,6 @@
+import { apiFetch } from "./api.js";
+
 document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.getElementById("aspect-sidebar");
-    const toggleBtn = document.getElementById("toggle-aspect-sidebar-btn");
     const chatWindow = document.getElementById("chat-window");
     const chatForm = document.getElementById("chat-form");
     const messageInput = document.getElementById("message-input");
@@ -84,15 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentChatId = null;
     const user_id = localStorage.getItem("user_id") || null;
-    
-
-    async function apiFetch(url, options = {}) {
-        const res = await fetch(url, {
-            headers: {"Content-Type": "application/json"},
-            ...options,
-        })
-        return res.json();
-    }
 
     function addMessage(text, sender = "bot") {
         const wrapper = document.createElement("div");

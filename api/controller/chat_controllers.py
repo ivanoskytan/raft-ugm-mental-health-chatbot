@@ -4,6 +4,7 @@ from api.service.user_service import UserService
 from api.service.file_service import FileService
 from api.service.email_service import EmailService
 from chatbot_engine.engine import ChatbotEngine
+from api.middleware.auth_middleware import RequireAuth, RequireRoles
 import logging
 
 chat_bp = Blueprint("chat", __name__, url_prefix="/chat")
@@ -17,6 +18,8 @@ class ChatController:
 
     @staticmethod
     @chat_bp.post("/start-new-chat")
+    @RequireAuth
+    @RequireRoles("user")
     def start_new_chat():
         data = request.get_json()
 
@@ -77,6 +80,8 @@ class ChatController:
             }), 500
 
     @chat_bp.post("/process-user-answer")
+    @RequireAuth
+    @RequireRoles("user")
     def process_user_answer():
         data = request.get_json()
         required_fields = ["group_id", "section", "user_answer", "chat_id"]
@@ -142,6 +147,8 @@ class ChatController:
     
     @staticmethod
     @chat_bp.post("/end-chat")
+    @RequireAuth
+    @RequireRoles("user")
     def end_chat():
         try:
             data = request.get_json()
@@ -235,6 +242,8 @@ class ChatController:
 
     @staticmethod
     @chat_bp.get("/<chat_id>")
+    @RequireAuth
+    @RequireRoles("user")
     def get_chat_detail(chat_id):
         chat, message = ChatService.get_chat(chat_id=chat_id)
         if not chat:
@@ -249,6 +258,8 @@ class ChatController:
     
     @staticmethod
     @chat_bp.get("/user-chats/<user_id>")
+    @RequireAuth
+    @RequireRoles("user")
     def get_user_chats(user_id):
         chats, message = ChatService.get_user_chats(user_id=user_id)
 
@@ -265,6 +276,8 @@ class ChatController:
          
     @staticmethod
     @chat_bp.post("/aspect-progress")
+    @RequireAuth
+    @RequireRoles("user")
     def update_aspect_progress():
         data = request.get_json()
         group_id = int(data.get("group_id", 0))
@@ -327,6 +340,8 @@ class ChatController:
     
     @staticmethod
     @chat_bp.put("/<chat_id>")
+    @RequireAuth
+    @RequireRoles("user")
     def update_chat(chat_id):
         data = request.get_json()
         update_data = {}
@@ -352,6 +367,8 @@ class ChatController:
 
     @staticmethod
     @chat_bp.delete("/<chat_id>")
+    @RequireAuth
+    @RequireRoles("user")
     def delete_chat(chat_id):
         success, message = ChatService.delete_chat(chat_id)
 

@@ -3,7 +3,7 @@
 {% block body %}
 <link rel="stylesheet" href="{{ url_for('web.static', filename='css/chat.css') }}">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script defer src="{{ url_for('web.static', filename='js/chat.js') }}"></script>
+<script type="module" src="{{ url_for('web.static', filename='js/chat.js') }}"></script>
 
 <div class="chat-page">
     <div class="sidebar" id="main-sidebar">

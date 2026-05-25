@@ -49,3 +49,18 @@ class AuthService:
         }
         
         return data, None
+
+    @staticmethod
+    def logout(token: str, secret_key: str):
+        try:
+            payload = jwt.decode(token, secret_key, algorithms=["HS256"])
+
+            exp_timestamp = payload.get("exp")
+            expires_at = datetime.datetime.fromtimestamp(exp_timestamp, tz=datetime.timezone.utc)
+
+            return True, None
+    
+        except jwt.ExpiredSignatureError:
+            return True, None
+        except jwt.InvalidTokenError:
+            return False, "[AuthService]: Invalid token."

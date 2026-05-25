@@ -1,3 +1,5 @@
+import { apiFetch } from "./api.js";
+
 document.addEventListener("DOMContentLoaded", () => {
     const menuAnalisis = document.getElementById("menu-analisis");
     const menuDaftar = document.getElementById("menu-daftar");
@@ -123,23 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setDefaultValues();
     initAnalysis();
 
-    // --- DATA FETCHING ---
-
-    async function apiFetch(url, options={}) {
-        const res = await fetch(url, options);
-
-        if (!res.ok) {
-            const errorData= await res.json();
-            throw new Error(errorData.error || `Error ${res.status}`);
-        }
-        return res.json();
-    }
-
     // 1. Render Aspect Analysis Chart
     async function fetchChartData(payload) {
         const res = await apiFetch('/api/admin/real-time-assessment-results', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
     
@@ -162,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchTopUsers(payload) {
         const  res = await apiFetch('/api/admin/top-scored-users', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
