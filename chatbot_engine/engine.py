@@ -168,6 +168,8 @@ STRICT PUNCTUATION & LENGTH RULES (VIOLATION WILL BREAK THE SYSTEM):
             "scoring_system": scoring_system,
             "set_of_documents": json.dumps(set_of_documents),
         }
+
+        self.logger.info(f"Processing with content payload: {content_payload}")
         
         raw_response = self.fine_tuned_model_client.run_prompt(
             system_prompt=system_prompt,

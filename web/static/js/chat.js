@@ -26,6 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const aspectSidebar = document.getElementById("aspect-sidebar");
     const sidebarOverlay = document.getElementById("sidebar-overlay");
 
+    const emailSuccessModal = document.getElementById("email-success-modal");
+    const emailSuccessCloseBtn = document.getElementById("email-success-close-btn");
+
     let activeModalChatId = null;
     let activeModalElement = null;
 
@@ -333,6 +336,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });  
 
+    if (emailSuccessCloseBtn) {
+        emailSuccessCloseBtn.addEventListener("click", () => {
+            emailSuccessModal.classList.remove("show");
+        });
+    }
+
+    window.addEventListener("click", (e) => {
+        if (e.target === emailSuccessModal) emailSuccessModal.classList.remove("show");
+        if (e.target === renameModal) renameModal.classList.remove("show");
+        if (e.target === deleteModal) deleteModal.classList.remove("show");
+    });
+
     function showLoading() {
         const wrapper = document.createElement("div");
         wrapper.className = "chat-message bot loading-msg";
@@ -415,7 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (window.currentSection === "Ending") {
                     addChatProcessing();
 
-                    await apiFetch("api/chat/end-chat", {
+                    const endChatRes = await apiFetch("api/chat/end-chat", {
                         method: "POST",
                         body: JSON.stringify({
                             chat_id: window.currentChatId,
@@ -423,13 +438,27 @@ document.addEventListener("DOMContentLoaded", () => {
                         })
                     });
 
-                    removeChatProcessing();
+                    const processingTextEl = document.querySelector("#chat-processing-overlay .processing-text");
+                    if (processingTextEl) {
+                        processingTextEl.textContent = "Percakapan selesai. Mengirimkan hasil asesmen ke email Anda...";
+                    }
+
+                    setTimeout(() => {
+                        removeChatProcessing();
+                        
+                        if (endChatRes && !endChatRes.error) {
+                            emailSuccessModal.classList.add("show");
+                        } else {
+                            alert("Percakapan selesai, namun terjadi kesalahan saat mengirim email. Silakan coba lagi nanti.");
+                        }
+                    }, 1800);
+
                 }
                 
             } catch (error) {
                 removeLoading();
                 addMessage("Maaf, terjadi kesalahan koneksi.", "bot");
-                console.log("[Client] - Error: ", error);
+                console.error("[Client] - Error ending chat processing: ", error);
             }
         }, 2000);
     });

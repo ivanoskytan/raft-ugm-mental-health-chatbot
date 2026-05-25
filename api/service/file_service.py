@@ -90,7 +90,7 @@ class FileService:
                 blob_name=file_name,
                 account_key=blob_service_client.credential.account_key,
                 permission=BlobSasPermissions(read=True),
-                expiry=datetime.utcnow() + datetime.timedelta(days=7)
+                expiry=datetime.datetime.utcnow() + datetime.timedelta(days=7)
             )
 
             sas_url = f"{blob_client.url}?{sas_token}"
