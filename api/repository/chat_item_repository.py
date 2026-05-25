@@ -1,7 +1,6 @@
 from api.model.chat_item_model import ChatItem
 from config.config import db
 from bson import ObjectId
-import datetime
 
 chat_item_collection = db['chat_items']
 

@@ -3,7 +3,6 @@ from api.repository.chat_repository import ChatRepository
 from api.repository.chat_item_repository import ChatItemRepository
 from api.repository.question_score_repository import QuestionScoreRepository
 
-
 class ChatService:
     @staticmethod
     def start_new_chat(user_id, title):

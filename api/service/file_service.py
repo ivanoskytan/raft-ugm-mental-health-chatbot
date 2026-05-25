@@ -6,7 +6,6 @@ import io
 import datetime
 import logging
 
-
 logger = logging.getLogger("FileService")
 settings = Settings.load()
 class FileService:

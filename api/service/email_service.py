@@ -5,8 +5,6 @@ from email.mime.multipart import MIMEMultipart
 from email import encoders
 from config.config import Settings
 
-import os
-
 class EmailService:
 
     @staticmethod
