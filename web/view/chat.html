@@ -45,9 +45,11 @@
                     <div class="message">{{ msg.user_input }}</div>
                 </div>
                 {% endif %}
+                {% if msg.bot_response %}
                 <div class="chat-message bot">
                     <div class="message">{{ msg.bot_response }}</div>
                 </div>
+                {% endif %}
             {% endfor %}
         </div>
 

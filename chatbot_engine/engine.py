@@ -172,6 +172,7 @@ STRICT PUNCTUATION & LENGTH RULES (VIOLATION WILL BREAK THE SYSTEM):
             "set_of_documents": json.dumps(set_of_documents),
         }
 
+        print(f"Content payload: {json.dumps(content_payload, indent=2)}")
         self.logger.info(f"Processing with content payload: {content_payload}")
         
         raw_response = self.fine_tuned_model_client.run_prompt(

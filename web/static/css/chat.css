@@ -263,12 +263,26 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
     width: 100%;
     max-width: 760px;
     margin: 0 auto;
     padding: 1.5rem 1rem;
     box-sizing: border-box;
+}
+
+.chat-window .chat-message + .chat-message {
+    margin-top: 1rem !important;
+}
+
+.chat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    width: 100%;
+}
+
+.chat-message.user .bot {
+    margin-bottom: 2px;
 }
 
 .chat-message {
