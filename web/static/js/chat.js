@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutCancelBtn = document.getElementById("logout-cancel-btn");
     const logoutConfirmBtn = document.getElementById("logout-confirm-btn");
 
+    const sendBtn = document.getElementById("send-btn");
+
     let activeModalChatId = null;
     let activeModalElement = null;
 
@@ -101,6 +103,20 @@ document.addEventListener("DOMContentLoaded", () => {
         wrapper.appendChild(msg);
         chatWindow.appendChild(wrapper);
         chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function deactivateMessageInput () {
+        if (messageInput) {
+            messageInput.disabled = true;
+            messageInput.value = "";
+            messageInput.placeholder = "Sesi percakapan ini telah berakhir.";
+        }
+        if (sendBtn) {
+            sendBtn.disabled = true;
+            sendBtn.style.opacity = "0.5";
+            sendBtn.style.cursor = "not-allowed";
+        }
+
     }
 
     async function loadUserProfile() {
@@ -450,6 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (window.currentSection === "Ending") {
                     addChatProcessing();
+                    deactivateMessageInput();
 
                     const endChatRes = await apiFetch("api/chat/end-chat", {
                         method: "POST",
