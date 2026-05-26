@@ -133,6 +133,44 @@ body {
     background-color: rgba(239, 68, 68, 0.1);
 }
 
+.welcome-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 24px;
+    color: #4b5563; 
+}
+
+.welcome-placeholder .placeholder-icon {
+    font-size: 64px;
+    color: #2f60f5; 
+    margin-bottom: 16px;
+    animation: pulse 2s infinite;
+}
+
+.welcome-placeholder h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1f2937;
+}
+
+.welcome-placeholder p {
+    font-size: 14px;
+    max-width: 400px;
+    line-height: 1.5;
+    color: #6b7280;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
 .chat-list {
     overflow-y: auto;
     flex: 1;

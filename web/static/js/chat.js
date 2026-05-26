@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutCancelBtn = document.getElementById("logout-cancel-btn");
     const logoutConfirmBtn = document.getElementById("logout-confirm-btn");
 
+    const welcomePlaceholder = document.getElementById("welcome-placeholder");
+
     const sendBtn = document.getElementById("send-btn");
 
     let activeModalChatId = null;
@@ -180,6 +182,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadChat(chatId) {
         const res = await apiFetch(`/api/chat/${chatId}`);
+
+        if (welcomePlaceholder) welcomePlaceholder.style.display = "none";
+        if (chatWindow) chatWindow.style.display = "block";
+        if (chatForm) chatForm.style.display = "flex";
+        if (aspectSidebar) aspectSidebar.style.display = "block";
+
         chatWindow.innerHTML = "";
         currentChatId = chatId;
 
@@ -279,6 +287,12 @@ document.addEventListener("DOMContentLoaded", () => {
         window.currentGroupId = 0;
         window.currentSection = "Opening";
         window.currentChatId = res.data.chat_id;
+
+        if (welcomePlaceholder) welcomePlaceholder.style.display = "none";
+        if (chatWindow) chatWindow.style.display = "block";
+        if (chatForm) chatForm.style.display = "flex";
+        if (aspectSidebar) aspectSidebar.style.display = "block";
+        
         chatWindow.innerHTML = "";
     
         addMessage(res.data.opening_ai_response, "bot");

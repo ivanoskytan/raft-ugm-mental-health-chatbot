@@ -32,7 +32,13 @@
             <button id="mobile-toggle-aspect-btn" class="material-icons">insights</button>
         </div>
 
-        <div id="chat-window" class="chat-window">
+        <div class="welcome-placeholder" id="welcome-placeholder">
+            <span class="material-icons placeholder-icon">forum</span>
+            <h3>Mulai Percakapan Baru</h3>
+            <p>Silakan klik tombol <strong>Percakapan Baru</strong> di menu samping kiri untuk memulai asesmen kesehatan mental Anda.</p>
+        </div>
+
+        <div id="chat-window" class="chat-window" style="display: none;">
             {% for msg in messages %}
                 {% if msg.user_input %}
                 <div class="chat-message user">
@@ -45,7 +51,7 @@
             {% endfor %}
         </div>
 
-        <form id="chat-form" autocomplete="off">
+        <form id="chat-form" autocomplete="off" style="display: none;">
             <input type="text" id="message-input" placeholder="Tulis pesan Anda..." required>
             <button type="submit" id="send-btn" title="Kirim">
                 <span class="material-icons">send</span>
@@ -55,7 +61,7 @@
 
     <button id="toggle-aspect-sidebar-btn" class="toggle-aspect-sidebar-btn">⮞</button>
     
-    <div class="aspect-sidebar" id="aspect-sidebar">
+    <div class="aspect-sidebar" id="aspect-sidebar" style="display: none;">
         <h3>Progres Percakapan</h3>
         <div id="total_progress">
             <div id="total_progress-bar"></div>
