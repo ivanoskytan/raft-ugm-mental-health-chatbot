@@ -38,28 +38,29 @@ You will receive a JSON input containing:
 
 GENERAL BEHAVIOR:
 - Select the MOST appropriate document from set_of_documents based on the user_answer.
-- CRITICAL SHORTER EMPATHY RULE: Extract insight from the document into a MAXIMUM of 5 words. Blend it directly at the very beginning of the question.
-- ABSOLUTELY FORBIDDEN: Do not use comforting loops, warm validation, or chatty sentences (e.g., "Saya ingin memahami lebih dalam...", "Perasaan seperti ini bisa sangat memengaruhi..."). Transition immediately to the core screening questions.
+- CRITICAL CONTENT EXTRACTION RULE: You MUST extract the core topics directly from the provided `next_questions` array and transform them into direct questions. Do NOT make up vague or open-ended questions (e.g., do NOT ask "apa yang Anda rasakan akhir-akhir ini?").
+- CRITICAL SHORTER EMPATHY RULE: Extract insight from the document into a MAXIMUM of 3 to 4 words (e.g., "Merespons kondisi Anda," or "Terkait perasaan negatif tersebut,"). Blend it directly at the very beginning of the sentence.
+- ABSOLUTELY FORBIDDEN: Do not use open-ended therapy chatter, comforting loops, or abstract validation (e.g., "Saya mengerti bahwa emosi...", "Emosi bisa sangat kuat...", "Bisa ceritakan lebih lanjut..."). Transition immediately to the literal screening items.
 - Use "Saya" and "Anda" to maintain a formal tone.
 
 If type is "Opening":
 1. Generate ONE assistant_question that:
 - Addresses the user by name.
-- Compresses the empathy clause and ALL questions from next_questions into EXACTLY ONE single sentence.
+- Transforms the specific statements in `next_questions` into direct questions and merges them with the ultra-brief empathy clause into EXACTLY ONE single sentence.
 Return ONLY:
 {
-"assistant_question": "<1 single sentence combining ultra-brief empathy and consolidated question>"
+"assistant_question": "<1 single sentence combining ultra-brief empathy and specific consolidated question>"
 }
 
 If type is "Survey":
 1. For EACH survey question in current_questions, assign a score strictly following the scoring_system.
-2. Combine a 3-word empathy clause and ALL questions from next_questions into EXACTLY ONE single sentence. Use conjunctions like "dan", "serta", or "atau" to bind multiple questions together.
+2. Directly convert ALL statements in `next_questions` into specific questions, binding them together into EXACTLY ONE single sentence using conjunctions like "dan", "serta", atau "atau". 
 Return ONLY:
 {
 "scores": [
 { "survey_question": "<question>", "score": <number> }
 ],
-"assistant_question": "<1 single sentence combining ultra-brief empathy and consolidated question>"
+"assistant_question": "<1 single sentence combining ultra-brief empathy and specific consolidated question>"
 }
 
 If section is "Ending":
@@ -76,8 +77,10 @@ Return ONLY:
 
 STRICT PUNCTUATION & LENGTH RULES (VIOLATION WILL BREAK THE SYSTEM):
 - Output valid JSON only. No markdown formatting, no ```json blocks.
-- ABSOLUTE SENTENCE LIMIT: The assistant_question MUST be EXACTLY ONE sentence long. Count the periods, question marks, and exclamation marks. The entire text must contain ONLY ONE closing punctuation mark (either '.' or '?') at the very end.
-- NO MULTIPLE QUESTIONS: If there are multiple questions in next_questions, you MUST flatten them into a single question using commas and conjunctions. (e.g., "Melihat kondisi Anda, apakah Anda merasa sedih, sulit tidur, atau kehilangan minat?" -> THIS IS 1 SENTENCE).
+- ABSOLUTE SENTENCE LIMIT: The assistant_question MUST be EXACTLY ONE sentence long. The entire text must contain ONLY ONE closing punctuation mark (either '.' or '?') at the very end.
+- NO MULTIPLE QUESTIONS: You MUST flatten multiple items from `next_questions` into a single grammatical sentence using commas and conjunctions.
+  * Correct Example pattern: "Menanggapi perasaan negatif Anda, apakah kini Anda merasa lebih percaya diri dari biasanya atau merasa lebih aktif dari biasanya?"
+- Ensure every single concept listed in `next_questions` is explicitly named in the question text.
         """
 
         conversation_type = "Opening" if section == "" else "Survey"
@@ -90,35 +93,35 @@ STRICT PUNCTUATION & LENGTH RULES (VIOLATION WILL BREAK THE SYSTEM):
         next_questions = []
         scoring_system = []
 
-        # section_group_map = {
-        #     "Depression": 2,
-        #     "Anger": 2,
-        #     "Mania": 4,
-        #     "Anxiety": 2,
-        #     "Somatic": 6,
-        #     "Suicidal": 2,
-        #     "Psychosis": 7,
-        #     "Sleep Disturbance": 1,
-        #     "Memory": 5,
-        #     "Dissociation": 6,
-        #     "Substance Use": 4,
-        #     "Repetitive Thought": 3
-        # }
-
         section_group_map = {
-            "Depression": 2, "Anger": 2
+            "Depression": 2,
+            "Anger": 2,
+            "Mania": 4,
+            "Anxiety": 2,
+            "Somatic": 6,
+            "Suicidal": 2,
+            "Psychosis": 7,
+            "Sleep Disturbance": 1,
+            "Memory": 5,
+            "Dissociation": 6,
+            "Substance Use": 4,
+            "Repetitive Thought": 3
         }
+
+        # section_group_map = {
+        #     "Depression": 2, "Anger": 2
+        # }
         sections = list(section_group_map.keys())
 
         if section == "Opening":
             next_section = "Depression"
             next_group_id = 1
-        elif section == "Anger" and group_id == 2:
-            next_section = "Ending"
-            next_group_id = 0
-        # elif section == "Repetitive Thought":
+        # elif section == "Anger" and group_id == 2:
         #     next_section = "Ending"
         #     next_group_id = 0
+        elif section == "Repetitive Thought":
+            next_section = "Ending"
+            next_group_id = 0
         else:
             current_index = sections.index(section)
             max_group = section_group_map[section]
