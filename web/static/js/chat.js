@@ -29,6 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailSuccessModal = document.getElementById("email-success-modal");
     const emailSuccessCloseBtn = document.getElementById("email-success-close-btn");
 
+    const logoutBtn = document.getElementById("logout-btn");
+    const logoutModal = document.getElementById("logout-modal");
+    const logoutCancelBtn = document.getElementById("logout-cancel-btn");
+    const logoutConfirmBtn = document.getElementById("logout-confirm-btn");
+
     let activeModalChatId = null;
     let activeModalElement = null;
 
@@ -261,6 +266,31 @@ document.addEventListener("DOMContentLoaded", () => {
         chatWindow.innerHTML = "";
     
         addMessage(res.data.opening_ai_response, "bot");
+    });
+
+    logoutBtn.addEventListener("click", () => {
+        logoutModal.classList.add("show");
+    });
+
+    logoutCancelBtn.addEventListener("click", () => {
+        logoutModal.classList.remove("show");
+    });
+
+    logoutConfirmBtn.addEventListener("click", async () => {
+        try {
+            const res = await apiFetch("/api/auth/logout", {
+                method: "POST",
+            });
+
+            if (!res.error) {
+                localStorage.removeItem("access_token");
+                window.location.href = "/login";
+            }
+        } catch (error) {
+            console.error("[Client] - Error during logout: ", error);
+        } finally {
+            logoutModal.classList.remove("show");
+        }
     });
 
     renameCancelBtn.addEventListener("click", () => {
