@@ -79,7 +79,7 @@ RETRIEVED REFERENCE CHUNKS:
     def run(self, refined_dialogs):
         augmented_dialogs = []
 
-        for dialog in refined_dialogs[:5]:
+        for dialog in refined_dialogs:
             dialog_id = dialog.get("dialog_id")
             self.logger.info(f"Augmenting dialog_id={dialog_id} with RAFT methodology")
 

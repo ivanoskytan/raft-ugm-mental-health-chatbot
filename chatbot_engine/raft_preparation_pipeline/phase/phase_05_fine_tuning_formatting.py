@@ -60,7 +60,7 @@ class PhaseFiveFineTuningFormatting:
                         "role": "assistant",
                         "content": json.dumps(
                         {
-                            "assistant_response": next_msg.get("following_assistant_response", "")
+                            "next_assistant_response": next_msg.get("current_assistant_response", "")
                         }, ensure_ascii=False)
                     })
 
@@ -87,18 +87,7 @@ class PhaseFiveFineTuningFormatting:
                             {
                             "scores": msg.get("question_group_scores", []),
                             "chain_of_thought": msg.get("cot_augmentation", ""),
-                            "assistant_response": msg.get("following_assistant_response", "")
-                        }, ensure_ascii=False)
-                    })
-
-                elif msg_type == "Ending":
-
-                    formatted_messages.append({
-                        "role": "user",
-                        "content": json.dumps(
-                            {
-                            "type": "Ending",
-                            "user_answer": msg.get("user_content", "")
+                            "next_assistant_response": msg.get("following_assistant_response", "")
                         }, ensure_ascii=False)
                     })
 
