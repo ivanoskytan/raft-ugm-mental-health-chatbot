@@ -84,7 +84,7 @@ class ChatController:
     @RequireRoles("user")
     def process_user_answer():
         data = request.get_json()
-        required_fields = ["group_id", "section", "user_answer", "chat_id"]
+        required_fields = ["group_id", "section", "user_answer", "chat_id",  "assistant_question"]
         for field in required_fields:
             if field not in data:
                 return jsonify({
@@ -92,11 +92,18 @@ class ChatController:
                 }), 400
             
         try:
+            prev_chat_item = ChatService.get_latest_chat_item(data["chat_id"])
+            last_assistant_response = ""
+
+            if prev_chat_item and hasattr(prev_chat_item, "ai_response"):
+                last_assistant_response = prev_chat_item["ai_response"]
+
             user_query = {
                 "section": data["section"],
                 "group_id": data["group_id"],
                 "user_answer": data["user_answer"],
-                "chat_id": data["chat_id"]
+                "chat_id": data["chat_id"],
+                "prev_assistant_response": last_assistant_response
             }
                     
             engine_response = chatbot_engine.generate_response(user_query)

@@ -466,6 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         section: window.currentSection || "",
                         user_answer: userAnswer,
                         chat_id: window.currentChatId,
+                        assistant_question: "",
                     }),
                 });
                 
