@@ -45,15 +45,17 @@ class PhaseThreeDocumentRefinement:
                     and isinstance(messages[i+2]["content"], dict)
                     and "section" in messages[i+2]["content"]
                 ):
+                    assistant_question = messages[i]["content"]
                     user_answer = messages[i + 1]["content"]
                     score_obj = messages[i + 2]["content"]
                     section = score_obj.get("section")
 
                     set_of_documents = []
-                    if section and user_answer and section in self.retriever.indices:
+                    if section and user_answer:
                         try:
+                            contextual_query = f"{section} screening assessment. Question: {assistant_question}. User answer: {user_answer}"
                             set_of_documents = self.retriever.run(
-                                query=user_answer,
+                                query=contextual_query,
                                 aspect=section,
                             )
                         except Exception as e:

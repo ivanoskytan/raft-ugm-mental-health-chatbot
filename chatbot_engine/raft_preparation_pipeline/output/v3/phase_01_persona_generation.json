@@ -1,0 +1,1705 @@
+[
+  {
+    "dialog_id": 1,
+    "name": "Rizki Pratama",
+    "persona": "Saya adalah mahasiswa psikologi yang tertarik pada dinamika emosi. Saya percaya bahwa pemahaman diri adalah kunci untuk hubungan yang sehat. Saya terbuka dan empatik dalam berdiskusi.",
+    "sections": [
+      "Opening",
+      "Depression",
+      "Anxiety",
+      "Memory",
+      "Ending"
+    ],
+    "question_map": {
+      "Depression": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa tidak berguna",
+              "Saya merasa tidak berdaya",
+              "Saya merasa sedih",
+              "Saya merasa seperti seorang yang gagal",
+              "Saya merasa tertekan",
+              "Saya merasa tidak bahagia",
+              "Saya merasa putus asa"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa tidak memiliki apa-apa untuk diharapkan"
+            ]
+          }
+        ]
+      },
+      "Anxiety": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa takut.",
+              "Saya merasa cemas.",
+              "Saya merasa khawatir.",
+              "Saya merasa gugup.",
+              "Saya merasa tidak nyaman.",
+              "Saya merasa tegang."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa sulit untuk fokus pada hal lain selain kecemasan saya."
+            ]
+          }
+        ]
+      },
+      "Memory": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Sangat tidak setuju"
+          },
+          {
+            "score": 2,
+            "description": "Tidak setuju"
+          },
+          {
+            "score": 3,
+            "description": "Ragu-ragu"
+          },
+          {
+            "score": 4,
+            "description": "Setuju"
+          },
+          {
+            "score": 5,
+            "description": "Sangat setuju"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Ada sesuatu yang sangat salah terkait ingatan saya.",
+              "Ketika saya lupa akan sesuatu, saya takut saya memiki masalah ingatan yang serius, seperti penyakit Alzheimer\u2019s.",
+              "Ingatan saya lebih buruk daripada kebanyakan orang seusia saya.",
+              "Saya merasa tidak bahagia jika memikirkan tentang daya ingat saya.",
+              "Saya khawatir orang lain akan menyadari bahwa ingatan saya tidak begitu bagus.",
+              "Saya memiliki kekhawatiran akan daya ingat saya.",
+              "Saya malu akan daya ingat saya.",
+              "Saya merasa jengkel atau kesal dengan diri saya sendiri ketika saya lupa.",
+              "Saya khawatir dengan daya ingat saya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Secara umum saya merasa senang dengan daya ingatan saya.",
+              "Saya percaya diri dengan kemampuan saya dalam mengingat sesuatu.",
+              "Ketika saya memiliki masalah dalam mengingat sesuatu, saya bisa memaklumi itu.",
+              "Secara umum saya merasa puas dengan daya ingat saya.",
+              "Saya tidak kesal ketika memiliki masalah dalam mengingat sesuatu."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Daya ingat saya sangat menurun akhir-akhir ini."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Daya ingat saya baik untuk seusia saya."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Jika ada sesuatu yang penting, mungkin saya akan mengingatnya.",
+              "Saya khawatir saya akan melupakan sesuatu yang penting."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 2,
+    "name": "Dewi Lestari",
+    "persona": "Sebagai mahasiswa sastra, saya sering merenung tentang makna hidup dan hubungan antar manusia. Saya sensitif terhadap perubahan suasana hati dan mencoba memahami akar emosinya. Saya menghargai kejujuran dan kedalaman percakapan.",
+    "sections": [
+      "Opening",
+      "Sleep Disturbance",
+      "Dissociation",
+      "Substance Use",
+      "Ending"
+    ],
+    "question_map": {
+      "Sleep Disturbance": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak sama sekali"
+          },
+          {
+            "score": 2,
+            "description": "Sedikit"
+          },
+          {
+            "score": 3,
+            "description": "Bisa dibilang begitu"
+          },
+          {
+            "score": 4,
+            "description": "Cukup sering"
+          },
+          {
+            "score": 5,
+            "description": "Hampir selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "tidur saya tidak nyenyak",
+              "tidur saya memuaskan",
+              "tidur saya menyegarkan",
+              "saya mengalami kesulitan tidur",
+              "saya memiliki masalah untuk tetap tidur",
+              "saya memiliki masalah tidur",
+              "saya merasa tidur dengan cukup"
+            ]
+          }
+        ]
+      },
+      "Dissociation": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak pernah sama sekali"
+          },
+          {
+            "score": 1,
+            "description": "Sekali atau dua kali"
+          },
+          {
+            "score": 2,
+            "description": "Hampir setiap hari"
+          },
+          {
+            "score": 3,
+            "description": "Kira-kira sekali sehari"
+          },
+          {
+            "score": 4,
+            "description": "Lebih dari sekali sehari"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya mendapati diri saya melamun dan tidak memikirkan apa pun.",
+              "Saya mendapati diri saya melakukan hal-hal yang saya tidak ingat pernah melakukannya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Orang-orang, benda-benda, atau dunia di sekitar saya tampak aneh atau tidak nyata.",
+              "Saya merasa seolah-olah saya sedang melihat melalui kabut sehingga orang-orang dan benda-benda tampak jauh atau tidak jelas."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya bertindak sangat berbeda dari satu situasi ke situasi lainnya sehingga seolah-olah saya adalah dua orang yang berbeda."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Ketika sedang sendirian, saya berbicara dengan bersuara pada diri saya sendiri."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Saya dengan mudah melakukan hal-hal yang biasanya sulit bagi saya."
+            ]
+          },
+          {
+            "group_id": 6,
+            "questions": [
+              "Saya mampu mengabaikan rasa sakit."
+            ]
+          }
+        ]
+      },
+      "Substance Use": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak pernah sama sekali"
+          },
+          {
+            "score": 1,
+            "description": "Sekali atau dua kali"
+          },
+          {
+            "score": 2,
+            "description": "Hampir setiap hari"
+          },
+          {
+            "score": 3,
+            "description": "Kira-kira sekali sehari"
+          },
+          {
+            "score": 4,
+            "description": "Lebih dari sekali sehari"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya menggunakan penghilang rasa sakit (cont: Vicodin).",
+              "Saya menggunakan stimulan (cont: Ritalin, Adderall).",
+              "Saya menggunakan obat bius atau penenang (cont: obat tidur atau Valium)",
+              "Saya menggunakan obat untuk kesenangan (cont: ekstasi).",
+              "Saya menggunakan metamfetamin."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya menggunakan ganja.",
+              "Saya menggunakan kokain.",
+              "Saya menggunakan heroin"
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya menggunakan halusinogen (cont: LSD)."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya menggunakan inhalants atau solvents (cont: lem)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 3,
+    "name": "Budi Santoso",
+    "persona": "Saya mahasiswa teknik yang mencoba memahami sisi emosional diri saya yang jarang saya ekspresikan. Saya percaya pendekatan ilmiah bisa membantu menavigasi kompleksitas perasaan. Saya menghargai diskusi yang terstruktur namun penuh empati.",
+    "sections": [
+      "Opening",
+      "Anger",
+      "Suicidal",
+      "Psychosis",
+      "Ending"
+    ],
+    "question_map": {
+      "Anger": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa jengkel melebihi yang orang lain ketahui",
+              "Saya merasa marah",
+              "Saya merasa kesal",
+              "Saya merasa terganggu"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa bahwa saya siap meledakan emosi"
+            ]
+          }
+        ]
+      },
+      "Suicidal": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak sedang mengalami pikiran seperti itu"
+          },
+          {
+            "score": 1,
+            "description": "Kadang-kadang memiliki pikiran seperti itu atau sedang memiliki pikiran seperti itu namun masih mampu mengontrol pikiran tersebut"
+          },
+          {
+            "score": 2,
+            "description": "Sering memiliki pikiran seperti itu atau sedang memiliki pikiran seperti itu dan mulai mempertimbangkannya"
+          },
+          {
+            "score": 3,
+            "description": "Selalu memiliki pikiran seperti itu atau sedang memiliki pikiran seperti itu tetapi sudah tidak mampu mengontrolnya"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "saya sedang memiliki pikiran-pikiran tentang bunuh diri, namun saya belum menyusun rencana apa pun.",
+              "saya sedang memiliki pikiran-pikiran tentang bunuh diri, namun saya sepenuhnya mampu untuk mengontrol pikiran-pikiran tersebut."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "saya memiliki pikiran-pikiran untuk mengakhiri kehidupan saya.",
+              "saya memiliki dorongan untuk mengakhiri kehidupan saya."
+            ]
+          }
+        ]
+      },
+      "Psychosis": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Sangat tidak setuju"
+          },
+          {
+            "score": 1,
+            "description": "Tidak setuju"
+          },
+          {
+            "score": 2,
+            "description": "Agak tidak setuju"
+          },
+          {
+            "score": 3,
+            "description": "Ragu-ragu"
+          },
+          {
+            "score": 4,
+            "description": "Agak setuju"
+          },
+          {
+            "score": 5,
+            "description": "Setuju"
+          },
+          {
+            "score": 6,
+            "description": "Sangat setuju"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya berpikir bahwa ada kemungkinan orang lain dapat membaca pikiran saya, atau saya bisa membaca pikiran orang lain",
+              "Saya merasa sedang dipermainkan oleh pikiran saya sendiri",
+              "Saya mendengar pikiran saya sendiri diucapkan dengan lantang"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya pernah melakukan sesuatu yang tidak biasa dilakukan orang lain karena keyakinan saya akan hal-hal supranatural",
+              "Saya percaya bahwa saya mempunyai kemampuan alami atau supernatural yang istimewa melebihi bakat dan kekuatan bawaan saya"
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya merasa ada hal-hal aneh atau tidak biasa yang terjadi yang tidak dapat saya jelaskan",
+              "Saya mungkin merasa ada sesuatu yang mengganggu atau mengendalikan pikiran, perasaan, atau tindakan saya",
+              "Saya kadang-kadang bingung apakah sesuatu yang saya alami atau rasakan mungkin adalah hal yang nyata atau mungkin hanya bagian dari imajinasi atau mimpi saya"
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya mungkin bisa memprediksi masa depan"
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Saya khawatir bahwa saya akan menjadi \"gila\u201d"
+            ]
+          },
+          {
+            "group_id": 6,
+            "questions": [
+              "Saya bertanya-tanya apakah orang lain mungkin berencana untuk menyakiti saya atau bahkan mungkin akan menyakiti saya"
+            ]
+          },
+          {
+            "group_id": 7,
+            "questions": [
+              "Saya pernah mendengar suara samar-samar (atau jelas) bergumam atau berbicara, ketika tidak ada orang di dekat saya"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 4,
+    "name": "Maya Sari",
+    "persona": "Sebagai mahasiswa seni rupa, saya mengekspresikan diri melalui karya visual. Namun, saya juga penasaran menggali emosi lewat kata-kata. Saya terbuka untuk berdialog dan belajar dari pengalaman emosional orang lain.",
+    "sections": [
+      "Opening",
+      "Mania",
+      "Repetitive Thought",
+      "Somatic",
+      "Ending"
+    ],
+    "question_map": {
+      "Mania": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa lebih percaya diri dari biasanya.",
+              "Saya lebih aktif dari biasanya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya membutuhkan tidur lebih sedikit dari biasanya."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya berbicara lebih dari biasanya."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya merasa lebih bahagia atau lebih ceria dari biasanya."
+            ]
+          }
+        ]
+      },
+      "Repetitive Thought": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak pernah sama sekali atau masih terkontrol sepenuhnya"
+          },
+          {
+            "score": 1,
+            "description": "Sesekali atau sedikit mengganggu atau kurang dari 1 jam tiap harinya"
+          },
+          {
+            "score": 2,
+            "description": "Beberapa kali atau terkadang masih bisa mengontrol atau 1 sampai 3 jam per hari"
+          },
+          {
+            "score": 3,
+            "description": "Sering atau sangat mengganggu atau 3 sampai 8 jam per hari"
+          },
+          {
+            "score": 4,
+            "description": "Selalu atau tak terkendali atau lebih dari 8 jam per hari"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Seberapa parahkah perilaku atau pikiran ini mengganggu Anda?",
+              "Bagi Anda, seberapa sulit untuk mengontrol pikiran atau perilaku tersebut?",
+              "Seberapa sering pikiran dan perilaku ini membuat Anda menghindari untuk melakukan hal tertentu, mengunjungi tempat atau bersama orang tertentu?"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Seberapa sering pikiran atau perilaku ini mempengaruhi sekolah, pekerjaan, hubungan sosial dan kehidupan keluarga?"
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Tiap harinya rata-rata (dalam hitungan jam) seberapa sering Anda mengalami perilaku atau pikiran tersebut?"
+            ]
+          }
+        ]
+      },
+      "Somatic": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak terganggu sama sekali"
+          },
+          {
+            "score": 1,
+            "description": "Sedikit terganggu"
+          },
+          {
+            "score": 2,
+            "description": "Sangat terganggu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya mengalami sakit perut.",
+              "Saya mengalami sakit punggung.",
+              "Saya mengalami sakit di lengan, kaki, atau sendi.",
+              "Saya mengalami nyeri di dada.",
+              "Saya mengalami nyeri atau bemasalah saat berhubungan seksual",
+              "Saya mengalami mual, kembung, atau gangguan pencernaan."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya mengalami pening.",
+              "Saya pingsan.",
+              "Saya mengalami konstipasi."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya merasa lelah atau kurang berenergi.",
+              "Saya mengalami kesulitan tidur."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya mengalami keram pada saat menstruasi atau masalah siklus menstruasi."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Saya mengalami sakit kepala."
+            ]
+          },
+          {
+            "group_id": 6,
+            "questions": [
+              "Saya mengalami jantung berdebar-debar.",
+              "Saya mengalami sesak napas"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 5,
+    "name": "Fajar Nugroho",
+    "persona": "Saya mahasiswa hukum yang sedang belajar lebih memahami sisi emosional saya. Diskusi tentang perasaan dan pengalaman mental bagi saya adalah cara untuk memperdalam empati dan kesadaran diri. Saya menghargai keberanian untuk berbagi cerita pribadi.",
+    "sections": [
+      "Opening",
+      "Depression",
+      "Dissociation",
+      "Sleep Disturbance",
+      "Ending"
+    ],
+    "question_map": {
+      "Depression": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa tidak berguna",
+              "Saya merasa tidak berdaya",
+              "Saya merasa sedih",
+              "Saya merasa seperti seorang yang gagal",
+              "Saya merasa tertekan",
+              "Saya merasa tidak bahagia",
+              "Saya merasa putus asa"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa tidak memiliki apa-apa untuk diharapkan"
+            ]
+          }
+        ]
+      },
+      "Dissociation": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak pernah sama sekali"
+          },
+          {
+            "score": 1,
+            "description": "Sekali atau dua kali"
+          },
+          {
+            "score": 2,
+            "description": "Hampir setiap hari"
+          },
+          {
+            "score": 3,
+            "description": "Kira-kira sekali sehari"
+          },
+          {
+            "score": 4,
+            "description": "Lebih dari sekali sehari"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya mendapati diri saya melamun dan tidak memikirkan apa pun.",
+              "Saya mendapati diri saya melakukan hal-hal yang saya tidak ingat pernah melakukannya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Orang-orang, benda-benda, atau dunia di sekitar saya tampak aneh atau tidak nyata.",
+              "Saya merasa seolah-olah saya sedang melihat melalui kabut sehingga orang-orang dan benda-benda tampak jauh atau tidak jelas."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya bertindak sangat berbeda dari satu situasi ke situasi lainnya sehingga seolah-olah saya adalah dua orang yang berbeda."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Ketika sedang sendirian, saya berbicara dengan bersuara pada diri saya sendiri."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Saya dengan mudah melakukan hal-hal yang biasanya sulit bagi saya."
+            ]
+          },
+          {
+            "group_id": 6,
+            "questions": [
+              "Saya mampu mengabaikan rasa sakit."
+            ]
+          }
+        ]
+      },
+      "Sleep Disturbance": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak sama sekali"
+          },
+          {
+            "score": 2,
+            "description": "Sedikit"
+          },
+          {
+            "score": 3,
+            "description": "Bisa dibilang begitu"
+          },
+          {
+            "score": 4,
+            "description": "Cukup sering"
+          },
+          {
+            "score": 5,
+            "description": "Hampir selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "tidur saya tidak nyenyak",
+              "tidur saya memuaskan",
+              "tidur saya menyegarkan",
+              "saya mengalami kesulitan tidur",
+              "saya memiliki masalah untuk tetap tidur",
+              "saya memiliki masalah tidur",
+              "saya merasa tidur dengan cukup"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 6,
+    "name": "Sinta Wulandari",
+    "persona": "Sebagai mahasiswa psikologi, saya tertarik untuk memahami bagaimana pola pikir kita dipengaruhi oleh pengalaman masa lalu. Saya percaya bahwa mengenali pola ini bisa membantu kita hidup lebih sadar dan bebas. Saya senang berdiskusi dengan cara yang reflektif dan penuh hormat.",
+    "sections": [
+      "Opening",
+      "Anger",
+      "Anxiety",
+      "Memory",
+      "Ending"
+    ],
+    "question_map": {
+      "Anger": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa jengkel melebihi yang orang lain ketahui",
+              "Saya merasa marah",
+              "Saya merasa kesal",
+              "Saya merasa terganggu"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa bahwa saya siap meledakan emosi"
+            ]
+          }
+        ]
+      },
+      "Anxiety": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa takut.",
+              "Saya merasa cemas.",
+              "Saya merasa khawatir.",
+              "Saya merasa gugup.",
+              "Saya merasa tidak nyaman.",
+              "Saya merasa tegang."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa sulit untuk fokus pada hal lain selain kecemasan saya."
+            ]
+          }
+        ]
+      },
+      "Memory": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Sangat tidak setuju"
+          },
+          {
+            "score": 2,
+            "description": "Tidak setuju"
+          },
+          {
+            "score": 3,
+            "description": "Ragu-ragu"
+          },
+          {
+            "score": 4,
+            "description": "Setuju"
+          },
+          {
+            "score": 5,
+            "description": "Sangat setuju"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Ada sesuatu yang sangat salah terkait ingatan saya.",
+              "Ketika saya lupa akan sesuatu, saya takut saya memiki masalah ingatan yang serius, seperti penyakit Alzheimer\u2019s.",
+              "Ingatan saya lebih buruk daripada kebanyakan orang seusia saya.",
+              "Saya merasa tidak bahagia jika memikirkan tentang daya ingat saya.",
+              "Saya khawatir orang lain akan menyadari bahwa ingatan saya tidak begitu bagus.",
+              "Saya memiliki kekhawatiran akan daya ingat saya.",
+              "Saya malu akan daya ingat saya.",
+              "Saya merasa jengkel atau kesal dengan diri saya sendiri ketika saya lupa.",
+              "Saya khawatir dengan daya ingat saya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Secara umum saya merasa senang dengan daya ingatan saya.",
+              "Saya percaya diri dengan kemampuan saya dalam mengingat sesuatu.",
+              "Ketika saya memiliki masalah dalam mengingat sesuatu, saya bisa memaklumi itu.",
+              "Secara umum saya merasa puas dengan daya ingat saya.",
+              "Saya tidak kesal ketika memiliki masalah dalam mengingat sesuatu."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Daya ingat saya sangat menurun akhir-akhir ini."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Daya ingat saya baik untuk seusia saya."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Jika ada sesuatu yang penting, mungkin saya akan mengingatnya.",
+              "Saya khawatir saya akan melupakan sesuatu yang penting."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 7,
+    "name": "Arief Setiawan",
+    "persona": "Saya mahasiswa ekonomi yang ingin belajar lebih banyak tentang hubungan antara stres dan pengambilan keputusan. Saya percaya bahwa memahami emosi bisa membantu kita menjadi lebih bijak, baik secara pribadi maupun profesional. Saya menghargai percakapan yang jujur dan terbuka.",
+    "sections": [
+      "Opening",
+      "Mania",
+      "Psychosis",
+      "Repetitive Thought",
+      "Ending"
+    ],
+    "question_map": {
+      "Mania": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa lebih percaya diri dari biasanya.",
+              "Saya lebih aktif dari biasanya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya membutuhkan tidur lebih sedikit dari biasanya."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya berbicara lebih dari biasanya."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya merasa lebih bahagia atau lebih ceria dari biasanya."
+            ]
+          }
+        ]
+      },
+      "Psychosis": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Sangat tidak setuju"
+          },
+          {
+            "score": 1,
+            "description": "Tidak setuju"
+          },
+          {
+            "score": 2,
+            "description": "Agak tidak setuju"
+          },
+          {
+            "score": 3,
+            "description": "Ragu-ragu"
+          },
+          {
+            "score": 4,
+            "description": "Agak setuju"
+          },
+          {
+            "score": 5,
+            "description": "Setuju"
+          },
+          {
+            "score": 6,
+            "description": "Sangat setuju"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya berpikir bahwa ada kemungkinan orang lain dapat membaca pikiran saya, atau saya bisa membaca pikiran orang lain",
+              "Saya merasa sedang dipermainkan oleh pikiran saya sendiri",
+              "Saya mendengar pikiran saya sendiri diucapkan dengan lantang"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya pernah melakukan sesuatu yang tidak biasa dilakukan orang lain karena keyakinan saya akan hal-hal supranatural",
+              "Saya percaya bahwa saya mempunyai kemampuan alami atau supernatural yang istimewa melebihi bakat dan kekuatan bawaan saya"
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya merasa ada hal-hal aneh atau tidak biasa yang terjadi yang tidak dapat saya jelaskan",
+              "Saya mungkin merasa ada sesuatu yang mengganggu atau mengendalikan pikiran, perasaan, atau tindakan saya",
+              "Saya kadang-kadang bingung apakah sesuatu yang saya alami atau rasakan mungkin adalah hal yang nyata atau mungkin hanya bagian dari imajinasi atau mimpi saya"
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya mungkin bisa memprediksi masa depan"
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Saya khawatir bahwa saya akan menjadi \"gila\u201d"
+            ]
+          },
+          {
+            "group_id": 6,
+            "questions": [
+              "Saya bertanya-tanya apakah orang lain mungkin berencana untuk menyakiti saya atau bahkan mungkin akan menyakiti saya"
+            ]
+          },
+          {
+            "group_id": 7,
+            "questions": [
+              "Saya pernah mendengar suara samar-samar (atau jelas) bergumam atau berbicara, ketika tidak ada orang di dekat saya"
+            ]
+          }
+        ]
+      },
+      "Repetitive Thought": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak pernah sama sekali atau masih terkontrol sepenuhnya"
+          },
+          {
+            "score": 1,
+            "description": "Sesekali atau sedikit mengganggu atau kurang dari 1 jam tiap harinya"
+          },
+          {
+            "score": 2,
+            "description": "Beberapa kali atau terkadang masih bisa mengontrol atau 1 sampai 3 jam per hari"
+          },
+          {
+            "score": 3,
+            "description": "Sering atau sangat mengganggu atau 3 sampai 8 jam per hari"
+          },
+          {
+            "score": 4,
+            "description": "Selalu atau tak terkendali atau lebih dari 8 jam per hari"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Seberapa parahkah perilaku atau pikiran ini mengganggu Anda?",
+              "Bagi Anda, seberapa sulit untuk mengontrol pikiran atau perilaku tersebut?",
+              "Seberapa sering pikiran dan perilaku ini membuat Anda menghindari untuk melakukan hal tertentu, mengunjungi tempat atau bersama orang tertentu?"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Seberapa sering pikiran atau perilaku ini mempengaruhi sekolah, pekerjaan, hubungan sosial dan kehidupan keluarga?"
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Tiap harinya rata-rata (dalam hitungan jam) seberapa sering Anda mengalami perilaku atau pikiran tersebut?"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 8,
+    "name": "Nina Kurniasari",
+    "persona": "Saya mahasiswa kedokteran yang tertarik pada aspek psikologis dari kesehatan. Diskusi tentang pengalaman emosional dan pola pikir bagi saya adalah langkah awal untuk memahami diri dan orang lain dengan lebih baik. Saya menghargai pendekatan yang empatik dan ilmiah.",
+    "sections": [
+      "Opening",
+      "Somatic",
+      "Suicidal",
+      "Substance Use",
+      "Ending"
+    ],
+    "question_map": {
+      "Somatic": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak terganggu sama sekali"
+          },
+          {
+            "score": 1,
+            "description": "Sedikit terganggu"
+          },
+          {
+            "score": 2,
+            "description": "Sangat terganggu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya mengalami sakit perut.",
+              "Saya mengalami sakit punggung.",
+              "Saya mengalami sakit di lengan, kaki, atau sendi.",
+              "Saya mengalami nyeri di dada.",
+              "Saya mengalami nyeri atau bemasalah saat berhubungan seksual",
+              "Saya mengalami mual, kembung, atau gangguan pencernaan."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya mengalami pening.",
+              "Saya pingsan.",
+              "Saya mengalami konstipasi."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya merasa lelah atau kurang berenergi.",
+              "Saya mengalami kesulitan tidur."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya mengalami keram pada saat menstruasi atau masalah siklus menstruasi."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Saya mengalami sakit kepala."
+            ]
+          },
+          {
+            "group_id": 6,
+            "questions": [
+              "Saya mengalami jantung berdebar-debar.",
+              "Saya mengalami sesak napas"
+            ]
+          }
+        ]
+      },
+      "Suicidal": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak sedang mengalami pikiran seperti itu"
+          },
+          {
+            "score": 1,
+            "description": "Kadang-kadang memiliki pikiran seperti itu atau sedang memiliki pikiran seperti itu namun masih mampu mengontrol pikiran tersebut"
+          },
+          {
+            "score": 2,
+            "description": "Sering memiliki pikiran seperti itu atau sedang memiliki pikiran seperti itu dan mulai mempertimbangkannya"
+          },
+          {
+            "score": 3,
+            "description": "Selalu memiliki pikiran seperti itu atau sedang memiliki pikiran seperti itu tetapi sudah tidak mampu mengontrolnya"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "saya sedang memiliki pikiran-pikiran tentang bunuh diri, namun saya belum menyusun rencana apa pun.",
+              "saya sedang memiliki pikiran-pikiran tentang bunuh diri, namun saya sepenuhnya mampu untuk mengontrol pikiran-pikiran tersebut."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "saya memiliki pikiran-pikiran untuk mengakhiri kehidupan saya.",
+              "saya memiliki dorongan untuk mengakhiri kehidupan saya."
+            ]
+          }
+        ]
+      },
+      "Substance Use": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak pernah sama sekali"
+          },
+          {
+            "score": 1,
+            "description": "Sekali atau dua kali"
+          },
+          {
+            "score": 2,
+            "description": "Hampir setiap hari"
+          },
+          {
+            "score": 3,
+            "description": "Kira-kira sekali sehari"
+          },
+          {
+            "score": 4,
+            "description": "Lebih dari sekali sehari"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya menggunakan penghilang rasa sakit (cont: Vicodin).",
+              "Saya menggunakan stimulan (cont: Ritalin, Adderall).",
+              "Saya menggunakan obat bius atau penenang (cont: obat tidur atau Valium)",
+              "Saya menggunakan obat untuk kesenangan (cont: ekstasi).",
+              "Saya menggunakan metamfetamin."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya menggunakan ganja.",
+              "Saya menggunakan kokain.",
+              "Saya menggunakan heroin"
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya menggunakan halusinogen (cont: LSD)."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Saya menggunakan inhalants atau solvents (cont: lem)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 9,
+    "name": "Rizal Ramadhan",
+    "persona": "Sebagai mahasiswa filsafat, saya sering merenungkan makna kebebasan dan tanggung jawab dalam konteks emosi. Saya percaya bahwa pemahaman diri bisa membawa kita pada kehidupan yang lebih autentik. Saya terbuka untuk diskusi yang mendalam dan penuh respek.",
+    "sections": [
+      "Opening",
+      "Depression",
+      "Sleep Disturbance",
+      "Memory",
+      "Ending"
+    ],
+    "question_map": {
+      "Depression": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa tidak berguna",
+              "Saya merasa tidak berdaya",
+              "Saya merasa sedih",
+              "Saya merasa seperti seorang yang gagal",
+              "Saya merasa tertekan",
+              "Saya merasa tidak bahagia",
+              "Saya merasa putus asa"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa tidak memiliki apa-apa untuk diharapkan"
+            ]
+          }
+        ]
+      },
+      "Sleep Disturbance": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak sama sekali"
+          },
+          {
+            "score": 2,
+            "description": "Sedikit"
+          },
+          {
+            "score": 3,
+            "description": "Bisa dibilang begitu"
+          },
+          {
+            "score": 4,
+            "description": "Cukup sering"
+          },
+          {
+            "score": 5,
+            "description": "Hampir selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "tidur saya tidak nyenyak",
+              "tidur saya memuaskan",
+              "tidur saya menyegarkan",
+              "saya mengalami kesulitan tidur",
+              "saya memiliki masalah untuk tetap tidur",
+              "saya memiliki masalah tidur",
+              "saya merasa tidur dengan cukup"
+            ]
+          }
+        ]
+      },
+      "Memory": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Sangat tidak setuju"
+          },
+          {
+            "score": 2,
+            "description": "Tidak setuju"
+          },
+          {
+            "score": 3,
+            "description": "Ragu-ragu"
+          },
+          {
+            "score": 4,
+            "description": "Setuju"
+          },
+          {
+            "score": 5,
+            "description": "Sangat setuju"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Ada sesuatu yang sangat salah terkait ingatan saya.",
+              "Ketika saya lupa akan sesuatu, saya takut saya memiki masalah ingatan yang serius, seperti penyakit Alzheimer\u2019s.",
+              "Ingatan saya lebih buruk daripada kebanyakan orang seusia saya.",
+              "Saya merasa tidak bahagia jika memikirkan tentang daya ingat saya.",
+              "Saya khawatir orang lain akan menyadari bahwa ingatan saya tidak begitu bagus.",
+              "Saya memiliki kekhawatiran akan daya ingat saya.",
+              "Saya malu akan daya ingat saya.",
+              "Saya merasa jengkel atau kesal dengan diri saya sendiri ketika saya lupa.",
+              "Saya khawatir dengan daya ingat saya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Secara umum saya merasa senang dengan daya ingatan saya.",
+              "Saya percaya diri dengan kemampuan saya dalam mengingat sesuatu.",
+              "Ketika saya memiliki masalah dalam mengingat sesuatu, saya bisa memaklumi itu.",
+              "Secara umum saya merasa puas dengan daya ingat saya.",
+              "Saya tidak kesal ketika memiliki masalah dalam mengingat sesuatu."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Daya ingat saya sangat menurun akhir-akhir ini."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Daya ingat saya baik untuk seusia saya."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Jika ada sesuatu yang penting, mungkin saya akan mengingatnya.",
+              "Saya khawatir saya akan melupakan sesuatu yang penting."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "dialog_id": 10,
+    "name": "Lia Farhana",
+    "persona": "Saya mahasiswa komunikasi yang tertarik pada cara kita menyampaikan dan menerima emosi. Saya percaya bahwa pola pikir kita sangat dipengaruhi oleh gaya komunikasi yang kita pelajari sejak kecil. Saya menghargai dialog yang hangat, terbuka, dan penuh empati.",
+    "sections": [
+      "Opening",
+      "Anger",
+      "Anxiety",
+      "Dissociation",
+      "Ending"
+    ],
+    "question_map": {
+      "Anger": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa jengkel melebihi yang orang lain ketahui",
+              "Saya merasa marah",
+              "Saya merasa kesal",
+              "Saya merasa terganggu"
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa bahwa saya siap meledakan emosi"
+            ]
+          }
+        ]
+      },
+      "Anxiety": {
+        "scoring_system": [
+          {
+            "score": 1,
+            "description": "Tidak pernah"
+          },
+          {
+            "score": 2,
+            "description": "Jarang"
+          },
+          {
+            "score": 3,
+            "description": "Kadang-kadang"
+          },
+          {
+            "score": 4,
+            "description": "Sering"
+          },
+          {
+            "score": 5,
+            "description": "Selalu"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya merasa takut.",
+              "Saya merasa cemas.",
+              "Saya merasa khawatir.",
+              "Saya merasa gugup.",
+              "Saya merasa tidak nyaman.",
+              "Saya merasa tegang."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Saya merasa sulit untuk fokus pada hal lain selain kecemasan saya."
+            ]
+          }
+        ]
+      },
+      "Dissociation": {
+        "scoring_system": [
+          {
+            "score": 0,
+            "description": "Tidak pernah sama sekali"
+          },
+          {
+            "score": 1,
+            "description": "Sekali atau dua kali"
+          },
+          {
+            "score": 2,
+            "description": "Hampir setiap hari"
+          },
+          {
+            "score": 3,
+            "description": "Kira-kira sekali sehari"
+          },
+          {
+            "score": 4,
+            "description": "Lebih dari sekali sehari"
+          }
+        ],
+        "grouped_questions": [
+          {
+            "group_id": 1,
+            "questions": [
+              "Saya mendapati diri saya melamun dan tidak memikirkan apa pun.",
+              "Saya mendapati diri saya melakukan hal-hal yang saya tidak ingat pernah melakukannya."
+            ]
+          },
+          {
+            "group_id": 2,
+            "questions": [
+              "Orang-orang, benda-benda, atau dunia di sekitar saya tampak aneh atau tidak nyata.",
+              "Saya merasa seolah-olah saya sedang melihat melalui kabut sehingga orang-orang dan benda-benda tampak jauh atau tidak jelas."
+            ]
+          },
+          {
+            "group_id": 3,
+            "questions": [
+              "Saya bertindak sangat berbeda dari satu situasi ke situasi lainnya sehingga seolah-olah saya adalah dua orang yang berbeda."
+            ]
+          },
+          {
+            "group_id": 4,
+            "questions": [
+              "Ketika sedang sendirian, saya berbicara dengan bersuara pada diri saya sendiri."
+            ]
+          },
+          {
+            "group_id": 5,
+            "questions": [
+              "Saya dengan mudah melakukan hal-hal yang biasanya sulit bagi saya."
+            ]
+          },
+          {
+            "group_id": 6,
+            "questions": [
+              "Saya mampu mengabaikan rasa sakit."
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

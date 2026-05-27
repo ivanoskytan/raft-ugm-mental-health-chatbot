@@ -17,19 +17,19 @@ class RAFTDataPreparationPipeline:
         self.phases = {
             1: ("Persona Generation", PhaseOnePersonaGeneration(api_key, model),
                 os.path.join(self.BASE_DIR, "external_data", "grouped_mental_health_screening.json"),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_01_persona_generation.json")),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_01_persona_generation.json")),
             2: ("Dialogue Expansion", PhaseTwoDialogExpansion(api_key, model),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_01_persona_generation.json"),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_02_dialog_expansion.json")),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_01_persona_generation.json"),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_02_dialog_expansion.json")),
             3: ("Document Refinement", PhaseThreeDocumentRefinement(api_key, model),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_02_dialog_expansion.json"),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_03_document_refinement.json")),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_02_dialog_expansion.json"),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_03_document_refinement.json")),
             4: ("CoT Augmentation", PhaseFourCoTAugmentation(api_key, model),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_03_document_refinement.json"),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_04_cot_augmentation.json")),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_03_document_refinement.json"),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_04_cot_augmentation.json")),
             5: ("Final Dataset Formatting", PhaseFiveFineTuningFormatting(api_key, model),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_04_cot_augmentation.json"),
-                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v2", "phase_05_fine_tuning_formatting.json")),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_04_cot_augmentation.json"),
+                os.path.join(self.BASE_DIR, "chatbot_engine", "raft_preparation_pipeline", "output", "v3", "phase_05_fine_tuning_formatting.json")),
         }
 
     def run_pipeline(self, target_phase=None):
