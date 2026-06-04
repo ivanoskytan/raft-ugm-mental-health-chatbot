@@ -35,8 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutConfirmBtn = document.getElementById("logout-confirm-btn");
 
     const welcomePlaceholder = document.getElementById("welcome-placeholder");
+    const endSessionModal = document.getElementById("end-session-modal");
+    const endCancelBtn = document.getElementById("end-cancel-btn");
+    const endConfirmBtn = document.getElementById("end-confirm-btn");
 
     const sendBtn = document.getElementById("send-btn");
+    const endSessionBtn = document.getElementById("end-session-btn");
 
     let activeModalChatId = null;
     let activeModalElement = null;
@@ -118,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
             sendBtn.style.opacity = "0.5";
             sendBtn.style.cursor = "not-allowed";
         }
-
     }
 
     async function loadUserProfile() {
@@ -226,6 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const totalPercentage = res.data["total_percentage"] || 0;
         const totalQuestionAnswered = res.data["total_answered"] || 0;
+        localStorage.setItem("total_answered", totalQuestionAnswered);
 
         totalProgressBar.innerHTML = `
             <div id="total_progress-fill" style="width:${totalPercentage}%"></div>
@@ -480,32 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 addMessage(resData.ai_response, "bot");
 
                 if (window.currentSection === "Ending") {
-                    addChatProcessing();
-                    deactivateMessageInput();
-
-                    const endChatRes = await apiFetch("api/chat/end-chat", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            chat_id: window.currentChatId,
-                            user_id: user_id
-                        })
-                    });
-
-                    const processingTextEl = document.querySelector("#chat-processing-overlay .processing-text");
-                    if (processingTextEl) {
-                        processingTextEl.textContent = "Percakapan selesai. Mengirimkan hasil asesmen ke email Anda...";
-                    }
-
-                    setTimeout(() => {
-                        removeChatProcessing();
-                        
-                        if (endChatRes && !endChatRes.error) {
-                            emailSuccessModal.classList.add("show");
-                        } else {
-                            alert("Percakapan selesai, namun terjadi kesalahan saat mengirim email. Silakan coba lagi nanti.");
-                        }
-                    }, 1800);
-
+                    await executeEndChat();
                 }
                 
             } catch (error) {
@@ -515,6 +494,71 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }, 2000);
     });
+
+    endSessionBtn.addEventListener("click", () => {
+        if (!currentChatId) {
+            alert("Tidak ada sesi percakapan aktif yang bisa diakhiri.");
+            return;
+        }
+        const TOTAL_QUESTIONS = 44;
+        const storedAnswered = parseInt(localStorage.getItem("total_answered")) || 0;
+        const remainingQuestions = TOTAL_QUESTIONS - storedAnswered;
+        const modalDesc = endSessionModal.querySelector("p");
+
+        if (modalDesc) {
+            if (remainingQuestions > 0) {
+                modalDescription.innerHTML = `Masih ada <strong>${remainingQuestions} pertanyaan tersisa</strong>. Apakah Anda yakin ingin menyelesaikan sesi ini? Hasil asesmen parsial akan langsung dikirimkan ke email Anda.`;
+            } else {
+                modalDescription.innerHTML = `Semua pertanyaan telah selesai dijawab. Apakah Anda yakin ingin mengakhiri sesi dan mengirimkan hasil asesmen ke email Anda?`;
+            }
+        }
+        endSessionModal.classList.add("show");
+    });
+
+    endCancelBtn.addEventListener("click", () => {
+        endSessionModal.classList.remove("show");
+    });
+
+    endConfirmBtn.addEventListener("click", async () => {
+        endSessionModal.classList.remove("show");
+        await executeEndChat();
+        localStorage.removeItem("total_answered");
+    });
+
+    async function executeEndChat() {
+        try {
+            addChatProcessing();
+            deactivateMessageInput();
+    
+            const endChatRes = await apiFetch("api/chat/end-chat", {
+                method: "POST",
+                body: JSON.stringify({
+                    chat_id: window.currentChatId,
+                    user_id: user_id
+                })
+            });
+    
+            const processingTextEl = document.querySelector("#chat-processing-overlay .processing-text");
+            if (processingTextEl) {
+                processingTextEl.textContent = "Percakapan selesai. Mengirimkan hasil asesmen ke email Anda...";
+            }
+    
+            setTimeout(() => {
+                removeChatProcessing();
+                
+                if (endChatRes && !endChatRes.error) {
+                    emailSuccessModal.classList.add("show");
+                } else {
+                    alert("Percakapan selesai, namun terjadi kesalahan saat mengirim email. Silakan coba lagi nanti.");
+                }
+            }, 1800);
+
+        } catch (error) {
+            removeChatProcessing();
+            console.error("[Client] - Error executing end chat routine: ", error);
+            alert("Terjadi kesalahan koneksi saat mencoba mengakhiri percakapan.");
+        }
+    };
 
     window.addEventListener("click", (e) => {
         if (e.target === renameModal) renameModal.classList.remove("show");

@@ -357,7 +357,10 @@ body {
     background-color: #2f60f5;
     color: #ffffff;            
     border: none;
-    border-radius: 10px;        
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;    
     width: 46px;
     height: 46px;
     cursor: pointer;
@@ -378,6 +381,42 @@ body {
 }
 
 #send-btn:disabled {
+    background-color: #1c2028;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+#end-session-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f59f2f;
+    color: #ffffff;            
+    border: none;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;      
+    width: 46px;
+    height: 46px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#end-session-btn .material-icons {
+    font-size: 20px !important;
+}
+
+#end-session-btn:hover {
+    background-color: #f79210; 
+}
+
+#end-session-btn:active {
+    transform: scale(0.95);
+}
+
+#end-session-btn:disabled {
     background-color: #1c2028;
     color: #64748b;
     cursor: not-allowed;
