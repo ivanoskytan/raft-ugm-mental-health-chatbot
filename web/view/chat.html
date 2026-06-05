@@ -58,9 +58,14 @@
             <button type="submit" id="send-btn" title="Kirim">
                 <span class="material-icons">send</span>
             </button>
-            <button type="button" id="end-session-btn" title="Akhiri sesi percakapan">
-                <span class="material-icons">speaker_notes_off</span>
-            </button>
+            <div class="end-session-wrapper" style="position: relative; display: inline-block;">
+                <button type="button" id="end-session-btn" title="Akhiri sesi percakapan">
+                    <span class="material-icons">speaker_notes_off</span>
+                </button>
+                <div id="end-session-tooltip" class="custom-tooltip">
+                    Jawab minimal 5 pertanyaan untuk mengaktifkan tombol ini.
+                </div>
+            </div>
         </form>
     </div>
 

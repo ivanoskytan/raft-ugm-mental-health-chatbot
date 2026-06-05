@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sendBtn = document.getElementById("send-btn");
     const endSessionBtn = document.getElementById("end-session-btn");
+    const endSessionTooltip = document.getElementById("end-session-tooltip");
 
     let activeModalChatId = null;
     let activeModalElement = null;
@@ -117,11 +118,12 @@ document.addEventListener("DOMContentLoaded", () => {
             messageInput.value = "";
             messageInput.placeholder = "Sesi percakapan ini telah berakhir.";
         }
-        if (sendBtn) {
-            sendBtn.disabled = true;
-            sendBtn.style.opacity = "0.5";
-            sendBtn.style.cursor = "not-allowed";
-        }
+        sendBtn.disabled = true;
+        sendBtn.style.opacity = "0.4";
+        sendBtn.style.cursor = "not-allowed";
+        endSessionBtn.disabled = true;
+        endSessionBtn.style.opacity = "0.4";
+        endSessionBtn.style.cursor = "not-allowed";
     }
 
     async function loadUserProfile() {
@@ -241,6 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     
         aspectList.innerHTML = "";
+        checkEndSessionAvailability();
     
         // res.data["aspect_progress"].forEach(item => {
         //     const section = item.section;
@@ -440,10 +443,49 @@ document.addEventListener("DOMContentLoaded", () => {
         chatWindow.appendChild(overlay);
     }
 
+    function setFormProcessingState(isProcessing) {
+        const sendIcon = sendBtn.querySelector(".material-icons");
+        if (isProcessing) {
+            sendBtn.disabled = true;
+            endSessionBtn.disabled = true;
+            sendIcon.textContent = "sync";
+            sendIcon.classList.add("spin-animation");
+        } else {
+            sendBtn.disabled = false;
+            endSessionBtn.disabled = false;
+            sendIcon.textContent = "send";
+            sendIcon.classList.remove("spin-animation");
+        }
+    }
+
     function removeChatProcessing() {
         const overlay = document.getElementById("chat-processing-overlay");
         if (overlay) overlay.remove();
     }
+
+    function checkEndSessionAvailability() {
+        const storedAnswered = localStorage.getItem("total_answered") || 0;
+
+        if (storedAnswered < 5) {
+            endSessionBtn.disabled = true;
+            endSessionBtn.classList.add("btn-locked");
+            return false;
+        } else {
+            endSessionBtn.disabled = false;
+            return true;
+        }
+    }
+
+    endSessionBtn.addEventListener("mouseenter", () => {
+        const isAvailable = checkEndSessionAvailability();
+        if (!isAvailable) {
+            endSessionTooltip.classList.add("show-tooltip");
+        }
+    });
+
+    endSessionBtn.addEventListener("mouseleave", () => {
+        endSessionBtn.classList.remove("show-tooltip");
+    });
 
     chatForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -459,6 +501,7 @@ document.addEventListener("DOMContentLoaded", () => {
         addMessage(userAnswer, "user");
         messageInput.value = "";
 
+        setFormProcessingState(true);
         showLoading();
 
         setTimeout(async () => {
@@ -491,6 +534,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 removeLoading();
                 addMessage("Maaf, terjadi kesalahan koneksi.", "bot");
                 console.error("[Client] - Error ending chat processing: ", error);
+            } finally {
+                setFormProcessingState(false);
             }
         }, 2000);
     });
@@ -507,9 +552,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (modalDesc) {
             if (remainingQuestions > 0) {
-                modalDescription.innerHTML = `Masih ada <strong>${remainingQuestions} pertanyaan tersisa</strong>. Apakah Anda yakin ingin menyelesaikan sesi ini? Hasil asesmen parsial akan langsung dikirimkan ke email Anda.`;
+                modalDesc.innerHTML = `Masih ada <strong>${remainingQuestions} pertanyaan tersisa</strong>. Apakah Anda yakin ingin menyelesaikan sesi ini? Hasil asesmen parsial akan langsung dikirimkan ke email Anda.`;
             } else {
-                modalDescription.innerHTML = `Semua pertanyaan telah selesai dijawab. Apakah Anda yakin ingin mengakhiri sesi dan mengirimkan hasil asesmen ke email Anda?`;
+                modalDesc.innerHTML = `Semua pertanyaan telah selesai dijawab. Apakah Anda yakin ingin mengakhiri sesi dan mengirimkan hasil asesmen ke email Anda?`;
             }
         }
         endSessionModal.classList.add("show");
@@ -568,6 +613,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadUserProfile();
     loadUserChats();
     loadAspectProgress();
+    checkEndSessionAvailability();
 });
 
 
