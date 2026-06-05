@@ -14,11 +14,15 @@ class ChatbotEngine:
             api_key=settings.OPENAI_API_KEY,
             model=settings.FINE_TUNED_MODEL
         )
+        self.model_client = GPTClient(
+            api_key=settings.OPENAI_API_KEY,
+            model="gpt-4o"
+        )
         self.logger = logging.getLogger("ChatbotEngine")
         self.retriever = Retriever()
         return
     
-    def generate_response(self, user_query):
+    def generate_assistant_response(self, user_query):
         user_answer = user_query.get("user_answer", "")
         group_id = user_query.get("group_id", "")
         section = user_query.get("section", "")
@@ -195,7 +199,76 @@ Return ONLY a valid, minified JSON object matching the requested schema branch. 
             }
 
             return response
+        except KeyError as e:
+            return {
+                "error": f"[Chatbot Engine]: Missing expected key in model response - {str(e)}"
+            }
         except json.JSONDecodeError:
             return {
                 "error": "[Chatbot Engine]: Model returned invalid JSON format"
+            }
+
+    def generate_assessment_summary(self, assessment_result):
+        system_prompt = """"
+        You are an expert clinical psychologist and data analysis engine specializing in mental health screenings. The user has completed a self-assessment screening across multiple psychological categories.
+OBJECTIVE: Analyze the raw input data consisting of questions and the user's subjective frequency responses. Generate a structured, empathetic, and professional diagnostic summary mapping out clinical trends, notable elevations, and clear recommendations.
+STYLE: Professional, clinical, objective yet highly compassionate.
+TONE: Empathetic, supportive, clear, and actionable.
+AUDIENCE: The individual patient (written in a clear, easy-to-understand manner) and their care practitioners.
+You must write the entire response summary in Indonesian (Bahasa Indonesia). Use clear, polite, and professional Indonesian medical/psychological terminology.
+
+RESPONSE FORMAT:
+1. Executive Summary: An overall synthesis of their current mental baseline.
+2. Domain Breakdown: Highlight sections showing elevated behaviors (e.g., 'Sering' or 'Selalu' metrics).
+3. Actionable Next Steps: Practical wellness advice and a standard disclaimer to consult a licensed professional.
+        """
+
+        BASE_DIR = os.path.join(os.path.dirname(__file__), "..")
+        grouped_mental_health_screening = os.path.join(BASE_DIR, "external_data", "grouped_mental_health_screening.json")
+
+        scoring_lookup = {}
+        with open(grouped_mental_health_screening, "r", encoding="utf-8") as f:
+            grouped_questions = json.load(f)
+            for group in grouped_questions:
+                section_name = group.get("section")
+                if section_name:
+                    scoring_lookup[section_name] = {
+                        item["score"]: item["description"] for item in group.get("scoring_system", [])  
+                    }
+
+        payload = []
+        for item in assessment_result:
+            section_name = item.get("section")
+            questions = item.get("questions", [])
+
+            section_scores = scoring_lookup.get(section_name, {})
+            section_payload = {
+                "section": section_name,
+                "answers": []
+            }
+
+            for q in questions:
+                score_val = q.get("score")
+                description = section_scores.get(score_val, "Tidak diketahui")
+
+                section_payload["answers"].append({
+                    q.get("original_question"): description 
+                })
+
+            payload.append(section_payload)
+
+        try:
+            response = self.model_client.run_prompt(
+                system_prompt=system_prompt,
+                user_prompt=json.dumps(payload),
+                temperature=0.5
+            )
+            return response
+        except KeyError as e:
+            return {
+                "error": f"[Chatbot Engine]: Missing expected key in model response - {str(e)}"
+            }
+        except json.JSONDecodeError:
+            return {
+                "error": "[Chatbot Engine]: Model returned invalid JSON format for assessment summary"
             }

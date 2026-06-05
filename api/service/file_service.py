@@ -26,7 +26,6 @@ class FileService:
             header_fill = PatternFill(start_color="4CAF50", end_color="4CAF50", fill_type="solid")
             yellow_fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
             center_align = Alignment(horizontal="center", vertical="center", wrap_text=True)
-            left_align = Alignment(horizontal="left", vertical="center", wrap_text=True)
 
             thin_border = Border(
                 left=Side(style="thin"),

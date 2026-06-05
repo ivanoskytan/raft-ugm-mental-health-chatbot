@@ -8,10 +8,12 @@ from config.config import Settings
 class EmailService:
 
     @staticmethod
-    def send_gmail(file_content, file_url, file_name, recipient):
+    def send_gmail(file_content, file_url, file_name, summary, recipient):
         try: 
             msg = MIMEMultipart()
             settings = Settings.load()
+
+            formatted_summary = summary.replace('\n', '<br>') if summary else "Tidak ada ringkasan tersedia."
 
             html_content = f"""
             <html>
@@ -36,9 +38,18 @@ class EmailService:
                             Hasil asesmen Anda telah selesai diproses dan <strong style="color: #ffffff; font-weight: 600;">telah kami lampirkan dalam bentuk file Excel</strong> pada email ini. Silakan unduh lampiran di bawah untuk melihat detail skor per bagian.
                         </p>
 
+                        <div style="background: #1c2028; border: 1px solid #2e3545; padding: 1.25rem; border-radius: 10px; margin: 1.5rem 0; box-sizing: border-box;">
+                            <span style="font-size: 0.85rem; color: #3b82f6; font-weight: 700; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                📝 Ringkasan Analisis Psikologis
+                            </span>
+                            <div style="font-size: 0.9rem; color: #d1d5db; line-height: 1.6; word-wrap: break-word;">
+                                {formatted_summary}
+                            </div>
+                        </div>
+
                         <div style="background: #1c2028; border: 1.5px solid #1e222b; padding: 1rem; border-radius: 10px; margin: 1.5rem 0; box-sizing: border-box;">
                             <span style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Hasil Asesmen
+                                Dokumen Lampiran
                             </span>
                             <div style="text-align: center; margin: 2rem 0;">
                                 <a href="{file_url}" target="_blank" style="display: inline-block; height: 46px; line-height: 46px; background: #2f60f5; color: #ffffff; text-decoration: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; padding: 0 24px; box-sizing: border-box; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(47, 96, 245, 0.2);">
@@ -56,7 +67,7 @@ class EmailService:
                         <p style="margin: 0; text-align: center; font-size: 0.85rem; color: #9ca3af; line-height: 1.4;">
                             Salam hangat,<br>
                             <strong style="color: #ffffff; font-weight: 600; display: inline-block; margin-top: 4px;">
-                                Chatbot Kesehatan Mental UGM
+                                Chatbot Asesmen Kesehatan Mental UGM
                             </strong>
                         </p>
                     </div>

@@ -106,7 +106,7 @@ class ChatController:
                 "prev_assistant_response": last_assistant_response
             }
                     
-            engine_response = chatbot_engine.generate_response(user_query)
+            engine_response = chatbot_engine.generate_assistant_response(user_query)
 
             is_a_survey = data["section"] not in ["Opening", "Ending"] 
             
@@ -203,10 +203,13 @@ class ChatController:
                         "questions": question_scores_list
                     })
             is_file_created, file_path, file_bytes, message = FileService.save_into_excel(assessment_map, chat_id)
+            summary = chatbot_engine.generate_assessment_summary(assessment_map)
+            
             if is_file_created:
                 updated_chat, message = ChatService.update_chat(chat_id, {
                     "valid": True,
-                    "excel_file_path": file_path
+                    "excel_file_path": file_path,
+                    "summary": summary,
                 })
                 logger.info(f"Chat {chat_id} is updated with file path: {file_path}")
                 if not updated_chat:
@@ -229,7 +232,7 @@ class ChatController:
             short_id = chat_id[:6] 
             file_name = f"Hasil Asesmen_{short_id}.xlsx"
             
-            is_email_sent, message = EmailService.send_gmail(file_bytes, file_path, file_name, user_data.email)
+            is_email_sent, message = EmailService.send_gmail(file_bytes, file_path, file_name, summary, user_data.email)
             logger.info(f"Email sending status for chat {chat_id} to user {user_id} ({user_data.email}): {is_email_sent}, message: {message}")
             
             if not is_email_sent:
