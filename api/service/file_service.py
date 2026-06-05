@@ -5,6 +5,8 @@ from config.config import Settings
 import io
 import datetime
 import logging
+import os
+import json
 
 logger = logging.getLogger("FileService")
 settings = Settings.load()
@@ -22,6 +24,7 @@ class FileService:
 
             header_font = Font(bold=True, color="FFFFFF")
             header_fill = PatternFill(start_color="4CAF50", end_color="4CAF50", fill_type="solid")
+            yellow_fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
             center_align = Alignment(horizontal="center", vertical="center", wrap_text=True)
             left_align = Alignment(horizontal="left", vertical="center", wrap_text=True)
 
@@ -32,13 +35,26 @@ class FileService:
                 bottom=Side(style="thin"),
             )
 
+            BASE_DIR = os.path.join(os.path.dirname(__file__), "..", "..")
+            list_mental_health_screening_path = os.path.join(BASE_DIR, "external_data", "original_mental_health_screening.json")
+            
+            scoring_lookup = {}
+            if os.path.exists(list_mental_health_screening_path):
+                with open(list_mental_health_screening_path, "r", encoding="utf-8") as f:
+                    screening_data = json.load(f)
+                    for group in screening_data:
+                        scoring_lookup[group["section"]] = group.get("scoring_system", [])
+
+
             for section_data in assessment_map:
                 section_name = section_data["section"]
                 questions = section_data["questions"]
 
                 sheet = wb.create_sheet(title=section_name)
 
-                headers = ["No.", "Pertanyaan", "Skor"]
+                section_scoring = scoring_lookup.get(section_name, [])
+
+                headers = ["No.", "Pertanyaan"] + [str(item["score"]) for item in section_scoring] 
 
                 sheet.append(headers)
 
@@ -46,27 +62,30 @@ class FileService:
                     cell = sheet.cell(row=1, column=col)
                     cell.font = header_font
                     cell.fill = header_fill
-                    cell.alignment = center_align
-                    cell.border = thin_border
-
+                    cell.alignment = center_align   
+                    cell.border = thin_border   
+                
                 for idx, q in enumerate(questions, start=1):
-                    sheet.append([
-                        idx,
-                        q["original_question"],
-                        q["score"]
-                    ])
+                    row_data = [idx, q["original_question"]]
+                    for item in section_scoring:
+                        row_data.append(item["description"])
+                    
+                    sheet.append(row_data)
 
-                for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
-                    for cell in row:
-                        cell.border = thin_border
-                        if cell.column == 1 or cell.column == 3:
-                            cell.alignment = center_align
-                        else:
-                            cell.alignment = left_align
+                    current_row = sheet.max_row
+                    user_score = q.get("score")
+
+                    for option_idx, item in enumerate(section_scoring, start=3):
+                        cell = sheet.cell(row=current_row, column=option_idx)
+                        if item["score"] == user_score:
+                            cell.fill = yellow_fill
 
                 sheet.column_dimensions["A"].width = 6
                 sheet.column_dimensions["B"].width = 60
-                sheet.column_dimensions["C"].width = 10
+
+                for col_idx in range(3, len(headers) + 1):
+                    col_letter = chr(64 + col_idx) if col_idx <= 26 else f"A{chr(38 + col_idx)}"
+                    sheet.column_dimensions[col_letter].width = 16
 
             file_name = f"Asesmen Kesehatan Mental_{chat_id}.xlsx"
 
