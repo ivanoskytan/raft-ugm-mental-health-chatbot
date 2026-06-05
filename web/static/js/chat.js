@@ -242,8 +242,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div id="total_progress-percentage">${totalPercentage}%</div>
         `;
     
-        aspectList.innerHTML = "";
         checkEndSessionAvailability();
+        aspectList.innerHTML = "";
     
         // res.data["aspect_progress"].forEach(item => {
         //     const section = item.section;
@@ -472,6 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return false;
         } else {
             endSessionBtn.disabled = false;
+            endSessionBtn.classList.remove("btn-locked");
             return true;
         }
     }
@@ -484,7 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     endSessionBtn.addEventListener("mouseleave", () => {
-        endSessionBtn.classList.remove("show-tooltip");
+        endSessionTooltip.classList.remove("show-tooltip");
     });
 
     chatForm.addEventListener("submit", async (e) => {
@@ -608,6 +609,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("click", (e) => {
         if (e.target === renameModal) renameModal.classList.remove("show");
         if (e.target === deleteModal) deleteModal.classList.remove("show");
+        if (e.target === endSessionModal) endSessionModal.classList.remove("show");
     });
     
     loadUserProfile();
