@@ -39,9 +39,9 @@ class ChatController:
                     "message": message
                 }), 400
             
-            user = UserService.get_user_detail(user_id=user_id)
+            userDetail, _ = UserService.get_user_detail(user_id=user_id)
 
-            username = user.username if user and hasattr(user, "username") else "Teman"
+            username = userDetail.to_dict()["username"] if userDetail else "Teman"
 
             opening_ai_response = (
                 f"Halo {username}, terima kasih sudah meluangkan waktu untuk berbincang hari ini. "

@@ -37,8 +37,8 @@ class PhaseFiveFineTuningFormatting:
 
                 next_msg = messages[i+1] if i + 1 < len(messages) else {}
                 
-                current_questions_group = self._format_questions_group(msg.get("question_group_scores") or [])
-                next_questions_group = self._format_questions_group(next_msg.get("question_group_scores") or [])
+                current_questions_group = self._format_questions_group(msg.get("grouped_questions_score") or [])
+                next_questions_group = self._format_questions_group(next_msg.get("grouped_questions_score") or [])
 
                 if msg_type == "Opening":
                     formatted_messages.append({
@@ -48,7 +48,7 @@ class PhaseFiveFineTuningFormatting:
                             "type": "Opening",
                             "section": current_section,
                             "group_id": 0,
-                            "current_assistant_response": msg.get("current_assistant_response", ""),
+                            "prev_assistant_response": msg.get("current_assistant_response", ""),
                             "user_answer": msg.get("user_content", ""),
                             "current_questions": current_questions_group,
                             "next_questions": next_questions_group,
@@ -73,7 +73,7 @@ class PhaseFiveFineTuningFormatting:
                             "section": current_section,
                             "group_id": current_group_id,
                             "user_answer": msg.get("user_content", ""),
-                            "current_assistant_response": msg.get("current_assistant_response", ""),
+                            "prev_assistant_response": msg.get("current_assistant_response", ""),
                             "current_questions": current_questions_group,
                             "next_questions": next_questions_group,
                             "scoring_system": next_msg.get("scoring_system", []),
@@ -85,8 +85,8 @@ class PhaseFiveFineTuningFormatting:
                         "role": "assistant",
                         "content": json.dumps(
                             {
-                            "scores": msg.get("question_group_scores", []),
-                            "chain_of_thought": msg.get("cot_augmentation", ""),
+                            "scores": msg.get("grouped_questions_score", []),
+                            "chain_of_thought": msg.get("chain_of_thought", ""),
                             "next_assistant_response": msg.get("following_assistant_response", "")
                         }, ensure_ascii=False)
                     })

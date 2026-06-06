@@ -1,186 +1,181 @@
 from chatbot_engine.llm_client import GPTClient
 import json
 import logging
+import re
 
 class PhaseFourCoTAugmentation:
     def __init__(self, api_key, model="gpt-4o"):
         self.gpt_client = GPTClient(api_key=api_key, model=model)
         self.logger = logging.getLogger("PhaseFourCOTAugmentation")
         
-    def generate_raft_cot(self, section, current_context_question, user_answer, upcoming_base_question, scoring_system=None, reference_texts=None):
-        system_prompt = """
-You are a RAFT (Retrieval-Augmented Fine-Tuning) Dataset Expert specializing in clinical psychology and structured JSON formatting.
-Your objective is to generate an internal Chain-of-Thought (CoT) and construct the ideal conversational assistant response based on the screening phase section.
+    def _execute_pass_1_reasoning(self, section, current_context_question, user_answer, reference_texts):
+        """Pass 1: Pure clinical analysis and validation anchoring."""
+        system_prompt = """You are a Clinical Psychology Data Architect. Your sole objective is to analyze reference documents against a user's answer to isolate the exact clinical framework and generate a concise validation anchor.
 
-Determine the operational branch based on the provided 'Section':
+You MUST respond with a valid JSON object containing exactly ONE key: "chain_of_thought".
 
-BRANCH A: If Section is "Opening"
-- Do NOT perform RAG evaluation. 
-- Rewrite the provided 'UPCOMING BASE QUESTION' to add a warm, inviting clinical opening (e.g., "Bagus, mari kita mulai ya. Mengenai perasaan seperti..."). 
-- Smoothly connect this warm intro directly into that upcoming question as exactly ONE cohesive sentence or highly natural, non-fragmented phrase flow.
+### Operational Workflow
+1. Declare Oracle vs Distractors using format: "CHUNK [X] adalah Oracle. CHUNK [Y, Z, ...] adalah Distractors." (If section is "Opening" or "Ending" and no reference chunks exist, state: "CHUNK N/A adalah Oracle.")
+2. Write internal clinical reasoning in Indonesian explaining why the Oracle fits the user's psychological state.
+3. Identify the exact unique phrasing the user used in 'USER ANSWER'.
+4. At the absolute end of the string, you MUST write exactly: "FRASA VALIDASI VERBATIM: [Tulis klausa pendek di sini]"
+   * This clause MUST blend the user's phrasing and the Oracle's concept.
+   * It must act as a clinician validating the user (No "saya/aku/ku" referring to the assistant).
+   * Keep it under 12 words. Do not include statistics or textbook metrics.
+   * Example: "Menyadari bahwa perasaan kosong ini bersifat sementara menunjukkan langkah..."
 
-BRANCH B: If Section is "Ending"
-- Do NOT perform RAG evaluation.
-- Completely rephrase the provided 'UPCOMING BASE QUESTION' text to gracefully end the entire clinical conversation.
-- Focus on leaving the user feeling relieved, validated, and grounded. Express sincere gratitude to the user for taking their time and being open.
-
-BRANCH C: If Section is "Survey" (Standard RAG Flow)
-Execute these two tasks sequentially:
-  TASK 1: RAFT Evaluation & Grounding
-  - Analyze the provided 'RETRIEVED REFERENCE CHUNKS'. 
-  - Identify which specific chunk contains the core clinical definition, therapeutic framework, or validation guidelines required to contextualize the 'USER ANSWER' (which was given in response to 'QUESTION USER JUST ANSWERED'). Label this chunk as the 'Oracle'.
-  - Identify the remaining chunks that are irrelevant or noisy for this specific interaction. Label them as 'Distractors'.
-
-  TASK 2: Clinical Empathy Prefixing
-  - Review your identified 'Oracle' chunk to see how a professional clinician validates or normalizes this specific symptom presentation.
-  - Formulate an ultra-brief, warm empathy statement derived directly from that clinical insight.
-  - Prepend this empathetic validation prefix to the clean, unmodified 'UPCOMING BASE QUESTION' provided. 
-  - You MUST combine them into exactly ONE compound sentence using a smooth conversational transition (e.g., [Empathy prefix] + ['; namun ', '; lalu ', ' dan '] + [The unmodified upcoming base question]). No multiple sentences or breaks.
-
-CRITICAL RULES FOR THE JSON STRUCTURE:
-1. 'chain_of_thought': Must be written in Indonesian. It is internal clinical reasoning only. Do NOT address the user or use second-person pronouns (Anda, kamu). It must explicitly document the evaluation logic corresponding to the active branch (e.g., if Opening/Ending, explain the conversational positioning; if Survey, explicitly detail the Oracle/Distractor choices and how the clinical empathy style was extracted).
-2. 'assistant_question': Written in Indonesian. The final conversational output string generated from Branch A, B, or C.
-
-Return ONLY a valid, minified JSON object matching the schema below. Do not wrap in markdown blocks, do not add trailing text.
+### Output JSON Schema
 {
-    "chain_of_thought": "...",
-    "assistant_question": "..."
-}
-"""
+  "chain_of_thought": "..."
+}"""
+        user_prompt = f"""SECTION: {section}\nCONTEXT_QUESTION: {current_context_question}\nUSER ANSWER: {user_answer}\n\nRETRIEVED REFERENCE CHUNKS:\n{reference_texts if reference_texts else "N/A"}"""
+        
+        response = self.gpt_client.run_prompt(system_prompt=system_prompt, user_prompt=user_prompt)
+        return self._clean_and_parse_json(response)
 
-        user_prompt = f"""
-SCREENING CONTEXT:
-Section: {section}
-QUESTION USER JUST ANSWERED (The context for their reply): {current_context_question}
-USER ANSWER: {user_answer}
+    def _execute_pass_2_synthesis(self, section, user_answer, upcoming_base_question, chain_of_thought):
+        """Pass 2: Strict verbatim string assembly and upcoming question integration."""
+        system_prompt = """You are a Clinical Dialogue Synthesizer. Your sole objective is to take an internal clinical analysis (chain_of_thought) and convert its validation anchor into the final response text.
 
-SCORING SYSTEM RUBRIC:
-{scoring_system if scoring_system else "N/A"}
+You MUST respond with a valid JSON object containing exactly ONE key: "assistant_question".
 
-UPCOMING BASE QUESTION (Prepend the empathy prefix directly to this clean string):
-{upcoming_base_question}
+### Operational Workflow
+1. Locate the exact text inside "FRASA VALIDASI VERBATIM: [...]" at the end of the provided 'CHAIN OF THOUGHT'.
+2. STRIP THE QUOTES: Extract ONLY the text inside the anchor. If the anchor contains single quotes (') or double quotes ("), you MUST strip them out completely. Do not include raw quotation marks inside your final response.
 
-RETRIEVED REFERENCE CHUNKS:
-{reference_texts if reference_texts else "N/A"}
-"""
+3. EVALUATE TERMINAL STATUS (CRITICAL MECHANISM):
+   * [IF SECTION IS "Ending" OR UPCOMING BASE QUESTION IS EMPTY/N/A]: This is the absolute terminal turn of the interview. You are STRICTLY FORBIDDEN from asking any questions, inviting further statements, or using connectors. The final output must consist EXCLUSIVELY of the stripped validation text, modified slightly to read as a natural closing closing statement ending with exactly ONE period (.).
+   * [FOR ALL OTHER SECTIONS]: Look at the provided 'UPCOMING BASE QUESTION'. You are completely forbidden from changing its target focus, changing its words, or leaking into other symptom domains. Merge the validation clause and the upcoming question into one cohesive, beautifully flowing compound sentence using a natural conditional connector (e.g., ", dan berkaca dari situasi tersebut, apakah...").
 
-        response = self.gpt_client.run_prompt(
-            system_prompt=system_prompt,
-            user_prompt=user_prompt,
-        )
+4. BANNED CONNECTOR SYMBOLS: Do not use semicolons (;), dashes (—), or abrupt structural junctions.
+5. TOTAL OUTPUT CONSTRAINT: The final output must consist of exactly ONE natural sentence ending with exactly ONE trailing punctuation mark (? or .). No filler, no conversational meta-text.
 
+### Output JSON Schema
+{
+  "assistant_question": "..."
+}"""
+        user_prompt = f"""SECTION: {section}\nUSER ANSWER: {user_answer}\nUPCOMING BASE QUESTION: {upcoming_base_question if upcoming_base_question else "N/A"}\n\nCHAIN OF THOUGHT FROM PASS 1:\n{chain_of_thought}"""
+        
+        response = self.gpt_client.run_prompt(system_prompt=system_prompt, user_prompt=user_prompt)
+        return self._clean_and_parse_json(response)
+
+
+    def _clean_and_parse_json(self, response):
         try:
-            cleaned_response = response.strip().replace("```json", "").replace("```", "")
-            return json.loads(cleaned_response)
+            TRAILING_COMMA_REGEX = re.compile(r',\s*([\]}])')
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("\n", 1)[1]
+            if cleaned.endswith("```"):
+                cleaned = cleaned.rsplit("\n", 1)[0]
+            cleaned = cleaned.strip().replace("```json", "").replace("```", "")
+            
+            cleaned = TRAILING_COMMA_REGEX.sub(r'\1', cleaned)
+            
+            return json.loads(cleaned)
         except Exception as e:
-            self.logger.error(f"JSON parsing error in RAFT payload: {e} | Raw Response: {response}")
+            self.logger.error(f"JSON parsing error: {e} | Raw: {response}")
             raise
 
-    def run(self, refined_dialogs):
+    def generate_raft_cot(self, section, current_context_question, user_answer, upcoming_base_question, reference_texts=None):
+        pass1_output = self._execute_pass_1_reasoning(
+            section=section,
+            current_context_question=current_context_question,
+            user_answer=user_answer,
+            reference_texts=reference_texts
+        )
+        cot_string = pass1_output["chain_of_thought"]
+
+        pass2_output = self._execute_pass_2_synthesis(
+            section=section,
+            user_answer=user_answer,
+            upcoming_base_question=upcoming_base_question,
+            chain_of_thought=cot_string
+        )
+        
+        return {
+            "chain_of_thought": cot_string,
+            "assistant_question": pass2_output["assistant_question"]
+        }
+
+    def run(self, phase3_dialogs):
         augmented_dialogs = []
-
-        for dialog in refined_dialogs:
+        
+        for dialog in phase3_dialogs:
             dialog_id = dialog.get("dialog_id")
-            self.logger.info(f"Augmenting dialog_id={dialog_id} with RAFT methodology")
-
+            self.logger.info(f"Augmenting dialog_id={dialog_id} with Two-Pass Phase 4 Pipeline")
             augmented_messages = []
+            running_response = None
             messages = dialog.get("messages", [])
             
-            running_assistant_question = None
-
             for idx, msg in enumerate(messages):
                 msg_type = msg.get("type")
-                
-                if running_assistant_question is None:
+                user_content = msg.get("user_content", "")
+
+                if idx == 0 or running_response is None:
                     current_context_question = msg.get("assistant_content", "")
+                    if not current_context_question:
+                        current_context_question = msg.get("current_assistant_response", "")
                 else:
-                    current_context_question = running_assistant_question
+                    current_context_question = running_response
 
                 if idx + 1 < len(messages):
                     upcoming_base_question = messages[idx + 1].get("assistant_content", "")
+                    if not upcoming_base_question:
+                        upcoming_base_question = messages[idx + 1].get("current_assistant_response", "")
                 else:
-                    upcoming_base_question = msg.get("assistant_content", "")
+                    upcoming_base_question = ""
 
-                if msg_type == "Opening":
-                    try:
-                        raft_output = self.generate_raft_cot(
-                            section="Opening",
-                            current_context_question=current_context_question,
-                            user_answer=msg.get("user_content", ""),
-                            upcoming_base_question=upcoming_base_question
-                        )
-                        
-                        augmented_messages.append({
-                            "type": "Opening",
-                            "user_content": msg.get("user_content", ""),
-                            "cot_augmentation": raft_output["chain_of_thought"],
-                            "current_assistant_response": current_context_question,
-                            "following_assistant_response": raft_output["assistant_question"]
-                        })
-                        
-                        running_assistant_question = raft_output["assistant_question"]
-                    except Exception as e:
-                        self.logger.error(f"Failed processing Opening node: {e}")
-                        augmented_messages.append(msg)
-                    continue
-
+                formatted_refs = ""
                 if msg_type == "Survey":
                     documents = msg.get("set_of_documents", [])
-                    scoring_system = msg.get("scoring_system", [])
-                    
-                    formatted_refs = ""
                     for doc in documents:
                         formatted_refs += f"--- CHUNK {doc['rank']} (Similarity Score: {doc['score']:.4f}) ---\n{doc['chunk']}\n\n"
 
-                    try:
-                        raft_output = self.generate_raft_cot(
-                            section=msg.get("section", "Survey"),
-                            current_context_question=current_context_question,
-                            user_answer=msg.get("user_content", ""),
-                            upcoming_base_question=upcoming_base_question, # Pristine next target question
-                            scoring_system=scoring_system,
-                            reference_texts=formatted_refs
-                        )
+                try:
+                    raft_output = self.generate_raft_cot(
+                        section=msg.get("section", msg_type),
+                        current_context_question=current_context_question,
+                        user_answer=user_content,
+                        upcoming_base_question=upcoming_base_question,
+                        reference_texts=formatted_refs if msg_type == "Survey" else None
+                    )
 
-                        augmented_messages.append({
-                            "type": "Survey",
-                            "section": msg.get("section"),
-                            "user_content": msg.get("user_content"),
-                            "scoring_system": scoring_system,
-                            "set_of_documents": documents, 
-                            "cot_augmentation": raft_output["chain_of_thought"],
-                            "question_group_scores": msg.get("grouped_questions_score", []),
-                            "current_assistant_response": current_context_question,
-                            "following_assistant_response": raft_output["assistant_question"]
-                        })
+                    out_msg = {
+                        "type": msg_type,
+                        "chain_of_thought": raft_output["chain_of_thought"],
+                        "current_assistant_response": current_context_question,
+                        "user_content": user_content,
+                        "following_assistant_response": raft_output["assistant_question"]
+                    }
+                    
+                    if msg_type == "Survey":
+                        out_msg["section"] = msg.get("section")
+                        out_msg["scoring_system"] = msg.get("scoring_system", [])
+                        out_msg["grouped_questions_score"] = msg.get("grouped_questions_score", [])
+                        out_msg["set_of_documents"] = msg.get("set_of_documents", [])
 
-                        running_assistant_question = raft_output["assistant_question"]
+                    augmented_messages.append(out_msg)
+                    running_response = raft_output["assistant_question"]
 
-                    except Exception as e:
-                        self.logger.error(f"PhaseFour RAFT generation failed for dialog_id={dialog_id}: {e}")
-                        augmented_messages.append(msg)
-                    continue
-
-                if msg_type == "Ending":
-                    try:
-                        raft_output = self.generate_raft_cot(
-                            section="Ending",
-                            current_context_question=current_context_question,
-                            user_answer=msg.get("user_content", ""),
-                            upcoming_base_question=upcoming_base_question
-                        )
+                except Exception as e:
+                    self.logger.error(f"Generation failed at node index {idx}: {e}")
+                    
+                    fallback_msg = {
+                        "type": msg_type,
+                        "chain_of_thought": "FALLBACK: Clinical reasoning parsing failed.",
+                        "current_assistant_response": current_context_question,
+                        "user_content": user_content,
+                        "following_assistant_response": upcoming_base_question if upcoming_base_question else "Terima kasih."
+                    }
+                    if msg_type == "Survey":
+                        fallback_msg["section"] = msg.get("section")
+                        fallback_msg["scoring_system"] = msg.get("scoring_system", [])
+                        fallback_msg["grouped_questions_score"] = msg.get("grouped_questions_score", [])
+                        fallback_msg["set_of_documents"] = msg.get("set_of_documents", [])
                         
-                        augmented_messages.append({
-                            "type": "Ending",
-                            "user_content": msg.get("user_content", ""),
-                            "cot_augmentation": raft_output["chain_of_thought"],
-                            "current_assistant_response": current_context_question,
-                            "following_assistant_response": raft_output["assistant_question"]
-                        })
-                    except Exception as e:
-                        self.logger.error(f"Failed processing Ending node: {e}")
-                        augmented_messages.append(msg)
-                    continue
+                    augmented_messages.append(fallback_msg)
+                    running_response = fallback_msg["following_assistant_response"]
 
             augmented_dialogs.append({
                 "dialog_id": dialog_id,
