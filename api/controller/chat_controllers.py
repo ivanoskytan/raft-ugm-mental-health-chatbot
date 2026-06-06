@@ -117,7 +117,7 @@ class ChatController:
                 type=chat_type,
                 chat_id=data["chat_id"],
                 user_answer=data["user_answer"],
-                ai_response=engine_response["model"].get("assistant_question", ""),
+                ai_response=engine_response["model"].get("next_assistant_response", ""),
             )
 
             if is_a_survey:
