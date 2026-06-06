@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         chatList.insertBefore(chatDiv, chatList.firstChild);
 
-        window.currentGroupId = 0;
+        window.currentGroupId = 1;
         window.currentSection = "Opening";
         window.currentChatId = res.data.chat_id;
 
