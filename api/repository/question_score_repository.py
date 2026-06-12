@@ -129,17 +129,33 @@ class QuestionScoreRepository:
         top_k = int(top_k)
 
         pipeline = [
+            # 1. Filter QuestionScores by aspect and date range
             {"$match": {"section": aspect, "created_at": {"$gte": start_time, "$lte": end_time}}},
+            
+            # 2. Join with ChatItems
             {"$lookup": {"from": "chat_items", "localField": "chat_item_id", "foreignField": "_id", "as": "item"}},
             {"$unwind": "$item"},
+            
+            # 3. Join with Chats
             {"$lookup": {"from": "chats", "localField": "item.chat_id", "foreignField": "_id", "as": "chat"}},
             {"$unwind": "$chat"},
+            
+            # 4. Group by user_id to calculate their average score
             {
                 "$group": {
                     "_id": "$chat.user_id",
                     "average_score": { "$avg": "$score" }
                 }
             },
+            
+            # 5. Convert _id to String to match the user collection's ID format
+            {
+                "$set": {
+                    "_id": { "$toString": "$_id" }
+                }
+            },
+            
+            # 6. Join with Users collection (String-to-String match)
             {
                 "$lookup": {
                     "from": "users",
@@ -149,6 +165,67 @@ class QuestionScoreRepository:
                 }
             },
             {"$unwind": "$user_details"},
+            
+            # 7. Sort by highest score, limit results, and format final output
+            {"$sort": {"average_score": -1}},
+            {"$limit": top_k},
+            {
+                "$project": {
+                    "_id": 1, 
+                    "username": "$user_details.username",
+                    "email": "$user_details.email",
+                    "average_score": { "$round": ["$average_score", 2] } 
+                }
+            }
+        ]
+
+        return list(question_score_collection.aggregate(pipeline))
+        if isinstance(start_time, str):
+            start_time = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
+        if isinstance(end_time, str):
+            end_time = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
+        
+        top_k = int(top_k)
+
+        pipeline = [
+            # 1. Filter QuestionScores
+            {"$match": {"section": aspect, "created_at": {"$gte": start_time, "$lte": end_time}}},
+            
+            # 2. Join with ChatItems
+            {"$lookup": {"from": "chat_items", "localField": "chat_item_id", "foreignField": "_id", "as": "item"}},
+            {"$unwind": "$item"},
+            
+            # 3. Join with Chats
+            {"$lookup": {"from": "chats", "localField": "item.chat_id", "foreignField": "_id", "as": "chat"}},
+            {"$unwind": "$chat"},
+            
+            # 4. Calculate user averages
+            {
+                "$group": {
+                    "_id": "$chat.user_id",
+                    "average_score": { "$avg": "$score" }
+                }
+            },
+            
+            # Fix: Explicitly cast _id to ObjectId so the next join doesn't mismatch types
+            {
+                "$set": {
+                    "_id": { "$toObjectId": "$_id" }
+                }
+            },
+            
+            # 5. Join with Users collection now that data types match
+            {
+                "$lookup": {
+                    "from": "users",
+                    "localField": "_id",
+                    "foreignField": "_id",
+                    "as": "user_details"
+                }
+            },
+            {"$unwind": "$user_details"},
+            
+            # 6. Sort, Limit, and Project
             {"$sort": {"average_score": -1}},
             {"$limit": top_k},
             {

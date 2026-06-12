@@ -134,7 +134,7 @@ class AdminController:
         to_date = data.get("to_date")
         top_k = data.get("top_k")
 
-        if aspect not in ["Depression", "Anger", "Mania", "Anxiety", "Somatic", "Suicidal", "Psychosis", "Sleep Disturbance", "Memory", "Dissociation", "Substance Use"]:
+        if aspect not in ["Depression", "Anger", "Mania", "Anxiety", "Somatic", "Suicidal", "Psychosis", "Sleep Disturbance", "Memory", "Dissociation", "Substance Use", "Repetitive Thought"]:
             return jsonify({"error": "Invalid aspect provided."}), 400
 
         if not from_date or not to_date:

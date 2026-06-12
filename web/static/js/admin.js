@@ -18,9 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterBtn = document.getElementById("filter-btn");
 
     const toggleSidebarBtn = document.getElementById("toggle-sidebar-btn");
+    const toggleSummaryBtn = document.getElementById("toggle-summary-btn");
     const adminSidebar = document.getElementById("admin-sidebar");
     const sidebarOverlay = document.getElementById("sidebar-overlay");
     const menuItems = document.querySelectorAll(".menu-item");
+
+    const userName = document.getElementById("user-name");
+    const userEmail = document.getElementById("user-email");
+
+    const userId = localStorage.getItem("user_id");
 
     function closeSidebar() {
         if (adminSidebar) adminSidebar.classList.remove("open");
@@ -248,16 +254,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function renderUserTable() {
         const keyword = searchUsernameInput.value.trim();
-        const res = await apiFetch('/api/admin/all-users');
+        let endpoint = '/api/admin/all-users';
         
         if (keyword) {
             const params = new URLSearchParams({ username: keyword });
-            url += `?${params.toString()}`;
+            endpoint += `?${params.toString()}`;
         }
         
         userTableBody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#9ca3af;'>Memuat data...</td></tr>";
         
         try {
+            const res = await apiFetch(endpoint);
             userTableBody.innerHTML = "";
             
             if (res.data && res.data.length > 0) {
@@ -273,6 +280,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     userTableBody.appendChild(row);
                 });
+            } else {
+                userTableBody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#9ca3af;'>Tidak ada pengguna ditemukan.</td></tr>";
             }
         } catch (error) {
             console.error("[Client] - Gagal memuat daftar pengguna:", error);
@@ -348,67 +357,97 @@ document.addEventListener("DOMContentLoaded", () => {
         switchView('detail');
         
         document.getElementById("detail-title").textContent = `Hasil — ${user.username}`;
-        const summaryText = document.getElementById("summary-text");
+        const lastSummaryText = document.getElementById("summary-text");
         const assessmentsList = document.getElementById("user-assessments-list");
 
-        summaryText.textContent = "Memuat analisis pengguna...";
+        lastSummaryText.textContent = "Memuat analisis pengguna...";
         assessmentsList.innerHTML = "";
 
         // Fetch User History
         try {
-            const res = await apiFetch(`/api/admin/all-valid-chats/${user.id}`);
+            const res = await apiFetch(`/api/admin/all-valid-chats/${user._id}`);
             
             if (res.data.length === 0) {
                 assessmentsList.innerHTML = "<p>Tidak ada riwayat asesmen untuk pengguna ini.</p>";
             }
 
-            res.data.forEach(chat => {
-                const box = document.createElement("div");
-                box.className = "chat-box";
-
-                const statusLabel = chat.valid ?
-                    `<span class="status-badge valid">Valid</span>` 
-                    : `<span class="status-badge invalid">Invalid</span>`;
-                    
-                const downloadBtn = chat.valid 
-                    ? `<button class="download-excel-btn" data-id="${chat.id}">Download Excel</button>` 
-                    : ``;
-
-                box.innerHTML = `
-                    <div class="chat-info">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="font-weight:bold">${chat.title}</div>
-                            ${statusLabel}
+            if (res.data && res.data.length > 0) {
+                res.data.forEach(chat => {
+                    const box = document.createElement("div");
+                    box.className = "chat-box";
+    
+                    const statusLabel = chat.valid ?
+                        `<span class="status-badge valid">Valid</span>` 
+                        : `<span class="status-badge invalid">Invalid</span>`;
+                        
+                    const downloadBtn = chat.valid 
+                        ? `<button class="download-excel-btn" data-id="${chat.id}">Download Excel</button>` 
+                        : ``;
+    
+                    box.innerHTML = `
+                        <div class="chat-info">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="font-weight:bold">${chat.title}</div>
+                                ${statusLabel}
+                            </div>
+                            <div style="font-size:0.8rem; color:#9ca3af">${new Date(chat.started_at).toLocaleString()}</div>
                         </div>
-                        <div style="font-size:0.8rem; color:#9ca3af">${new Date(chat.started_at).toLocaleString()}</div>
-                    </div>
-                    ${downloadBtn}
-                `;
+                        ${downloadBtn}
+                    `;
+    
+                    // Excel Download Logic
+                    const btn = box.querySelector(".download-excel-btn");
+                    if (btn) {
+                        btn.onclick = (e) => {
+                            e.stopPropagation();
+                            window.location.href = `/api/admin/download-excel/${chat.id}`;
+                        };
+                    }
+    
+                    assessmentsList.appendChild(box);
+                });
 
-                // Excel Download Logic
-                const btn = box.querySelector(".download-excel-btn");
-                if (btn) {
-                    btn.onclick = (e) => {
-                        e.stopPropagation();
-                        window.location.href = `/api/admin/download-excel/${chat.id}`;
-                    };
+                let lastSummary = res.data.at(-1)["summary"];
+
+                if (lastSummary || lastSummary.trim() !== "") {
+                    lastSummaryText.textContent = lastSummary;
+                    const sentences = lastSummary.split(/[.!?]+\s/);
+                    const maxSentences = 3;
+    
+                    if (sentences.length > maxSentences) {
+                        lastSummaryText.classList.add("truncated-lines");
+                        toggleSummaryBtn.style.display = "inline-block"; 
+                
+                        toggleSummaryBtn.onclick = function () {
+                            if (lastSummaryText.classList.contains("truncated-lines")) {
+                                lastSummaryText.classList.remove("truncated-lines");
+                                toggleSummaryBtn.textContent = "Sembunyikan";
+                            } else {
+                                lastSummaryText.classList.add("truncated-lines");
+                                toggleSummaryBtn.textContent = "Lihat selengkapnya";
+                            }
+                        };
+                    } else {
+                        toggleSummaryBtn.style.display = "none";
+                        lastSummaryText.classList.remove("truncated-lines");
+                    }
+                } else {
+                    lastSummaryText.textContent = lastSummary || "Pengguna belum pernah menyelesaikan asesmen kesehatan mental. Silakan tinjau histori di bawah.";  
+                    toggleSummaryBtn.style.display = "none";
                 }
+            }
 
-                assessmentsList.appendChild(box);
-            });
 
-            // Update summary text if available in your user object
-            summaryText.textContent = user.summary || "Pengguna belum pernah menyelesaikan asesmen kesehatan mental. Silakan tinjau histori di bawah.";
             
         } catch (err) {
             console.error("Error loading details:", err);
-            summaryText.textContent = "Gagal memuat data.";
+            lastSummaryText.textContent = "Gagal memuat data.";
         }
     }
 
     // 5. Render admin profile
-    async function loadUserProfile() {
-        const res = await apiFetch(`/api/user/${user_id}`);
+    async function loadUserProfile(userId) {
+        const res = await apiFetch(`/api/user/${userId}`);
         if (res.data) {
             userName.textContent = res.data.username || "Username";
             userEmail.textContent = res.data.email || "username@gmail.com";
@@ -417,5 +456,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     aspectSelector.addEventListener("change", initAnalysis);
     document.getElementById("menu-analisis").addEventListener("click", initAnalysis);
-    loadUserProfile();
+    loadUserProfile(userId);
 });

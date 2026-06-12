@@ -540,3 +540,17 @@ body {
         width: 100%;
     }
 }
+
+.justified-text {
+    text-align: justify;
+    text-justify: inter-word; 
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+.truncated-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}

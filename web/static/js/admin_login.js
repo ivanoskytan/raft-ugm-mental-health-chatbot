@@ -1,7 +1,7 @@
 const submitBtn = document.getElementById('submit-btn');
 
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
+const email = document.getElementById('email');
+const password = document.getElementById('password');
 const tooglePasswordButton = document.querySelector('.toggle-password');
 
 tooglePasswordButton.addEventListener('click', function() {
@@ -13,18 +13,20 @@ tooglePasswordButton.addEventListener('click', function() {
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const emailValue = email.value;
+    const passwordValue = password.value;
 
-
+    const cleanedEmail = emailValue.trim();
     const emailRegex = /@(gmail\.com|mail\.ugm\.ac\.id)$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(cleanedEmail)) {
         showMessage("Email admin harus menggunakan domain @mail.ugm.ac.id", "red");
         return;
     }
 
     const payload = {
-        email: email,
+        email: cleanedEmail,
         role: "admin",
-        password: password
+        password: passwordValue
     };
 
     try {
