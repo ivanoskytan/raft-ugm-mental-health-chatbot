@@ -78,8 +78,8 @@ def run_web_app_command(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="chatbot-engine",
-        description="Chatbot Engine CLI for RAFT pipeline, vectorstore, and fine-tuning tasks."
+        prog="chatbot-suite",
+        description="CLI tool to manage the Chatbot Suite: run data pipelines (RAFT, vectorstore, fine-tuning), launch the web application, or clean engine data."
     )
 
     subparsers = parser.add_subparsers(dest="command", required=True)
